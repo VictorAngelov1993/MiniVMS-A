@@ -1,0 +1,47 @@
+<!--
+  Component: job-posting-card.html
+  Purpose: Card layout for a single job posting, used in list pages
+           (/buyer/job-postings, /supplier/job-postings).
+  Thymeleaf usage:
+    <div th:replace="~{components/job-posting-card :: job-posting-card(posting=${posting}, detailsUrlPrefix='/buyer/job-postings/')}"
+         th:each="posting : ${jobPostings}"></div>
+  Placeholders (server-rendered):
+    - posting.id, posting.title, posting.description, posting.startDate,
+      posting.endDate, posting.payRate, posting.status
+    - detailsUrlPrefix : '/buyer/job-postings/' or '/supplier/job-postings/'
+-->
+
+ <!--below is casing issues with the UI and Thymeleaf-->
+<!--<div th:fragment="job-posting-card(posting, detailsUrlPrefix)" class="col-12 col-md-6 col-lg-4 mb-4">-->
+ <!--So I am replacing it with: -->
+
+<div th:fragment="job-posting-card(posting, detailsUrlPrefix)">
+  <a class="link-plain" href="/buyer/job-postings/1"
+     th:href="@{${detailsUrlPrefix} + ${posting.jobPostingId}}" aria-label="View job posting details">
+    <div class="card card-compact card-clickable h-100">
+      <div class="card-body d-flex flex-column">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <h3 class="card-title h6 mb-0" th:text="${posting.title}">Senior Java Developer</h3>
+
+          <span class="badge status-badge bg-success" th:text="${posting.status}">Open</span>
+
+
+        </div>
+        <p class="card-text text-muted small flex-grow-1" th:text="${posting.description}">
+          Short description of the job posting requirements and responsibilities.
+        </p>
+        <ul class="list-unstyled small text-muted mb-0">
+          <li>
+            <i class="bi bi-calendar-event" aria-hidden="true"></i>
+            <span th:text="${posting.startDate}">2026-01-01</span> &ndash;
+            <span th:text="${posting.endDate}">2026-06-30</span>
+          </li>
+          <li>
+            <i class="bi bi-cash-coin" aria-hidden="true"></i>
+            <span th:text="${posting.payRate}">$45.00</span>/hr
+          </li>
+        </ul>
+      </div>
+    </div>
+  </a>
+</div>

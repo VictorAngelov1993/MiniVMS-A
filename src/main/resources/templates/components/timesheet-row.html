@@ -1,0 +1,33 @@
+<!--
+  Component: timesheet-row.html
+  Purpose: A single row in a timesheet list table (weekly summary).
+  Thymeleaf usage:
+    <tbody>
+      <tr th:replace="~{components/timesheet-row :: timesheet-row(timesheet=${ts}, editUrlPrefix='/worker/timesheets/'}"
+          th:each="ts : ${timesheets}"></tr>
+    </tbody>
+  Placeholders (server-rendered):
+    - timesheet.id, timesheet.weekStartDate, timesheet.weekEndDate,
+      timesheet.totalHours, timesheet.status
+    - editUrlPrefix : '/worker/timesheets/' or '/buyer/timesheets/'
+  Status lifecycle: Draft -> Submitted -> Approved (or Rejected).
+  Badge color reflects status: Approved=success, Submitted=info, Rejected=danger,
+  Draft/Pending=warning (default).
+-->
+<tr th:fragment="timesheet-row(timesheet, editUrlPrefix)">
+  <td th:text="${timesheet.weekStartDate}">2026-01-05</td>
+  <td th:text="${timesheet.weekEndDate}">2026-01-11</td>
+  <td th:text="${timesheet.totalHours}">40.0</td>
+  <td>
+    <span class="badge status-badge bg-warning text-dark"
+          th:class="'badge status-badge ' + (${timesheet.status == 'Approved'} ? 'bg-success' : (${timesheet.status == 'Submitted'} ? 'bg-info text-dark' : (${timesheet.status == 'Rejected'} ? 'bg-danger' : 'bg-warning text-dark')))"
+          th:text="${timesheet.status}">Pending</span>
+  </td>
+  <td>
+    <a class="btn btn-sm btn-outline-primary" href="/worker/timesheets/1/edit"
+       th:href="@{${editUrlPrefix} + ${timesheet.id} + '/edit'}"
+       aria-label="View or edit timesheet">
+      View / Edit
+    </a>
+  </td>
+</tr>

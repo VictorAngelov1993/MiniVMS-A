@@ -1,0 +1,58 @@
+<!--
+  Component: header.html
+  Purpose: Shared application header/navbar used on every authenticated page.
+
+  Thymeleaf usage (natural templating - put th:replace directly on the real
+  <header> element that already contains the static fallback markup, so the
+  page still renders correctly when opened as plain static HTML):
+    <header th:replace="~{components/header :: app-header(pageTitle='Buyer Dashboard')}"
+            class="app-header bg-primary">
+      ... same static markup as below, with placeholder values (e.g. "Jane Doe") ...
+    </header>
+  Every page under /pages/**/*.html already follows this pattern.
+
+  Placeholders (server-rendered):
+    - pageTitle           : text shown in the center title area (optional)
+    - user.fullName       : current logged-in user's display name
+    - user.email          : current logged-in user's email
+    - user.roleHomeUrl    : dashboard URL for the user's role (e.g. /buyer/dashboard)
+  Notes:
+    - This fragment includes /components/account-dropdown.html.
+    - When served as static HTML for preview, the th:* attributes are ignored by the browser
+      and the static fallback content (name="Jane Doe", etc.) is shown instead.
+-->
+<header th:fragment="app-header(pageTitle)" class="app-header bg-primary">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary" aria-label="Main navigation">
+    <div class="container-fluid">
+      <!-- Left: brand / logo -->
+      <a class="navbar-brand app-logo" href="/static" th:href="@{${user != null} ? ${user.roleHomeUrl} : '/'}"
+         aria-label="MiniVMS home">
+        <img src="/assets/logo.svg" th:src="@{/assets/logo.svg}" alt="MiniVMS logo" width="32" height="32">
+        <span>MiniVMS</span>
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#appNavbarCollapse" aria-controls="appNavbarCollapse"
+              aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="appNavbarCollapse">
+        <!-- Center: optional page title -->
+        <span class="navbar-text page-title mx-auto d-none d-lg-inline" th:if="${pageTitle}" th:text="${pageTitle}">
+          Page Title
+        </span>
+        <span class="navbar-text page-title mx-auto d-none d-lg-inline" th:unless="${pageTitle}">
+          Page Title
+        </span>
+
+        <!-- Right: account dropdown -->
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+          <li class="nav-item">
+            <div th:replace="~{components/account-dropdown :: account-dropdown}"></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>

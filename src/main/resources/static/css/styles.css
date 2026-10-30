@@ -1,0 +1,283 @@
+/* =========================================================================
+   MiniVMS - Shared Stylesheet
+   Single shared CSS file for the entire application.
+   Loaded on every page, alongside the Bootstrap 5 CDN stylesheet.
+   Prefer Bootstrap utility classes first; only add rules here for
+   app branding, layout scaffolding, and small responsive tweaks.
+   ========================================================================= */
+
+:root {
+  /* Brand palette - aligned with Bootstrap 5 default theme colors */
+  --vms-primary: #0d6efd;
+  --vms-primary-dark: #0b5ed7;
+  --vms-secondary: #6c757d;
+  --vms-success: #198754;
+  --vms-warning: #ffc107;
+  --vms-danger: #dc3545;
+  --vms-info: #0dcaf0;
+  --vms-dark: #212529;
+  --vms-light: #f8f9fa;
+  --vms-body-bg: #f4f6f9;
+  --vms-border-color: #dee2e6;
+
+  /* Spacing scale (mirrors Bootstrap spacer scale for consistency) */
+  --vms-space-xs: 0.25rem;
+  --vms-space-sm: 0.5rem;
+  --vms-space-md: 1rem;
+  --vms-space-lg: 1.5rem;
+  --vms-space-xl: 3rem;
+
+  /* Layout */
+  --vms-sidebar-width: 240px;
+  --vms-header-height: 56px;
+  --vms-radius: 0.5rem;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Base / typography                                                      */
+/* ---------------------------------------------------------------------- */
+html, body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--vms-body-bg);
+  color: var(--vms-dark);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+}
+
+a.link-plain {
+  color: inherit;
+}
+
+/* ---------------------------------------------------------------------- */
+/* App branding                                                           */
+/* ---------------------------------------------------------------------- */
+.app-logo {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #fff !important;
+}
+
+.app-logo img {
+  height: 32px;
+  width: 32px;
+  margin-right: var(--vms-space-sm);
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.app-header .page-title {
+  color: #fff;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Layout: sidebar + content shell used across role sections              */
+/* ---------------------------------------------------------------------- */
+.app-shell {
+  flex: 1 0 auto; /* Pushes the footer to the bottom when content is short */
+  width: 100%;
+}
+
+.app-sidebar {
+  background-color: #fff;
+  border-right: 1px solid var(--vms-border-color);
+  padding-top: var(--vms-space-lg);
+}
+
+.app-sidebar .nav-link {
+  color: var(--vms-dark);
+  border-radius: var(--vms-radius);
+  padding: 0.6rem 0.9rem;
+  margin-bottom: 0.15rem;
+  font-weight: 500;
+}
+
+.app-sidebar .nav-link .bi,
+.app-sidebar .nav-link .nav-icon {
+  margin-right: 0.5rem;
+}
+
+.app-sidebar .nav-link.active {
+  background-color: var(--vms-primary);
+  color: #fff;
+}
+
+.app-sidebar .nav-link:hover:not(.active) {
+  background-color: var(--vms-light);
+}
+
+.app-content {
+  padding: var(--vms-space-lg) var(--vms-space-lg) var(--vms-space-xl);
+}
+
+.app-footer {
+  flex-shrink: 0; /* Prevents footer from collapsing or getting pushed off */
+  background-color: #fff;
+  border-top: 1px solid var(--vms-border-color);
+  padding: var(--vms-space-md) 0;
+  color: var(--vms-secondary);
+  font-size: 0.875rem;
+  margin-top: auto;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Cards                                                                   */
+/* ---------------------------------------------------------------------- */
+.card-compact {
+  border: 1px solid var(--vms-border-color);
+  border-radius: var(--vms-radius);
+  transition: box-shadow 0.15s ease-in-out, transform 0.15s ease-in-out;
+}
+
+.card-compact:hover {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
+}
+
+.card-compact .card-title {
+  font-weight: 600;
+}
+
+.card-clickable {
+  cursor: pointer;
+}
+
+.stat-card {
+  border: 1px solid var(--vms-border-color);
+  border-radius: var(--vms-radius);
+  background-color: #fff;
+  padding: var(--vms-space-lg);
+}
+
+.stat-card .stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stat-card .stat-label {
+  color: var(--vms-secondary);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Status badges                                                          */
+/* ---------------------------------------------------------------------- */
+.status-badge {
+  text-transform: capitalize;
+  font-weight: 600;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Auth pages (login / register)                                          */
+/* ---------------------------------------------------------------------- */
+.auth-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--vms-primary) 0%, var(--vms-primary-dark) 100%);
+  padding: var(--vms-space-lg);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 480px;
+  background-color: #fff;
+  border-radius: var(--vms-radius);
+  padding: var(--vms-space-xl) var(--vms-space-lg);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.2);
+}
+
+.auth-card .app-logo {
+  color: var(--vms-dark) !important;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: var(--vms-space-md);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Empty states                                                            */
+/* ---------------------------------------------------------------------- */
+.empty-state {
+  text-align: center;
+  padding: var(--vms-space-xl) var(--vms-space-md);
+  color: var(--vms-secondary);
+}
+
+.empty-state .empty-state-icon {
+  font-size: 3rem;
+  color: var(--vms-border-color);
+  margin-bottom: var(--vms-space-md);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Forms                                                                   */
+/* ---------------------------------------------------------------------- */
+.required-marker {
+  color: var(--vms-danger);
+  margin-left: 0.2rem;
+}
+
+.form-section-title {
+  font-weight: 600;
+  border-bottom: 1px solid var(--vms-border-color);
+  padding-bottom: var(--vms-space-sm);
+  margin-bottom: var(--vms-space-md);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Timesheet grid                                                          */
+/* ---------------------------------------------------------------------- */
+.timesheet-table th,
+.timesheet-table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.timesheet-table .day-input {
+  width: 5.5rem;
+  margin: 0 auto;
+}
+
+.timesheet-total-row {
+  font-weight: 700;
+  background-color: var(--vms-light);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Responsive tweaks                                                       */
+/* ---------------------------------------------------------------------- */
+@media (max-width: 767.98px) {
+  .app-sidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--vms-border-color);
+    min-height: auto;
+    padding-top: var(--vms-space-sm);
+  }
+
+  .app-content {
+    padding: var(--vms-space-md);
+  }
+
+  .auth-card {
+    padding: var(--vms-space-lg) var(--vms-space-md);
+  }
+}

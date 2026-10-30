@@ -1,0 +1,43 @@
+<!--
+  Component: account-dropdown.html
+  Purpose: Account menu shown in the header, with user info and logout.
+  Thymeleaf usage:
+    <div th:replace="~{components/account-dropdown :: account-dropdown}"></div>
+  Placeholders (server-rendered):
+    - user.fullName : display name
+    - user.email    : email address
+    - user.profileUrl : link to profile page
+  Server routes:
+    - GET  /profile  : user profile page
+    - POST /logout   : logs out the current session
+-->
+<div th:fragment="account-dropdown" class="dropdown">
+  <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-2"
+          type="button" id="account-dropdown-toggle" data-bs-toggle="dropdown"
+          aria-expanded="false" aria-haspopup="true" aria-label="Account menu">
+    <i class="bi bi-person-circle" aria-hidden="true"></i>
+    <span class="d-none d-sm-inline" th:text="${user != null ? user.fullName : 'Jane Doe'}">Jane Doe</span>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="account-dropdown-toggle">
+    <li class="px-3 py-2">
+      <div class="fw-semibold" th:text="${user != null ? user.fullName : 'Jane Doe'}">Jane Doe</div>
+      <div class="text-muted small" th:text="${user != null ? user.email : 'jane.doe@example.com'}">
+        jane.doe@example.com
+      </div>
+    </li>
+    <li><hr class="dropdown-divider"></li>
+    <li>
+      <a class="dropdown-item" href="/profile" th:href="@{/profile}">
+        <i class="bi bi-person" aria-hidden="true"></i> Profile
+      </a>
+    </li>
+    <li>
+      <form action="/logout" method="post" th:action="@{/logout}" id="logout-form">
+        <input type="hidden" name="_csrf" th:if="${_csrf}" th:value="${_csrf.token}"/>
+        <button type="submit" class="dropdown-item">
+          <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Logout
+        </button>
+      </form>
+    </li>
+  </ul>
+</div>

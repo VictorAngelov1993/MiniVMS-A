@@ -1,0 +1,25 @@
+<!--
+  Component: footer.html
+  Purpose: Shared application footer used on every page.
+
+  Thymeleaf usage (natural templating - put th:replace directly on the real
+  <footer> element that already contains the static fallback markup):
+    <footer th:replace="~{components/footer :: app-footer}" class="app-footer mt-auto">
+      ... same static markup as below ...
+    </footer>
+  Every page under /pages/**/*.html already follows this pattern.
+
+  Placeholders (server-rendered):
+    - appVersion : application version string (e.g. "1.0.0")
+    - currentYear: current year for copyright line
+-->
+<footer th:fragment="app-footer" class="app-footer mt-auto">
+  <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+    <span class="text-muted">
+      &copy; <span th:text="${currentYear}">2026</span> MiniVMS. All rights reserved.
+    </span>
+    <span class="text-muted small">
+      Version <span th:text="${appVersion}">1.0.0</span>
+    </span>
+  </div>
+</footer>

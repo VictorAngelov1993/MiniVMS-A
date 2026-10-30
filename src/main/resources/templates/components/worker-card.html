@@ -1,0 +1,29 @@
+<!--
+  Component: worker-card.html
+  Purpose: Card layout for a single worker, used in /buyer/workers list page.
+  Thymeleaf usage:
+    <div th:replace="~{components/worker-card :: worker-card(worker=${w})}"
+         th:each="w : ${workers}"></div>
+  Placeholders (server-rendered):
+    - worker.id, worker.fullName, worker.contactInfo, worker.assignedWorkOrderCount
+-->
+<div th:fragment="worker-card(worker)" class="col-12 col-md-6 col-lg-4 mb-4">
+  <a class="link-plain" href="/buyer/workers/1" th:href="@{'/buyer/workers/' + ${worker.id}}"
+     aria-label="View worker details">
+    <div class="card card-compact card-clickable h-100">
+      <div class="card-body d-flex flex-column">
+        <div class="d-flex align-items-center mb-2">
+          <i class="bi bi-person-badge fs-3 text-primary me-2" aria-hidden="true"></i>
+          <h3 class="card-title h6 mb-0" th:text="${worker.fullName}">John Smith</h3>
+        </div>
+        <p class="card-text small text-muted mb-1" th:text="${worker.contactInfo}">
+          john.smith@example.com &middot; (555) 123-4567
+        </p>
+        <p class="card-text small mb-0">
+          <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+          <span th:text="${worker.assignedWorkOrderCount}">2</span> assigned work order(s)
+        </p>
+      </div>
+    </div>
+  </a>
+</div>

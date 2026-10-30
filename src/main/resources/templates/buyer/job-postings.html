@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<!--
+  Page: buyer/job-postings.html
+  Route: GET /buyer/job-postings
+  Model attributes expected:
+    - jobPostings : List<JobPosting> (id, title, description, startDate, endDate, payRate, status)
+  Empty state: shown when jobPostings is empty.
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Postings - MiniVMS</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="/css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet">
+</head>
+<body>
+  <header th:replace="~{components/header :: app-header(pageTitle='Job Postings')}" class="app-header bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" aria-label="Main navigation">
+      <div class="container-fluid">
+        <!-- Left: brand / logo -->
+        <a class="navbar-brand app-logo" href="/" aria-label="MiniVMS home">
+          <img src="/assets/logo.svg" alt="MiniVMS logo" width="32" height="32">
+          <span>MiniVMS</span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#appNavbarCollapse" aria-controls="appNavbarCollapse"
+                aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="appNavbarCollapse">
+          <!-- Center: page title -->
+          <span class="navbar-text page-title mx-auto d-none d-lg-inline">Job Postings</span>
+
+          <!-- Right: account dropdown -->
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+            <li class="nav-item">
+              <div class="dropdown">
+                <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-2"
+                        type="button" id="account-dropdown-toggle" data-bs-toggle="dropdown"
+                        aria-expanded="false" aria-haspopup="true" aria-label="Account menu">
+                  <i class="bi bi-person-circle" aria-hidden="true"></i>
+                  <span class="d-none d-sm-inline">Jane Doe</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="account-dropdown-toggle">
+                  <li class="px-3 py-2">
+                    <div class="fw-semibold">Jane Doe</div>
+                    <div class="text-muted small">jane.doe@example.com</div>
+                  </li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                    <a class="dropdown-item" href="/profile">
+                      <i class="bi bi-person" aria-hidden="true"></i> Profile
+                    </a>
+                  </li>
+                  <li>
+                    <form action="/logout" method="post" id="logout-form">
+                      <button type="submit" class="dropdown-item">
+                        <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Logout
+                      </button>
+                    </form>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container-fluid app-shell">
+    <div class="row">
+      <nav class="col-12 col-md-3 col-lg-2 app-sidebar" aria-label="Buyer navigation">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="/buyer/dashboard" th:href="@{/buyer/dashboard}">
+              <i class="bi bi-speedometer2" aria-hidden="true"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/buyer/job-postings" th:href="@{/buyer/job-postings}" aria-current="page">
+              <i class="bi bi-briefcase" aria-hidden="true"></i> Job Postings
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/buyer/workorders" th:href="@{/buyer/workorders}">
+              <i class="bi bi-file-earmark-text" aria-hidden="true"></i> Work Orders
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/buyer/workers" th:href="@{/buyer/workers}">
+              <i class="bi bi-people" aria-hidden="true"></i> Workers
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/buyer/timesheets" th:href="@{/buyer/timesheets}">
+              <i class="bi bi-clock-history" aria-hidden="true"></i> Timesheets
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <main class="col-12 col-md-9 col-lg-10 app-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h1 class="h3 mb-0">Job Postings</h1>
+          <a class="btn btn-primary" href="/buyer/create-job-posting" th:href="@{/buyer/create-job-posting}">
+            <i class="bi bi-plus-lg" aria-hidden="true"></i> Create Job Posting
+          </a>
+        </div>
+
+        <!-- Populated list (th:if renders when data exists) -->
+        <div class="row" th:if="${jobPostings != null and !jobPostings.isEmpty()}">
+
+         <!-- the below commented html caused:
+
+          There was an unexpected error (type=Internal Server Error, status=500).
+          An error happened during template parsing (template: "class path resource [templates/buyer/job-postings.html]")
+          org.thymeleaf.exceptions.TemplateInputException: An error happened during template parsing (template: "class path resource [templates/buyer/job-postings.html]")-->
+
+          <!--Why the error happens with th:replace and th:each on the same tag
+          When you combine th:replace and th:each on the exact same HTML element, Thymeleaf evaluates th:replace first before th:each creates the loop context.
+          Because the loop hasn't started yet when th:replace executes, ${posting} resolves to null, causing the Property or field 'jobPostingId' cannot be found on null exception.-->
+
+          <!--<div th:replace="~{components/job-posting-card :: job-posting-card(posting=${posting}, detailsUrlPrefix='/buyer/job-postings/')}"
+               th:each="posting : ${jobPostings}"></div>-->
+
+          <!--So I am replacing it with: -->
+
+
+          <div class="col-12 col-md-6 col-lg-4 mb-4"
+               th:each="jobPosting : ${jobPostings}">
+            <div th:replace="~{components/job-posting-card :: job-posting-card(posting=${jobPosting}, detailsUrlPrefix='/buyer/job-postings/')}"></div>
+          </div>
+
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-state" th:if="${jobPostings == null or jobPostings.isEmpty()}">
+          <div class="empty-state-icon"><i class="bi bi-briefcase" aria-hidden="true"></i></div>
+          <h2 class="h5">No job postings yet</h2>
+          <p>Create your first job posting to start sourcing jobseekers.</p>
+          <a class="btn btn-primary" href="/buyer/create-job-posting" th:href="@{/buyer/create-job-posting}">
+            Create Job Posting
+          </a>
+        </div>
+
+        <!-- Static preview sample card (remove once server data is wired) -->
+        <!--<div class="row d-none">
+          <div th:replace="~{components/job-posting-card :: job-posting-card(posting=${posting}, detailsUrlPrefix='/buyer/job-postings/')}"></div>
+        </div>-->
+
+      </main>
+    </div>
+  </div>
+
+  <footer th:replace="~{components/footer :: app-footer}" class="app-footer mt-auto">
+    <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+      <span class="text-muted">&copy; 2026 MiniVMS. All rights reserved.</span>
+      <span class="text-muted small">Version 1.0.0</span>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/main.js" th:src="@{/js/main.js}"></script>
+</body>
+</html>

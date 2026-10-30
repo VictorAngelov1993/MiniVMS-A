@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<!--
+  Page: buyer/create-workorder.html
+  Route: GET /buyer/create-workorder?jobId={id} (render form), POST /buyer/create-workorder (submit)
+  Expected form fields: jobPostingId, workOrderId (optional, auto-generated if blank),
+                         jobSeekerId, startDate, endDate, payRateOverride, notes
+  Model attributes expected:
+    - jobPostings : List<JobPosting> (id, title) - buyer's own postings for selection
+    - jobSeekers  : List<JobSeeker> (id, fullName)
+    - preselectedJobId : id passed via ?jobId= query param, used to preselect the dropdown
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Work Order - MiniVMS</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="/css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet">
+</head>
+<body class="d-flex flex-column min-vh-100">
+  <header th:replace="~{components/header :: app-header(pageTitle='Create Work Order')}" class="app-header bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" aria-label="Main navigation">
+      <div class="container-fluid">
+        <!-- Left: brand / logo -->
+        <a class="navbar-brand app-logo" href="/" aria-label="MiniVMS home">
+          <img src="/assets/logo.svg" alt="MiniVMS logo" width="32" height="32">
+          <span>MiniVMS</span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#appNavbarCollapse" aria-controls="appNavbarCollapse"
+                aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="appNavbarCollapse">
+          <!-- Center: page title -->
+          <span class="navbar-text page-title mx-auto d-none d-lg-inline">Create Work Order</span>
+
+          <!-- Right: account dropdown -->
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+            <li class="nav-item">
+              <div class="dropdown">
+                <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-2"
+                        type="button" id="account-dropdown-toggle" data-bs-toggle="dropdown"
+                        aria-expanded="false" aria-haspopup="true" aria-label="Account menu">
+                  <i class="bi bi-person-circle" aria-hidden="true"></i>
+                  <span class="d-none d-sm-inline">Jane Doe</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="account-dropdown-toggle">
+                  <li class="px-3 py-2">
+                    <div class="fw-semibold">Jane Doe</div>
+                    <div class="text-muted small">jane.doe@example.com</div>
+                  </li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                    <a class="dropdown-item" href="/profile">
+                      <i class="bi bi-person" aria-hidden="true"></i> Profile
+                    </a>
+                  </li>
+                  <li>
+                    <form action="/logout" method="post" id="logout-form">
+                      <button type="submit" class="dropdown-item">
+                        <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Logout
+                      </button>
+                    </form>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container-fluid app-shell flex-grow-1">
+    <div class="row">
+      <nav class="col-12 col-md-3 col-lg-2 app-sidebar" aria-label="Buyer navigation">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="/buyer/dashboard" th:href="@{/buyer/dashboard}">
+              <i class="bi bi-speedometer2" aria-hidden="true"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/buyer/job-postings" th:href="@{/buyer/job-postings}">
+              <i class="bi bi-briefcase" aria-hidden="true"></i> Job Postings
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/buyer/workorders" th:href="@{/buyer/workorders}" aria-current="page">
+              <i class="bi bi-file-earmark-text" aria-hidden="true"></i> Work Orders
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/buyer/workers" th:href="@{/buyer/workers}">
+              <i class="bi bi-people" aria-hidden="true"></i> Workers
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/buyer/timesheets" th:href="@{/buyer/timesheets}">
+              <i class="bi bi-clock-history" aria-hidden="true"></i> Timesheets
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <main class="col-12 col-md-9 col-lg-10 app-content">
+        <h1 class="h3 mb-4">Create Work Order</h1>
+
+        <div class="alert alert-danger form-error-alert d-none" role="alert" aria-live="assertive"></div>
+
+        <form action="/buyer/create-workorder" method="post" th:action="@{/buyer/create-workorder}"
+              class="card card-compact" data-validate novalidate>
+          <div class="card-body">
+            <input type="hidden" name="_csrf" th:if="${_csrf}" th:value="${_csrf.token}"/>
+
+            <!--removing the drop-down because the job posting should be prepopulated read only field-->
+
+          <!--  <div class="mb-3">
+              <label for="jobPostingId" class="form-label">Job Posting<span class="required-marker">*</span></label>
+              <select class="form-select" id="jobPostingId" name="jobPostingId" required aria-required="true">
+                <option value="" selected disabled>Select a job posting&hellip;</option>
+                <option th:each="jp : ${jobPostings}" th:value="${jp.id}" th:text="${jp.title}"
+                        th:selected="${preselectedJobId != null and preselectedJobId == jp.id}">
+                  Senior Java Developer
+                </option>
+              </select>
+              <div class="invalid-feedback">Please select a job posting.</div>
+            </div>-->
+
+            <div class="mb-3">
+              <label class="form-label">Job Posting</label>
+
+              <!-- Read-only display -->
+              <input type="text" class="form-control"
+                     th:value="${jobPosting.title}" readonly>
+
+              <!-- Hidden field for form submission -->
+              <input type="hidden" name="jobPostingId"
+                     th:value="${jobPosting.jobPostingId}">
+            </div>
+
+             <!--commiting below because it is not good practice to have the user enter the WO it should be auto generated -->
+          <!--  <div class="mb-3">
+              <label for="workOrderId" class="form-label">Work Order ID</label>
+              <input type="text" class="form-control" id="workOrderId" name="workOrderId"
+                     placeholder="Auto-generated if left blank" aria-describedby="workOrderIdHelp">
+              <div id="workOrderIdHelp" class="form-text">Leave blank to auto-generate an ID.</div>
+            </div>-->
+
+            <div class="mb-3">
+              <label for="workOrderId" class="form-label">Work Order ID</label>
+              <input type="text"
+                     class="form-control"
+                     id="workOrderId"
+                     name="workOrderId"
+                     th:value="${generatedWorkOrderId}"
+                     readonly>
+              <div class="form-text">This ID is automatically generated.</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="jobSeekerId" class="form-label">Assigned Job Seeker<span class="required-marker">*</span></label>
+              <select class="form-select" id="jobSeekerId" name="jobSeekerId" required aria-required="true">
+                <option value="" selected disabled>Select a job seeker&hellip;</option>
+                <option th:each="seeker : ${jobSeekers}" th:value="${seeker.jobSeekerId}" th:text="${seeker.fullName}">
+                  Jane Candidate
+                </option>
+              </select>
+              <div class="invalid-feedback">Please select a job seeker.</div>
+            </div>
+
+
+            <!--Dates also should be inheritated from the JP-->
+            <!--<div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="startDate" class="form-label">Start Date<span class="required-marker">*</span></label>
+                <input type="date" class="form-control" id="startDate" name="startDate" required aria-required="true">
+                <div class="invalid-feedback">Start date is required.</div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="endDate" class="form-label">End Date<span class="required-marker">*</span></label>
+                <input type="date" class="form-control" id="endDate" name="endDate" required aria-required="true">
+                <div class="invalid-feedback">End date is required.</div>
+              </div>
+            </div>-->
+
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="startDate" class="form-label">
+                  Start Date<span class="required-marker">*</span>
+                </label>
+                <input type="date"
+                       class="form-control"
+                       id="startDate"
+                       name="startDate"
+                       th:value="${jobPosting.startDate}"
+                       readonly>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="endDate" class="form-label">
+                  End Date<span class="required-marker">*</span>
+                </label>
+                <input type="date"
+                       class="form-control"
+                       id="endDate"
+                       name="endDate"
+                       th:value="${jobPosting.endDate}"
+                       readonly>
+
+              </div>
+            </div>
+
+            <!--Replacing the pay rate this because the commented one will not prepopulate the pay rate-->
+           <!-- <div class="mb-3">
+              <label for="payRateOverride" class="form-label">Pay Rate Override ($/hr)</label>
+              <input type="number" step="0.01" min="0" class="form-control" id="payRateOverride" name="payRateOverride"
+                     aria-describedby="payRateOverrideHelp">
+              <div id="payRateOverrideHelp" class="form-text">Leave blank to use the job posting's default pay rate.</div>
+            </div>-->
+
+
+            <!--The Pay rate in the DTO is appearing as null commend this to try below-->
+            <!--<div class="mb-3">
+              <label for="payRateOverride" class="form-label">Pay Rate ($/hr)</label>
+              <input type="number"
+                     step="0.01"
+                     min="0"
+                     class="form-control"
+                     id="payRateOverride"
+                     name="payRateOverride"
+                     th:value="${jobPosting.payRate}">
+              <div id="payRateOverrideHelp" class="form-text">
+                Pre-filled with job posting default rate. Modify to override.
+              </div>
+            </div>-->
+
+            <div class="mb-3">
+              <label for="payRate" class="form-label">Pay Rate ($/hr)</label>
+              <input type="number"
+                     step="0.01"
+                     min="0"
+                     class="form-control"
+                     id="payRate"
+                     name="payRate"
+                     th:value="${jobPosting.payRate}">
+              <div id="payRateHelp" class="form-text">
+                Pre-filled with job posting default rate. Modify to override.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="notes" class="form-label">Notes</label>
+              <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create Work Order</button>
+            <a class="btn btn-link" href="/buyer/workorders" th:href="@{/buyer/workorders}">Cancel</a>
+          </div>
+        </form>
+      </main>
+    </div>
+  </div>
+
+  <footer th:replace="~{components/footer :: app-footer}" class="app-footer mt-auto">
+    <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+      <span class="text-muted">&copy; 2026 MiniVMS. All rights reserved.</span>
+      <span class="text-muted small">Version 1.0.0</span>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/main.js" th:src="@{/js/main.js}"></script>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<!--
+  Page: buyer/workorder-details.html
+  Route: GET /buyer/workorders/{id}
+  Model attributes expected:
+    - workorder (id, status, assignedWorkerId, assignedWorkerName, startDate, endDate, payRate, notes)
+  Actions:
+    - GET  /buyer/workorders/{id}/timesheets  (View Timesheets)
+    - GET  /buyer/workorders/{id}/edit        (Edit Work Order)
+    - POST /buyer/workorders/{id}/close       (Close Work Order, confirmed via modal)
+-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Work Order Details - MiniVMS</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="/css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet">
+</head>
+<body>
+  <header th:replace="~{components/header :: app-header(pageTitle='Work Order Details')}" class="app-header bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary" aria-label="Main navigation">
+      <div class="container-fluid">
+        <!-- Left: brand / logo -->
+        <a class="navbar-brand app-logo" href="/" aria-label="MiniVMS home">
+          <img src="/assets/logo.svg" alt="MiniVMS logo" width="32" height="32">
+          <span>MiniVMS</span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#appNavbarCollapse" aria-controls="appNavbarCollapse"
+                aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="appNavbarCollapse">
+          <!-- Center: page title -->
+          <span class="navbar-text page-title mx-auto d-none d-lg-inline">Work Order Details</span>
+
+          <!-- Right: account dropdown -->
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+            <li class="nav-item">
+              <div class="dropdown">
+                <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-2"
+                        type="button" id="account-dropdown-toggle" data-bs-toggle="dropdown"
+                        aria-expanded="false" aria-haspopup="true" aria-label="Account menu">
+                  <i class="bi bi-person-circle" aria-hidden="true"></i>
+                  <span class="d-none d-sm-inline">Jane Doe</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="account-dropdown-toggle">
+                  <li class="px-3 py-2">
+                    <div class="fw-semibold">Jane Doe</div>
+                    <div class="text-muted small">jane.doe@example.com</div>
+                  </li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                    <a class="dropdown-item" href="/profile">
+                      <i class="bi bi-person" aria-hidden="true"></i> Profile
+                    </a>
+                  </li>
+                  <li>
+                    <form action="/logout" method="post" id="logout-form">
+                      <button type="submit" class="dropdown-item">
+                        <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Logout
+                      </button>
+                    </form>
+                  </li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container-fluid app-shell">
+    <div class="row">
+      <nav class="col-12 col-md-3 col-lg-2 app-sidebar" aria-label="Buyer navigation">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="/buyer/dashboard" th:href="@{/buyer/dashboard}">
+              <i class="bi bi-speedometer2" aria-hidden="true"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/buyer/job-postings" th:href="@{/buyer/job-postings}">
+              <i class="bi bi-briefcase" aria-hidden="true"></i> Job Postings
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/buyer/workorders" th:href="@{/buyer/workorders}" aria-current="page">
+              <i class="bi bi-file-earmark-text" aria-hidden="true"></i> Work Orders
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/buyer/workers" th:href="@{/buyer/workers}">
+              <i class="bi bi-people" aria-hidden="true"></i> Workers
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/buyer/timesheets" th:href="@{/buyer/timesheets}">
+              <i class="bi bi-clock-history" aria-hidden="true"></i> Timesheets
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <main class="col-12 col-md-9 col-lg-10 app-content">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/buyer/workorders" th:href="@{/buyer/workorders}">Work Orders</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+              WO-<span th:text="${workorder != null ? workorder.id : 1001}">1001</span>
+            </li>
+          </ol>
+        </nav>
+
+        <div class="card card-compact">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <h1 class="h4 mb-0">
+                Work Order <span th:text="${workorder != null ? workorder.id : 1001}">1001</span>
+              </h1>
+              <span class="badge status-badge bg-info text-dark" th:text="${workorder != null ? workorder.status : 'Active'}">Active</span>
+            </div>
+
+            <dl class="row">
+              <dt class="col-sm-3">Assigned Worker</dt>
+              <dd class="col-sm-9">
+                <!--below is causing issue because the worker should be registered after the work order is created-->
+                <!--<a href="/buyer/workers/1" th:href="@{'/buyer/workers/' + ${workorder != null ? workorder.assignedWorkerId : 1}}"
+                   th:text="${workorder != null ? workorder.assignedWorkerName : 'John Smith'}">John Smith</a>-->
+                <!-- If a worker is assigned, render the clickable link -->
+                <a th:if="${workorder != null and workorder.assignedWorker != null}"
+                   href="/buyer/workers/1"
+                   th:href="@{'/buyer/workers/' + ${workorder.assignedWorker.workerId}}"
+                   th:text="${workorder.assignedWorker.fullName}">
+                  John Smith
+                </a>
+
+                <!-- If no worker is assigned yet, render placeholder text -->
+                <span th:unless="${workorder != null and workorder.assignedWorker != null}"
+                      class="text-muted fst-italic">
+   Unassigned
+</span>
+
+              </dd>
+
+              <dt class="col-sm-3">Start Date</dt>
+              <dd class="col-sm-9" th:text="${workorder != null ? workorder.startDate : '2026-01-01'}">2026-01-01</dd>
+
+              <dt class="col-sm-3">End Date</dt>
+              <dd class="col-sm-9" th:text="${workorder != null ? workorder.endDate : '2026-06-30'}">2026-06-30</dd>
+
+              <dt class="col-sm-3">Pay Rate</dt>
+              <dd class="col-sm-9">$<span th:text="${workorder != null ? workorder.payRate : '45.00'}">45.00</span>/hr</dd>
+
+              <dt class="col-sm-3">Notes</dt>
+              <dd class="col-sm-9" th:text="${workorder != null ? workorder.notes : 'No additional notes.'}">No additional notes.</dd>
+            </dl>
+
+            <div class="d-flex flex-wrap gap-2 mt-4">
+              <a class="btn btn-outline-primary" href="/buyer/timesheets?workOrderId=1"
+                 th:href="@{/buyer/timesheets(workOrderId=${workorder != null ? workorder.id : 1})}">
+                <i class="bi bi-clock-history" aria-hidden="true"></i> View Timesheets
+              </a>
+              <!--removing the edit button for now will implement later -->
+              <!--<a class="btn btn-outline-secondary" href="/buyer/workorders/1/edit"
+                 th:href="@{'/buyer/workorders/' + ${workorder != null ? workorder.id : 1} + '/edit'}">
+                <i class="bi bi-pencil" aria-hidden="true"></i> Edit Work Order
+              </a>-->
+              <button type="button" class="btn btn-outline-danger" data-confirm-modal="#confirmCloseModal">
+                <i class="bi bi-x-circle" aria-hidden="true"></i> Close Work Order
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Confirmation modal for destructive action -->
+        <div class="modal fade" id="confirmCloseModal" tabindex="-1" aria-labelledby="confirmCloseModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form id="closeWorkOrderForm" action="/buyer/workorders/1/close" method="post"
+                    th:action="@{'/buyer/workorders/' + ${workorder != null ? workorder.id : 1} + '/close'}">
+                <input type="hidden" name="_csrf" th:if="${_csrf}" th:value="${_csrf.token}"/>
+                <div class="modal-header">
+                  <h2 class="modal-title h5" id="confirmCloseModalLabel">Close Work Order</h2>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Are you sure you want to close this work order? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-danger" data-confirm-action>Close Work Order</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <footer th:replace="~{components/footer :: app-footer}" class="app-footer mt-auto">
+    <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+      <span class="text-muted">&copy; 2026 MiniVMS. All rights reserved.</span>
+      <span class="text-muted small">Version 1.0.0</span>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/main.js" th:src="@{/js/main.js}"></script>
+</body>
+</html>

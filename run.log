@@ -1,0 +1,9 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< springbootapp:MiniVMS >------------------------
+[INFO] Building MiniVMS 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.1.1:run (default-cli) > test-compile @ MiniVMS >>>
+Terminate batch job (Y/N)? 
