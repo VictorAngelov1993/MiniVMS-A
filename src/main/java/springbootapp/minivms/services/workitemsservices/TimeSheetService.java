@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import springbootapp.minivms.mappers.TimeSheetMapper;
 import springbootapp.minivms.model.dto.workitemdto.timesheet.*;
 import springbootapp.minivms.model.entities.enums.TimeSheetStatus;
+import springbootapp.minivms.model.entities.persons.Buyer;
 import springbootapp.minivms.model.entities.persons.Worker;
 import springbootapp.minivms.model.entities.workitems.WorkOrder;
 import springbootapp.minivms.model.entities.workitems.timesheets.TimeSheet;
@@ -50,12 +51,10 @@ public class TimeSheetService {
         }
 
 
-        List<TimeSheet> workerTimeSheets = worker.getWorkOrders().stream()
+        return worker.getWorkOrders().stream()
                 .flatMap(wo -> wo.getTimeSheets().stream())
                 .sorted(Comparator.comparing(TimeSheet::getWeekStartDay))
                 .collect(Collectors.toList());
-
-        return workerTimeSheets;
     }
 
     public List<TimeSheetRowDto> getWorkerTimeSheetsRowDto(UUID workerUuid) {
@@ -178,8 +177,8 @@ public class TimeSheetService {
         return this.timeSheetRepository.getAllPendingApprovalTimeSheetsForTheBuyer(buyerUuid);
     }
 
-    public long countPendingTimeSheetForBuyerByBuyerUuid(UUID buyerUuid) {
-        return this.timeSheetRepository.countPendingTimeSheetsForBuyer(buyerUuid);
+    public long countPendingTimeSheetForBuyerByBuyerUuid(Buyer buyer) {
+        return this.timeSheetRepository.countPendingTimeSheetsForBuyer(buyer);
     }
 
     public void approveTimeSheet(String timeSheetId) {

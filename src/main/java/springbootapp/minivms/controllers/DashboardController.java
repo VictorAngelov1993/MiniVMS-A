@@ -12,7 +12,7 @@ import springbootapp.minivms.model.dto.persondto.WorkerDashboardStatsDto;
 import springbootapp.minivms.model.entities.persons.Buyer;
 import springbootapp.minivms.model.entities.persons.Supplier;
 import springbootapp.minivms.model.entities.persons.Worker;
-import springbootapp.minivms.repositories.personrepositories.BuyerRepository;
+import springbootapp.minivms.services.personservices.BuyerService;
 import springbootapp.minivms.services.personservices.SupplierService;
 import springbootapp.minivms.services.personservices.WorkerService;
 import springbootapp.minivms.services.workitemsservices.JobPostingService;
@@ -20,15 +20,14 @@ import springbootapp.minivms.services.workitemsservices.JobSeekerService;
 import springbootapp.minivms.services.workitemsservices.TimeSheetService;
 import springbootapp.minivms.services.workitemsservices.WorkOrderService;
 
+import java.security.Principal;
 import java.util.Optional;
 
 @Controller
 public class DashboardController {
 
     private final JobPostingService jobPostingService;
-    // Below should be a Service
-    // TODO fix later
-    private final BuyerRepository buyerRepository;
+    private final BuyerService buyerService;
     private final SupplierService supplierService;
     private final JobSeekerService jobSeekerService;
     private final WorkOrderService workOrderService;
@@ -37,14 +36,14 @@ public class DashboardController {
 
     @Autowired
     public DashboardController(JobPostingService jobPostingService,
-                               BuyerRepository buyerRepository,
+                               BuyerService buyerService,
                                SupplierService supplierService,
                                JobSeekerService jobSeekerService,
                                WorkOrderService workOrderService,
                                WorkerService workerService,
                                TimeSheetService timeSheetService) {
         this.jobPostingService = jobPostingService;
-        this.buyerRepository = buyerRepository;
+        this.buyerService = buyerService;
         this.supplierService = supplierService;
         this.jobSeekerService = jobSeekerService;
         this.workOrderService = workOrderService;
@@ -53,16 +52,22 @@ public class DashboardController {
     }
 
 
-    @GetMapping("buyer/dashboard")
-    public String goToBuyerDashboard(Model model, HttpSession session) {
+    @GetMapping("/buyer/dashboard")
+    public String goToBuyerDashboard(Model model, Principal principal) {
+        // Get the username directly from Spring Security's authenticated session
+        String username = principal.getName();
 
         // we get the user who is logged in
-        LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
+        // we do not need this because we are moving to Spring Security
+        // TODO Delete later
+//        LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
+
+
         // create empty stats DTO to fill later
         BuyerDashboardStatsDto stats = new BuyerDashboardStatsDto();
         // Get the Buyer who is the logged user.
-        Optional<Buyer> getBuyer = this.buyerRepository.getBuyerByUuid(loggedUser.getUuid());
-        Buyer buyer = null;
+        Optional<Buyer> getBuyer = this.buyerService.getBuyerByUsername(username);
+        Buyer buyer;
         try {
             buyer = getBuyer.orElseThrow(() -> new IllegalStateException("Something went wrong. Contact Support"));
         } catch (Exception exception) {
@@ -76,10 +81,10 @@ public class DashboardController {
         int countWorkOrders = this.workOrderService.countBuyerWorkOrders(buyer);
         stats.setWorkOrderCount(countWorkOrders);
 
-        long countWorkers = this.workOrderService.countBuyerWorkers(loggedUser.getUuid());
+        long countWorkers = this.workOrderService.countBuyerWorkers(buyer);
         stats.setActiveWorkerCount(countWorkers);
 
-        long countPendingTimeSheets = this.timeSheetService.countPendingTimeSheetForBuyerByBuyerUuid(loggedUser.getUuid());
+        long countPendingTimeSheets = this.timeSheetService.countPendingTimeSheetForBuyerByBuyerUuid(buyer);
         stats.setPendingTimesheetCount(countPendingTimeSheets);
         // add the status to the model so that thymeleaf can get them.
         model.addAttribute("stats", stats);
@@ -93,7 +98,7 @@ public class DashboardController {
 
         LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
         Optional<Supplier> loggedSupplier = this.supplierService.getSupplierByUuid(loggedUser.getUuid());
-        Supplier supplier = null;
+        Supplier supplier;
 
         try{
             supplier = loggedSupplier.orElseThrow(() -> new IllegalStateException("Something went wrong. Contact Support"));
@@ -118,7 +123,7 @@ public class DashboardController {
         LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
 
         Optional<Worker> optionalWorker = this.workerService.getWorkerByUuid(loggedUser.getUuid());
-        Worker worker = null;
+        Worker worker;
 
         try{
             worker = optionalWorker.orElseThrow(() -> new IllegalStateException("Something went wrong. Contact Support"));

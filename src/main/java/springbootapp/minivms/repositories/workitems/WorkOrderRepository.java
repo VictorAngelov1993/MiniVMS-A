@@ -24,9 +24,9 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, UUID> {
     long countWorkOrderByWorker(Worker worker);
 
     @Query("""
-        select count(w) from WorkOrder as w where w.jobPosting.buyer.uuid = :buyerUuid and w.worker is not null
+        select count(w) from WorkOrder as w where w.jobPosting.buyer = :buyer and w.worker is not null
 """)
-    long countWorkersForBuyer(@Param("buyerUuid") UUID buyerUuid);
+    long countWorkersForBuyer(@Param("buyer") Buyer buyer);
 
     long countAllBySupplier(Supplier supplier);
 

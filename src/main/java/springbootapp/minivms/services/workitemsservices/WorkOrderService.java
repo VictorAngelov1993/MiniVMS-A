@@ -45,11 +45,6 @@ public class WorkOrderService {
         this.timeSheetRepository = timeSheetRepository;
     }
 
-    public String autoGenerateWorkOrderId() {
-        // Below will cause issues if a Work Order is deleted from the DB.
-        long countWorkOrders = this.workOrderRepository.count();
-        return String.format("WO-%03d", countWorkOrders + 1);
-    }
 
     public List<WorkOrderCardDto> getAllWorkOrdersAsCards(UUID loggedUserUUid) {
         List<WorkOrder> allWorkOrders = this.workOrderRepository.getAllByJobPosting_BuyerUuid(loggedUserUUid);
@@ -61,7 +56,7 @@ public class WorkOrderService {
         JobSeeker jobSeeker = this.jobSeekerRepository.getJobSeekerByJobSeekerId(dto.getJobSeekerId());
         Supplier supplier = jobSeeker.getSupplier();
         WorkOrder workOrder = new WorkOrder();
-        workOrder.setWorkOrderId(this.autoGenerateWorkOrderId());
+        workOrder.setWorkOrderId(this.generateWorkOrderId());
         workOrder.setJobPosting(jobPosting);
         workOrder.setJobSeeker(jobSeeker);
         workOrder.setStartDate(jobPosting.getStartDate());
@@ -75,6 +70,7 @@ public class WorkOrderService {
 
 
     }
+
 
     private String generateWorkOrderId() {
         // this will cause issues if the User can delete record from the database.
@@ -114,8 +110,8 @@ public class WorkOrderService {
         return this.workOrderRepository.countWorkOrderByWorker(worker);
     }
 
-    public long countBuyerWorkers(UUID buyerUuid) {
-        return this.workOrderRepository.countWorkersForBuyer(buyerUuid);
+    public long countBuyerWorkers(Buyer buyer) {
+        return this.workOrderRepository.countWorkersForBuyer(buyer);
     }
 
     public long countWorkerPendingTimeSheets(Worker worker) {
@@ -127,6 +123,8 @@ public class WorkOrderService {
         workOrderToClose.setStatus(WorkOrderStatus.CLOSED);
         this.workOrderRepository.save(workOrderToClose);
     }
+
+
 
 
 }
