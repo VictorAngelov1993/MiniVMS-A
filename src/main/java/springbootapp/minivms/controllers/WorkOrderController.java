@@ -57,7 +57,7 @@ public class WorkOrderController {
         JobPostingDetailsDto jobPosting = this.jobPostingService.getJobPostingCreateDtoById(jobPostingId);
         model.addAttribute("jobPosting", jobPosting);
         // Auto generate Work Order id and pass it
-        String workOrderId = this.workOrderService.autoGenerateWorkOrderId();
+        String workOrderId = this.workOrderService.generateWorkOrderId();
         model.addAttribute("generatedWorkOrderId", workOrderId);
         // Get all the Job Seekers who are submitted for the Job Posting.
         List<JobSeekerSubmitDto> jobSeekers = this.jobSeekerSubmissionService.getAllJobSeekersSubmittedForThisJobPosting(jobPostingId);

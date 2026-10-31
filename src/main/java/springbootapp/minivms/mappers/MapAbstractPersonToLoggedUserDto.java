@@ -28,6 +28,8 @@ public class MapAbstractPersonToLoggedUserDto {
             loggedUserDto.setRole(Role.WORKER);
             loggedUserDto.setRoleHomeUrl("/worker/dashboard");
         }
+        loggedUserDto.setUsername(abstractPerson.getUsername());
+        loggedUserDto.setPassword(abstractPerson.getPassword());
 
         return loggedUserDto;
     }

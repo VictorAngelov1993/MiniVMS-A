@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import springbootapp.minivms.mappers.MapAbstractPersonToLoggedUserDto;
 import springbootapp.minivms.model.entities.persons.Buyer;
 import springbootapp.minivms.model.entities.persons.Supplier;
 import springbootapp.minivms.model.entities.persons.Worker;
@@ -20,13 +21,16 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final BuyerRepository buyerRepository;
     private final SupplierRepository supplierRepository;
     private final WorkerRepository workerRepository;
+    private final MapAbstractPersonToLoggedUserDto mapAbstractPersonToLoggedUserDto;
 
     public CustomUserDetailsService(BuyerRepository buyerRepository,
                                     SupplierRepository supplierRepository,
-                                    WorkerRepository workerRepository) {
+                                    WorkerRepository workerRepository,
+                                    MapAbstractPersonToLoggedUserDto mapAbstractPersonToLoggedUserDto) {
         this.buyerRepository = buyerRepository;
         this.supplierRepository = supplierRepository;
         this.workerRepository = workerRepository;
+        this.mapAbstractPersonToLoggedUserDto = mapAbstractPersonToLoggedUserDto;
     }
 
     @Override
@@ -34,29 +38,17 @@ public class CustomUserDetailsService implements UserDetailsService {
         // Get the user who is login in and pass it to Spring Security.
         Optional<Buyer> optionalBuyer = this.buyerRepository.getBuyerByUsername(username);
         if(optionalBuyer.isPresent()) {
-            Buyer buyer = optionalBuyer.get();
-            return User.withUsername(buyer.getUsername())
-                    .password(buyer.getPassword())
-                    .roles("BUYER")
-                    .build();
+            return this.mapAbstractPersonToLoggedUserDto.getLoggedUser(optionalBuyer.get());
         }
 
         Optional<Supplier> supplierOptional = this.supplierRepository.getSupplierByUsername(username);
         if(supplierOptional.isPresent()) {
-            Supplier supplier = supplierOptional.get();
-            return User.withUsername(supplier.getUsername())
-                    .password(supplier.getPassword())
-                    .roles("SUPPLIER")
-                    .build();
+            return this.mapAbstractPersonToLoggedUserDto.getLoggedUser(supplierOptional.get());
         }
 
         Optional<Worker> workerOptional = this.workerRepository.getWorkerByUsername(username);
         if(workerOptional.isPresent()) {
-            Worker worker = workerOptional.get();
-            return User.withUsername(worker.getUsername())
-                    .password(worker.getPassword())
-                    .roles("WORKER")
-                    .build();
+            return this.mapAbstractPersonToLoggedUserDto.getLoggedUser(workerOptional.get());
         }
 
         throw new UsernameNotFoundException("User with Username " + username + " not found");

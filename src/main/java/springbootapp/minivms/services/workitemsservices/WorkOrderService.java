@@ -72,7 +72,7 @@ public class WorkOrderService {
     }
 
 
-    private String generateWorkOrderId() {
+    public String generateWorkOrderId() {
         // this will cause issues if the User can delete record from the database.
         // but they are not supposed to delete from the db. The DB should keep the records forever
         long workOrderCount = this.workOrderRepository.count();

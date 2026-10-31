@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>springbootapp</groupId>
-    <artifactId>MiniVMS</artifactId>
+    <artifactId>MiniVMS-A</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>MiniVMS</name>
-    <description>MiniVMS</description>
+    <name>MiniVMS-A</name>
+    <description>MiniVMS-A</description>
     <url/>
     <licenses>
         <license/>

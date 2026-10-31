@@ -1,9 +1,15 @@
 package springbootapp.minivms.model.dto.persondto;
 
+import org.jspecify.annotations.Nullable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import springbootapp.minivms.model.entities.enums.Role;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -11,7 +17,7 @@ import java.util.UUID;
 //If the object inside the session is not serializable, you get errors. That's why the logged user needs to implement the serializable
 
 // This DTO is used after the User has successfully logged in.
-public class LoggedUserDto implements Serializable {
+public class LoggedUserDto implements Serializable, UserDetails {
 
     //When a class implements Serializable, Java needs a way to know:
     //
@@ -30,6 +36,8 @@ public class LoggedUserDto implements Serializable {
     // The header.html requires this field to know where to send the user when they click on the home button
     // <a class="navbar-brand app-logo" href="/static" th:href="@{${user != null} ? ${user.roleHomeUrl} : '/'}"
     private String roleHomeUrl;
+    private String password;
+    private String username;
 
     public LoggedUserDto() {
     }
@@ -73,5 +81,48 @@ public class LoggedUserDto implements Serializable {
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.role.name()));
+    }
+
+    @Override
+    public @Nullable String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

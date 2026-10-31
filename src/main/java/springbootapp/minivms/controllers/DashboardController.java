@@ -1,7 +1,10 @@
 package springbootapp.minivms.controllers;
 
 import jakarta.servlet.http.HttpSession;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,12 +60,6 @@ public class DashboardController {
         // Get the username directly from Spring Security's authenticated session
         String username = principal.getName();
 
-        // we get the user who is logged in
-        // we do not need this because we are moving to Spring Security
-        // TODO Delete later
-//        LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
-
-
         // create empty stats DTO to fill later
         BuyerDashboardStatsDto stats = new BuyerDashboardStatsDto();
         // Get the Buyer who is the logged user.
@@ -94,10 +91,10 @@ public class DashboardController {
     }
 
     @GetMapping("supplier/dashboard")
-    public String goToSupplierDashboard(Model model, HttpSession session) {
+    public String goToSupplierDashboard(Model model, @AuthenticationPrincipal LoggedUserDto user, Principal principal) {
 
-        LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
-        Optional<Supplier> loggedSupplier = this.supplierService.getSupplierByUuid(loggedUser.getUuid());
+        Optional<Supplier> loggedSupplier = this.supplierService.getSupplierByUuid(user.getUuid());
+
         Supplier supplier;
 
         try{
@@ -119,8 +116,7 @@ public class DashboardController {
     }
 
     @GetMapping("worker/dashboard")
-    public String goToWorkerDashboard(Model model, HttpSession session) {
-        LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
+    public String goToWorkerDashboard(Model model, @AuthenticationPrincipal LoggedUserDto loggedUser) {
 
         Optional<Worker> optionalWorker = this.workerService.getWorkerByUuid(loggedUser.getUuid());
         Worker worker;
