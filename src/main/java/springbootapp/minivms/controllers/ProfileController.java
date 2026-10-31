@@ -1,6 +1,7 @@
 package springbootapp.minivms.controllers;
 
-import jakarta.servlet.http.HttpSession;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,12 +20,11 @@ public class ProfileController {
     }
 
     @GetMapping("/profile")
-    public String openProfile(HttpSession session, Model model) {
+    public String openProfile(@AuthenticationPrincipal LoggedUserDto loggedUser, Model model) {
 
-        LoggedUserDto loggedUserDto = (LoggedUserDto) session.getAttribute("loggedUser");
         ProfileDetailDto loggedUserDetails = null;
         try {
-            loggedUserDetails = this.profileService.getLoggedUserDetails(loggedUserDto);
+            loggedUserDetails = this.profileService.getLoggedUserDetails(loggedUser);
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "redirect:/access-denied";

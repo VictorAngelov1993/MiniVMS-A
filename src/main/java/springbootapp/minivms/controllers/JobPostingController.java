@@ -1,8 +1,9 @@
 package springbootapp.minivms.controllers;
 
 
-import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,16 +34,7 @@ public class JobPostingController {
 
     // @PreAuthorize("hasRole('BUYER')") this is for the advanced course because it is part of spring security.
     @GetMapping("/buyer/job-postings")
-    public String showBuyerJobPostings(HttpSession session, Model model) {
-
-        // Getting the logged user so that we can do some validations.
-        LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
-       // Check if the user is Buyer otherwise access-denied
-        // loggedUser == null is used so that if non logged user tries to use the URL directly.
-        // TODO Create Interceptor to handle who user can access the URL. To prevent user directly typing the url
-        if(loggedUser == null || !loggedUser.getRole().equals(Role.BUYER)) {
-            return "redirect:/access-denied";
-        }
+    public String showBuyerJobPostings(@AuthenticationPrincipal LoggedUserDto loggedUser, Model model) {
 
         List<JobPosting> jobPostings = this.jobPostingService.getJobPostingForBuyer(loggedUser.getUuid());
         model.addAttribute("jobPostings", jobPostings);
@@ -59,11 +51,8 @@ public class JobPostingController {
 
     @PostMapping("/buyer/create-job-posting")
     public String processCreateJobPosting(@ModelAttribute("jobPostingDto") JobPostingCreateDto dto,
-                                          HttpSession session,
+                                          @AuthenticationPrincipal LoggedUserDto loggedUser,
                                           Model model) {
-
-        // Getting the logged user we will use it to know who user created the Job Posting
-        LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
 
         try {
             this.jobPostingService.createJobPosting(dto, loggedUser.getUuid());
@@ -77,9 +66,9 @@ public class JobPostingController {
 
     @GetMapping("/buyer/job-postings/{jobPostingId}")
     public String showBuyerJobPostingDetails(@PathVariable String jobPostingId,
-            HttpSession session, Model model) {
-        // Get the logged user to get his Job Postings
-        LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
+                                             @AuthenticationPrincipal LoggedUserDto loggedUser,
+                                             Model model) {
+
         // Get the Job Posting that the user has clicked
         JobPostingDetailsDto jobPosting = this.jobPostingService.getJobPostingCreateDtoById(jobPostingId);
         // Add the Job Posting to the model
@@ -92,15 +81,9 @@ public class JobPostingController {
     //-----------------------------------------------------------------------------
 
     @GetMapping("/supplier/job-postings")
-    public String showSupplierJobPostings(HttpSession session, Model model) {
+    public String showSupplierJobPostings(@AuthenticationPrincipal LoggedUserDto loggedUser, Model model) {
 
-        LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
-        // Check if the user is Supplier otherwise access-denied
-        // loggedUser == null is used so that if non logged user tries to use the URL directly.
-        if(loggedUser == null || !loggedUser.getRole().equals(Role.SUPPLIER)) {
-            return "redirect:/access-denied";
-        }
-
+        // Every Supplier should see every Job Posting because they can submit Job Seekers for every Buyer
         List<JobPosting> supplierJobPostings = this.jobPostingService.getJobPostingForSupplier();
         model.addAttribute("jobPostings", supplierJobPostings);
 
@@ -110,9 +93,8 @@ public class JobPostingController {
 
     @GetMapping("/supplier/job-postings/{jobPostingId}")
     public String showSupplierJobPostingDetails(@PathVariable String jobPostingId,
-                                        HttpSession session, Model model) {
-        // Get the logged user to get his Job Postings
-        LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
+                                                @AuthenticationPrincipal LoggedUserDto loggedUser,
+                                                Model model) {
         // Get the Job Posting that the user has clicked
         JobPostingDetailsDto jobPosting = this.jobPostingService.getJobPostingCreateDtoById(jobPostingId);
         // Add the Job Posting to the model

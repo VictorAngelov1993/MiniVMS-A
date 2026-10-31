@@ -1,7 +1,8 @@
 package springbootapp.minivms.controllers;
 
-import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,10 +34,10 @@ public class WorkOrderController {
     }
 
     @GetMapping("/buyer/workorders")
-    public String loadTheWorkOrderList(HttpSession session,
+    public String loadTheWorkOrderList(@AuthenticationPrincipal LoggedUserDto loggedUser,
                                        Model model) {
 
-        LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
+
         // Get all the Work Orders of the User
         List<WorkOrderCardDto> allWorkOrderCards = this.workOrderService.getAllWorkOrdersAsCards(loggedUser.getUuid());
         model.addAttribute("workOrders", allWorkOrderCards);
@@ -47,10 +48,9 @@ public class WorkOrderController {
 
     @GetMapping("/buyer/create-workorder")
     public String showWorkOrderCreatePage(@RequestParam("jobPostingId") String jobPostingId,
-                                          HttpSession session,
+                                          @AuthenticationPrincipal LoggedUserDto loggedUser,
                                           Model model) {
-        // Get the details of the logged user
-        LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
+
         // Add an empty WO dto that will be fill later
         model.addAttribute("workOrderCreateDto", new WorkOrderCreateDto());
         // Get the Job Posting Details some of them will be prefilled in the form.
@@ -69,10 +69,10 @@ public class WorkOrderController {
 
     @PostMapping("/buyer/create-workorder")
     public String createWorkOrder(@ModelAttribute("workOrderCreateDto") WorkOrderCreateDto dto,
-                                  HttpSession session,
+                                  @AuthenticationPrincipal LoggedUserDto loggedUser,
                                   Model model) {
 
-        LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
+
         // create and save the work order in the DB.
         try {
             this.workOrderService.createWorOrder(dto);

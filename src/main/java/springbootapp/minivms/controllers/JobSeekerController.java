@@ -1,7 +1,8 @@
 package springbootapp.minivms.controllers;
 
-import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,9 +36,7 @@ public class JobSeekerController {
     }
 
     @GetMapping("/supplier/job-seekers")
-    public String loadJobSeekers(HttpSession session, Model model) {
-
-        LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
+    public String loadJobSeekers(@AuthenticationPrincipal LoggedUserDto loggedUser, Model model) {
 
         // Get the Job Seekers and add them to the model
         List<JobSeeker> jobSeekers = this.jobSeekerService.getAllJobSeekersForTheSupplier(loggedUser.getUuid());
@@ -53,11 +52,9 @@ public class JobSeekerController {
     }
 
     @PostMapping("supplier/create-job-seeker")
-    public String createJobSeeker(HttpSession session,
+    public String createJobSeeker(@AuthenticationPrincipal LoggedUserDto loggedUser,
                                   @ModelAttribute("jobSeekerDto") JobSeekerCreateDto jobSeekerCreateDto,
                                   Model model) {
-
-        LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
 
         this.jobSeekerService.createJobSeeker(jobSeekerCreateDto, loggedUser.getUuid());
 
@@ -67,10 +64,9 @@ public class JobSeekerController {
 
     @GetMapping("/supplier/submit-job-seeker")
     public String viewSubmitJobSeeker(@RequestParam String jobPostingId,
-                                  HttpSession session,
+                                      @AuthenticationPrincipal LoggedUserDto loggedUser,
                                   Model model) {
 
-        LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
         // Get all the Job Seekers that are suitable for submission for the logged Supplier
         List<JobSeekerSubmitDto> jobSeekers = this.jobSeekerService.getAllJobSeekersSuitableForSubmission(loggedUser.getUuid());
         // Get the Job Posting to which we are going to submit the Job Seeker
@@ -89,7 +85,6 @@ public class JobSeekerController {
     public String submitJobSeeker(
             @RequestParam("jobSeekerId") String jobSeekerId,
             @RequestParam("jobPostingId") String jobPostingId,
-            HttpSession session,
             Model model) {
 
         // I am using already created Dto's because I only need their Id in order to get the actual entity from the DB
@@ -100,8 +95,6 @@ public class JobSeekerController {
         // Below will create new jobSeekerSubmission. The jobSeekerSubmission class is used a s bridge
         // between Supplier submitted Job Seekers and Buyer submitted Job Postings
         this.jobSeekerSubmissionService.createJobSeekerSubmit(jobSeeker, jobPosting);
-
-
 
         return "redirect:/supplier/job-postings";
     }

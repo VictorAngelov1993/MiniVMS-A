@@ -1,6 +1,7 @@
 package springbootapp.minivms.controllers.common;
 
-import jakarta.servlet.http.HttpSession;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import springbootapp.minivms.model.dto.persondto.LoggedUserDto;
@@ -17,8 +18,8 @@ public class GlobalModelAttributes {
     // It takes whatever object the method returns and automatically injects it into the page view under the name "user",
     // making it available everywhere without duplicate code.
     @ModelAttribute("user")
-    public LoggedUserDto addLoggedUserToModel(HttpSession session) {
-        return (LoggedUserDto) session.getAttribute("loggedUser");
+    public LoggedUserDto addLoggedUserToModel(@AuthenticationPrincipal LoggedUserDto loggedUser) {
+        return loggedUser;
     }
 
 

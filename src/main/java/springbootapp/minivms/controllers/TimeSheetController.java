@@ -1,7 +1,8 @@
 package springbootapp.minivms.controllers;
 
-import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,9 +29,7 @@ public class TimeSheetController {
     }
 
     @GetMapping("worker/timesheets")
-    public String displayTimeSheetsForTheWorker(HttpSession session, Model model) {
-
-        LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
+    public String displayTimeSheetsForTheWorker(@AuthenticationPrincipal LoggedUserDto loggedUser, Model model) {
 
         // get all worker time sheets from all work orders and display them.
         List<TimeSheetRowDto> workerTimeSheets = this.timeSheetService.getWorkerTimeSheetsRowDto(loggedUser.getUuid());
@@ -62,10 +61,10 @@ public class TimeSheetController {
     }
 
     @GetMapping("buyer/timesheets")
-    public String displayTimeSheetsForBuyer(HttpSession session, Model model) {
-        LoggedUserDto loggedUserDto = (LoggedUserDto) session.getAttribute("loggedUser");
+    public String displayTimeSheetsForBuyer(@AuthenticationPrincipal LoggedUserDto loggedUser, Model model) {
 
-        List<TimeSheetRowDto> buyerPendingApprovalTimeSheets = this.timeSheetService.getAllTimeSheetsRowPendingApprovalForTheBuyer(loggedUserDto.getUuid());
+
+        List<TimeSheetRowDto> buyerPendingApprovalTimeSheets = this.timeSheetService.getAllTimeSheetsRowPendingApprovalForTheBuyer(loggedUser.getUuid());
 
         model.addAttribute("timesheets", buyerPendingApprovalTimeSheets);
 

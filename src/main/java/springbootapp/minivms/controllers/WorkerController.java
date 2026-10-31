@@ -1,7 +1,7 @@
 package springbootapp.minivms.controllers;
 
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +23,7 @@ public class WorkerController {
     }
 
     @GetMapping("buyer/workers")
-    public String loadWorkerListForBuyer(HttpSession session, Model model) {
-        LoggedUserDto loggedUser = (LoggedUserDto) session.getAttribute("loggedUser");
+    public String loadWorkerListForBuyer(@AuthenticationPrincipal LoggedUserDto loggedUser, Model model) {
 
         List<WorkerCardDto> workers = this.workerService.getAllWorkerCardDto(loggedUser.getUuid());
         model.addAttribute("workers", workers);
