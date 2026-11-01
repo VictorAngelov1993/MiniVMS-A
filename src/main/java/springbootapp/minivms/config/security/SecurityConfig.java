@@ -2,14 +2,16 @@ package springbootapp.minivms.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
 
-
+// This class defines the application security rules
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -25,7 +27,10 @@ public class SecurityConfig {
                 form -> form.loginPage("/login")
                         .successHandler(customLoginSuccessHandler)
                         .permitAll()
-        ).logout(logout -> logout
+        ).exceptionHandling(
+                 ex -> ex.accessDeniedPage("/access-denied")
+        ).logout(
+                        logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout")
         );

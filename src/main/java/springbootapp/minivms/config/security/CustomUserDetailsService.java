@@ -1,7 +1,6 @@
 package springbootapp.minivms.config.security;
 
 import org.jspecify.annotations.NullMarked;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,8 +12,10 @@ import springbootapp.minivms.model.entities.persons.Worker;
 import springbootapp.minivms.repositories.personrepositories.BuyerRepository;
 import springbootapp.minivms.repositories.personrepositories.SupplierRepository;
 import springbootapp.minivms.repositories.personrepositories.WorkerRepository;
-
 import java.util.Optional;
+
+// This class gets the User who is login in.
+
 @NullMarked
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

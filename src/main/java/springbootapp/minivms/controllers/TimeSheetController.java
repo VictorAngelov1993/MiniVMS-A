@@ -2,6 +2,7 @@ package springbootapp.minivms.controllers;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,6 +39,7 @@ public class TimeSheetController {
         return "worker/timesheets";
     }
 
+    @PreAuthorize("@timeSheetSecurity.isOwned(#id, authentication.name)")
     @GetMapping("/worker/timesheets/{id}/edit")
     public String displayTimeSheetEditPage(@PathVariable String id,
                                            Model model) {
@@ -81,8 +83,7 @@ public class TimeSheetController {
     }
 
     @PostMapping("buyer/timesheets/{id}/approve")
-    public String buyerApproveTimeSheet(@PathVariable String id,
-                                        Model model) {
+    public String buyerApproveTimeSheet(@PathVariable String id) {
         // Approve the TimeSheet
         this.timeSheetService.approveTimeSheet(id);
 
@@ -90,8 +91,7 @@ public class TimeSheetController {
     }
 
     @PostMapping("buyer/timesheets/{id}/reject")
-    public String buyerRejectTimeSheet(@PathVariable String id,
-                                        Model model) {
+    public String buyerRejectTimeSheet(@PathVariable String id) {
         // Reject the time sheet
         //TODO the UI has section for Reject Reason. I will need to implement that in the future.
         // because I do not have a field for Reject reason in the Time Sheet entity

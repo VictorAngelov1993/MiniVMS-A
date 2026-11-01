@@ -8,6 +8,7 @@ import springbootapp.minivms.model.entities.persons.Worker;
 import springbootapp.minivms.model.entities.workitems.timesheets.TimeSheet;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface TimeSheetRepository extends JpaRepository<TimeSheet, UUID> {
@@ -37,4 +38,6 @@ public interface TimeSheetRepository extends JpaRepository<TimeSheet, UUID> {
       and ts.status = "Submitted"
 """)
     long countPendingTimeSheetsForBuyer(Buyer buyer);
+
+    Optional<TimeSheet> findByTimeSheetId(String timeSheetId);
 }
