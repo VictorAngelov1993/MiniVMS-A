@@ -43,6 +43,9 @@ public class TimeSheetMapper {
         List<TimeSheetDayDto> daysAsDto = this.mapListOfTimeSheetDaysToListOfDtos(timeSheet.getDays());
         timeSheetEditDto.setDays(daysAsDto);
         timeSheetEditDto.setNotes(timeSheet.getNotes());
+        if(timeSheet.getStatus() != null) {
+            timeSheetEditDto.setStatus(timeSheet.getStatus());
+        }
         return timeSheetEditDto;
     }
 
