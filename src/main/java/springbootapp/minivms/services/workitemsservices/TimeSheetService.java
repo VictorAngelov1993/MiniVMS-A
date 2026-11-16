@@ -193,7 +193,7 @@ public class TimeSheetService {
     }
 
     public List<TimeSheetDataForInvoiceDTO> getTimeSheetDataForInvoiceDto(UUID supplierUuid) {
-        List<TimeSheet> allTimeSheetsForTheSupplier = this.timeSheetRepository.getAllByWorkOrder_Supplier_Uuid(supplierUuid);
+        List<TimeSheet> allTimeSheetsForTheSupplier = this.timeSheetRepository.getAllByWorkOrder_Supplier_UuidAndStatus(supplierUuid, TimeSheetStatus.APPROVED);
         return this.timeSheetMapper.mapListTimeSheetToListTimeSheetDataForInvoiceDto(allTimeSheetsForTheSupplier);
     }
 

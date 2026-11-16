@@ -3,6 +3,7 @@ package springbootapp.minivms.repositories.workitems;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import springbootapp.minivms.model.entities.enums.TimeSheetStatus;
 import springbootapp.minivms.model.entities.persons.Buyer;
 import springbootapp.minivms.model.entities.persons.Worker;
 import springbootapp.minivms.model.entities.workitems.timesheets.TimeSheet;
@@ -42,4 +43,6 @@ public interface TimeSheetRepository extends JpaRepository<TimeSheet, UUID> {
     Optional<TimeSheet> findByTimeSheetId(String timeSheetId);
 
     List<TimeSheet> getAllByWorkOrder_Supplier_Uuid(UUID workOrderSupplierUuid);
+
+    List<TimeSheet> getAllByWorkOrder_Supplier_UuidAndStatus(UUID workOrderSupplierUuid, TimeSheetStatus status);
 }
