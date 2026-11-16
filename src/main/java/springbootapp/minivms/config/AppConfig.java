@@ -5,8 +5,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import springbootapp.minivms.model.dto.persondto.SupplierDropDownDto;
 import springbootapp.minivms.model.dto.workitemdto.timesheet.TimeSheetRowDto;
 import springbootapp.minivms.model.dto.workitemdto.worker.WorkerDetailDto;
+import springbootapp.minivms.model.entities.persons.Supplier;
 import springbootapp.minivms.model.entities.persons.Worker;
 import springbootapp.minivms.model.entities.workitems.timesheets.TimeSheet;
 
@@ -34,6 +36,9 @@ public class AppConfig {
 
         mapper.typeMap(TimeSheet.class, TimeSheetRowDto.class)
                 .addMapping(TimeSheet::getTimeSheetId, TimeSheetRowDto::setId);
+
+        mapper.typeMap(Supplier.class, SupplierDropDownDto.class)
+                .addMapping(Supplier::getFullName, SupplierDropDownDto::setFullName);
 
         return mapper;
     }

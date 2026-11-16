@@ -2,9 +2,14 @@ package springbootapp.minivms.model.entities.workitems;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import springbootapp.minivms.model.entities.enums.InvoiceStatus;
+import springbootapp.minivms.model.entities.persons.Buyer;
+import springbootapp.minivms.model.entities.workitems.timesheets.TimeSheet;
 
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -22,9 +27,8 @@ public class Invoice {
     @NotBlank
     private String supplierName;
 
-    @Column(name = "time_sheet_id", nullable = false)
-    @NotBlank
-    private String timeSheetId;
+    @OneToMany(mappedBy = "invoice")
+    private List<TimeSheet> timeSheets = new ArrayList<>();
 
     @Column(name = "worker_full_name", nullable = false)
     @NotBlank
@@ -38,6 +42,13 @@ public class Invoice {
 
     @Column(name = "total_amout")
     private BigDecimal totalAmount;
+
+    @Enumerated(EnumType.STRING)
+    private InvoiceStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "buyer_id", nullable = false)
+    private Buyer buyer;
 
     public Invoice() {
 
@@ -63,12 +74,12 @@ public class Invoice {
         this.supplierName = supplierName;
     }
 
-    public String getTimeSheetId() {
-        return timeSheetId;
+    public List<TimeSheet> getTimeSheets() {
+        return timeSheets;
     }
 
-    public void setTimeSheetId(String timeSheetId) {
-        this.timeSheetId = timeSheetId;
+    public void setTimeSheets(List<TimeSheet> timeSheets) {
+        this.timeSheets = timeSheets;
     }
 
     public String getWorkerFullName() {
@@ -102,4 +113,22 @@ public class Invoice {
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
     }
+
+    public InvoiceStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(InvoiceStatus status) {
+        this.status = status;
+    }
+
+    public Buyer getBuyer() {
+        return buyer;
+    }
+
+    public void setBuyer(Buyer buyer) {
+        this.buyer = buyer;
+    }
+
+
 }

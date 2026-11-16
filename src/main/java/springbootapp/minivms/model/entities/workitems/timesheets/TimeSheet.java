@@ -2,6 +2,7 @@ package springbootapp.minivms.model.entities.workitems.timesheets;
 
 import jakarta.persistence.*;
 import springbootapp.minivms.model.entities.enums.TimeSheetStatus;
+import springbootapp.minivms.model.entities.workitems.Invoice;
 import springbootapp.minivms.model.entities.workitems.WorkOrder;
 
 import java.time.LocalDate;
@@ -41,6 +42,10 @@ public class TimeSheet {
 
     @Column(name = "time_sheet_id", nullable = false)
     private String timeSheetId;
+
+    @ManyToOne(fetch = FetchType.LAZY) // this might cause issues in the future, but I will leave it as is for now.
+    @JoinColumn(name = "invoice_id", nullable = true)
+    private Invoice invoice;
 
     public TimeSheet() {
 
@@ -105,5 +110,13 @@ public class TimeSheet {
 
     public void setTimeSheetId(String timeSheetId) {
         this.timeSheetId = timeSheetId;
+    }
+
+    public Invoice getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(Invoice invoice) {
+        this.invoice = invoice;
     }
 }
