@@ -40,4 +40,6 @@ public interface TimeSheetRepository extends JpaRepository<TimeSheet, UUID> {
     long countPendingTimeSheetsForBuyer(Buyer buyer);
 
     Optional<TimeSheet> findByTimeSheetId(String timeSheetId);
+
+    List<TimeSheet> getAllByWorkOrder_Supplier_Uuid(UUID workOrderSupplierUuid);
 }

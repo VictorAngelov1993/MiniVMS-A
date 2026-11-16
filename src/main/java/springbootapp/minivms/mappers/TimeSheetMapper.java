@@ -1,15 +1,13 @@
 package springbootapp.minivms.mappers;
 
 import org.springframework.stereotype.Component;
-import springbootapp.minivms.model.dto.workitemdto.timesheet.TimeSheetDayDto;
-import springbootapp.minivms.model.dto.workitemdto.timesheet.TimeSheetEditBuyerViewDto;
-import springbootapp.minivms.model.dto.workitemdto.timesheet.TimeSheetEditDto;
-import springbootapp.minivms.model.dto.workitemdto.timesheet.TimeSheetRowDto;
+import springbootapp.minivms.model.dto.workitemdto.timesheet.*;
 import springbootapp.minivms.model.entities.workitems.timesheets.TimeSheet;
 import springbootapp.minivms.model.entities.workitems.timesheets.TimeSheetDay;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class TimeSheetMapper {
@@ -76,6 +74,26 @@ public class TimeSheetMapper {
     private List<TimeSheetDayDto> mapListOfTimeSheetDaysToListOfDtos(List<TimeSheetDay> timeSheetDays) {
         return timeSheetDays.stream().map(this::mapTimeSheetDayToDto).toList();
     }
+
+
+    public List<TimeSheetDataForInvoiceDTO> mapListTimeSheetToListTimeSheetDataForInvoiceDto(List<TimeSheet> timeSheets) {
+        return timeSheets.stream().map(this::mapTimeSheetToTimeSheetDataForInvoiceDto).toList();
+    }
+
+    private TimeSheetDataForInvoiceDTO mapTimeSheetToTimeSheetDataForInvoiceDto(TimeSheet timeSheet) {
+        TimeSheetDataForInvoiceDTO dto = new TimeSheetDataForInvoiceDTO();
+        dto.setTimesheetId(timeSheet.getTimeSheetId());
+        dto.setWorkerFullName(timeSheet.getWorkOrder().getWorker().getFullName());
+        BigDecimal totalHours = timeSheet.getDays().stream().map(TimeSheetDay::getHours)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal payRate = timeSheet.getWorkOrder().getPayRate();
+        dto.setTotalHours(totalHours);
+        dto.setTotalAmount(totalHours.multiply(payRate));
+        return dto;
+    }
+
+
 
 
 }
