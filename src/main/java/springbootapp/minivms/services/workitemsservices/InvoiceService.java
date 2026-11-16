@@ -39,7 +39,7 @@ public class InvoiceService {
 
     public String generateInvoiceId() {
         long invoiceCount = this.invoiceRepository.count();
-        return String.format("WO-%03d", invoiceCount + 1);
+        return String.format("INV-%03d", invoiceCount + 1);
     }
 
     public InvoicePreviewDTO buildPreview(String currentInvoiceId, UUID supplierId) {

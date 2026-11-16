@@ -153,9 +153,9 @@
                 <select class="form-select" id="supplierId" name="supplierId" required>
                   <option value="" disabled th:selected="${selectedSupplierId == null}">-- Select a Supplier --</option>
                   <option th:each="sup : ${suppliers}"
-                          th:value="${sup.id}"
-                          th:text="${sup.name}"
-                          th:selected="${selectedSupplierId != null and selectedSupplierId == sup.id}">
+                          th:value="${sup.uuid}"
+                          th:text="${sup.fullName}"
+                          th:selected="${selectedSupplierId != null and selectedSupplierId == sup.uuid}">
                     Supplier Name
                   </option>
                 </select>
