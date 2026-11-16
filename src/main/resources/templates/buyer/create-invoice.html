@@ -9,8 +9,8 @@
   - invoicePreview : InvoicePreviewDTO (optional, populated after clicking "Generate Invoice")
       - invoiceId : String
       - supplierName : String
-      - lineItems : List<TimesheetLineItem> (timesheetId, workerFullName, totalHours, totalAmount)
-      - grandTotal : BigDecimal
+      - timeSheets : List<TimesheetLineItem> (timesheetId, workerFullName, totalHours, totalAmount)
+      - totalAmount : BigDecimal
 -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -190,14 +190,14 @@
 
         <div class="card-body p-4">
           <!-- Empty state if supplier has no submitted timesheets -->
-          <div class="empty-state py-4" th:if="${invoicePreview.lineItems == null or invoicePreview.lineItems.isEmpty()}">
+          <div class="empty-state py-4" th:if="${invoicePreview.timeSheets == null or invoicePreview.timeSheets.isEmpty()}">
             <div class="empty-state-icon"><i class="bi bi-clock-history" aria-hidden="true"></i></div>
             <h3 class="h6">No submitted timesheets found</h3>
             <p class="mb-0">There are currently no billable timesheets for this supplier.</p>
           </div>
 
           <!-- Read-only Timesheets Table -->
-          <div th:if="${invoicePreview.lineItems != null and !invoicePreview.lineItems.isEmpty()}">
+          <div th:if="${invoicePreview.timeSheets != null and !invoicePreview.timeSheets.isEmpty()}">
             <div class="table-responsive mb-4">
               <table class="table table-bordered align-middle mb-0">
                 <thead class="table-light">
@@ -209,7 +209,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="item : ${invoicePreview.lineItems}">
+                <tr th:each="item : ${invoicePreview.timeSheets}">
                   <td class="fw-semibold text-secondary" th:text="${item.timesheetId}">tsid1</td>
                   <td th:text="${item.workerFullName}">John Doe</td>
                   <td class="text-end" th:text="${#numbers.formatDecimal(item.totalHours, 1, 2)}">40.00</td>
