@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="invoice-card(invoice)" class="col-12 col-md-6 col-lg-4 mb-4">
+  <a th:href="@{/buyer/invoices/{id}(id=${invoice.id})}" class="link-plain">
+    <div class="card card-compact card-clickable h-100 bg-white">
+      <div class="card-body d-flex flex-column">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <h2 class="h6 card-title mb-0 text-primary" th:text="${invoice.invoiceId}">INV-2026-0001</h2>
+          <span class="badge bg-success status-badge" th:text="${invoice.status}">ISSUED</span>
+        </div>
+        <p class="text-muted small mb-3" th:text="${invoice.supplierName}">TechSolutions EOOD</p>
+        <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
+          <span class="small text-secondary" th:text="${#lists.size(invoice.lineItems)} + ' timesheet(s)'">3 timesheet(s)</span>
+          <span class="fw-bold text-dark" th:text="'$' + ${#numbers.formatDecimal(invoice.grandTotal, 1, 2)}">$3,200.00</span>
+        </div>
+      </div>
+    </div>
+  </a>
+</div>
+</body>
+</html>
