@@ -90,8 +90,7 @@ public class InvoiceService {
         invoiceToSave.setBuyer(this.buyerService.getBuyerByUuid(loggedBuyerUuid));
         invoiceToSave.setSupplierName(this.supplierService.getSupplierFullNameForUuid(invoiceDto.getSupplierId()));
         invoiceToSave.setTotalAmount(invoiceDto.getTotalAmount());
-        //TODO after test change the status to Created
-        invoiceToSave.setStatus(InvoiceStatus.PENDING_APPROVAL);
+        invoiceToSave.setStatus(InvoiceStatus.CREATED);
         invoiceToSave.setTimeSheets(this.getTimeSheetsById(invoiceDto.getTimeSheetIds()));
         this.invoiceRepository.save(invoiceToSave);
         this.timeSheetService.saveInvoiceIdToTimeSheet(invoiceDto.getTimeSheetIds(), invoiceToSave);
@@ -99,6 +98,14 @@ public class InvoiceService {
 
     private List<TimeSheet> getTimeSheetsById(List<String> timeSheetIds) {
         return this.timeSheetService.getTimeSheetsByTimeSheetId(timeSheetIds);
+    }
+
+    public InvoicePreviewDTO getInvoiceDetails(String invoiceId) {
+        Invoice invoice = this.invoiceRepository.getInvoiceByInvoiceId(invoiceId);
+        InvoicePreviewDTO invoiceDetails = this.invoiceMapper.getInvoiceDetailsAsDtoFromInvoice(invoice);
+        List<TimeSheetDataForInvoiceDTO> timeSheetDetails = this.timeSheetService.getTimeSheetDetailsForInvoiceDetails(invoice.getTimeSheets());
+        invoiceDetails.setTimeSheets(timeSheetDetails);
+         return invoiceDetails;
     }
 
 }

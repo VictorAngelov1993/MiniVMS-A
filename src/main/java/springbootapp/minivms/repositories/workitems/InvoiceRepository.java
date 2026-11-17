@@ -10,4 +10,6 @@ import java.util.UUID;
 @Repository
 public interface InvoiceRepository extends JpaRepository<Invoice, UUID> {
     List<Invoice> getAllByBuyer_Uuid(UUID buyerUuid);
+
+    Invoice getInvoiceByInvoiceId(String invoiceId);
 }

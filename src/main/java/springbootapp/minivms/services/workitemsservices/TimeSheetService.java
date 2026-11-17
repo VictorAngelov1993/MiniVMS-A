@@ -217,4 +217,8 @@ public class TimeSheetService {
         return timeSheetsToReturn;
     }
 
+    public List<TimeSheetDataForInvoiceDTO> getTimeSheetDetailsForInvoiceDetails(List<TimeSheet> timeSheets) {
+        return this.timeSheetMapper.mapListTimeSheetToListTimeSheetDataForInvoiceDto(timeSheets);
+    }
+
 }

@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import springbootapp.minivms.model.dto.persondto.LoggedUserDto;
 import springbootapp.minivms.model.dto.workitemdto.invoice.CreateInvoiceDto;
 import springbootapp.minivms.model.dto.workitemdto.invoice.InvoiceCardDto;
@@ -70,6 +67,16 @@ public class InvoiceController {
                               @AuthenticationPrincipal LoggedUserDto loggedUserDto) {
         this.invoiceService.saveInvoice(formDto, loggedUserDto.getUuid());
         return "redirect:/buyer/invoices";
+    }
+
+    @GetMapping("buyer/invoices/{id}")
+    public String viewInvoiceDetails(@PathVariable("id") String invoiceId,
+                                     Model model) {
+
+        InvoicePreviewDTO invoiceDetails = this.invoiceService.getInvoiceDetails(invoiceId);
+        model.addAttribute("invoice", invoiceDetails);
+
+        return "buyer/invoice-details";
     }
 
 }

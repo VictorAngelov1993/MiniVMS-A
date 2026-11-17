@@ -2,6 +2,7 @@ package springbootapp.minivms.mappers;
 
 import org.springframework.stereotype.Component;
 import springbootapp.minivms.model.dto.workitemdto.invoice.InvoiceCardDto;
+import springbootapp.minivms.model.dto.workitemdto.invoice.InvoicePreviewDTO;
 import springbootapp.minivms.model.entities.workitems.Invoice;
 
 import java.util.List;
@@ -22,5 +23,14 @@ public class InvoiceMapper {
         invoiceCardDto.setTotalAmount(invoice.getTotalAmount());
         return invoiceCardDto;
 
+    }
+
+    public InvoicePreviewDTO getInvoiceDetailsAsDtoFromInvoice(Invoice invoice) {
+        InvoicePreviewDTO dto = new InvoicePreviewDTO();
+        dto.setInvoiceId(invoice.getInvoiceId());
+        dto.setSupplierName(invoice.getSupplierName());
+        dto.setStatus(invoice.getStatus());
+        dto.setTotalAmount(invoice.getTotalAmount());
+        return dto;
     }
 }
