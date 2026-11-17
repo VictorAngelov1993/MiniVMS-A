@@ -204,6 +204,7 @@ public class TimeSheetService {
         for(String timeSheetId : timeSheetIds) {
             TimeSheet ts = this.timeSheetRepository.getTimeSheetByTimeSheetId(timeSheetId);
             ts.setInvoice(invoice);
+            ts.setStatus(TimeSheetStatus.INVOICED);
             this.timeSheetRepository.save(ts);
         }
     }

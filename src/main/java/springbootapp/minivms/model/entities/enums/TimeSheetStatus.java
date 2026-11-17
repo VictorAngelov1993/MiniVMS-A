@@ -5,5 +5,6 @@ public enum TimeSheetStatus {
     APPROVED,
     SUBMITTED,
     REJECTED,
-    DRAFT
+    DRAFT,
+    INVOICED
 }
