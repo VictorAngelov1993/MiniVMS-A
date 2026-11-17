@@ -8,6 +8,7 @@ import springbootapp.minivms.model.entities.persons.Buyer;
 import springbootapp.minivms.model.entities.persons.Worker;
 import springbootapp.minivms.model.entities.workitems.timesheets.TimeSheet;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,4 +46,6 @@ public interface TimeSheetRepository extends JpaRepository<TimeSheet, UUID> {
     List<TimeSheet> getAllByWorkOrder_Supplier_Uuid(UUID workOrderSupplierUuid);
 
     List<TimeSheet> getAllByWorkOrder_Supplier_UuidAndStatus(UUID workOrderSupplierUuid, TimeSheetStatus status);
+
+    List<TimeSheet> getByTimeSheetIdIn(Collection<String> timeSheetIds);
 }

@@ -5,8 +5,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import springbootapp.minivms.model.dto.persondto.LoggedUserDto;
+import springbootapp.minivms.model.dto.workitemdto.invoice.CreateInvoiceDto;
 import springbootapp.minivms.model.dto.workitemdto.invoice.InvoiceCardDto;
 import springbootapp.minivms.model.dto.workitemdto.invoice.InvoicePreviewDTO;
 import springbootapp.minivms.services.personservices.SupplierService;
@@ -44,24 +47,29 @@ public class InvoiceController {
             @RequestParam(required = false) UUID supplierId,
             Model model) {
 
-        // 1. If invoiceId came back in the request (during preview reload), keep it.
-        // Otherwise, generate a fresh unique one for a brand new invoice.
+
         String currentInvoiceId = (invoiceId != null && !invoiceId.isBlank())
                 ? invoiceId
                 : invoiceService.generateInvoiceId();
 
-        // 2. Pass all attributes expected by your HTML template
+
         model.addAttribute("invoiceId", currentInvoiceId);
         model.addAttribute("suppliers", supplierService.findAllSuppliersForDropDown());
         model.addAttribute("selectedSupplierId", supplierId);
 
-        // 3. If the user clicked "Generate Invoice" (so a supplier is selected), build the preview
         if (supplierId != null) {
             InvoicePreviewDTO preview = invoiceService.buildPreview(currentInvoiceId, supplierId);
             model.addAttribute("invoicePreview", preview);
         }
 
         return "buyer/create-invoice";
+    }
+
+    @PostMapping("buyer/invoices/save")
+    public String saveInvoice(@ModelAttribute CreateInvoiceDto formDto,
+                              @AuthenticationPrincipal LoggedUserDto loggedUserDto) {
+        this.invoiceService.saveInvoice(formDto, loggedUserDto.getUuid());
+        return "redirect:/buyer/invoices";
     }
 
 }

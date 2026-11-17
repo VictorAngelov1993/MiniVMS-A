@@ -43,7 +43,7 @@ public class TimeSheet {
     @Column(name = "time_sheet_id", nullable = false)
     private String timeSheetId;
 
-    @ManyToOne(fetch = FetchType.LAZY) // this might cause issues in the future, but I will leave it as is for now.
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invoice_id", nullable = true)
     private Invoice invoice;
 

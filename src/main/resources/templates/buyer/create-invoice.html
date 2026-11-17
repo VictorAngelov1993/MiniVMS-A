@@ -229,6 +229,8 @@
             <form method="post" action="/buyer/invoices/save" th:action="@{/buyer/invoices/save}" class="d-flex justify-content-end gap-2">
               <input type="hidden" name="invoiceId" th:value="${invoicePreview.invoiceId}">
               <input type="hidden" name="supplierId" th:value="${selectedSupplierId}">
+              <input type="hidden" name="totalAmount" th:value="${invoicePreview.totalAmount}">
+              <th:block th:each="item : ${invoicePreview.timeSheets}"> <input type="hidden" name="timeSheetIds" th:value="${item.timesheetId}"> </th:block>
               <button type="submit" class="btn btn-success">
                 <i class="bi bi-check-circle me-1" aria-hidden="true"></i> Confirm &amp; Submit Invoice
               </button>

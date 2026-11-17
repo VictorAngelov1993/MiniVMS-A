@@ -5,13 +5,19 @@ import org.springframework.stereotype.Service;
 import springbootapp.minivms.feign.PaymentFeignClient;
 import springbootapp.minivms.mappers.InvoiceMapper;
 import springbootapp.minivms.model.dto.paymentdto.PaymentRequestDto;
+import springbootapp.minivms.model.dto.workitemdto.invoice.CreateInvoiceDto;
 import springbootapp.minivms.model.dto.workitemdto.invoice.InvoiceCardDto;
 import springbootapp.minivms.model.dto.workitemdto.invoice.InvoicePreviewDTO;
 import springbootapp.minivms.model.dto.workitemdto.timesheet.TimeSheetDataForInvoiceDTO;
+import springbootapp.minivms.model.entities.enums.InvoiceStatus;
+import springbootapp.minivms.model.entities.workitems.Invoice;
+import springbootapp.minivms.model.entities.workitems.timesheets.TimeSheet;
 import springbootapp.minivms.repositories.workitems.InvoiceRepository;
+import springbootapp.minivms.services.personservices.BuyerService;
 import springbootapp.minivms.services.personservices.SupplierService;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -24,18 +30,23 @@ public class InvoiceService {
     private final SupplierService supplierService;
     private final TimeSheetService timeSheetService;
     private final PaymentFeignClient paymentFeignClient;
+    private final BuyerService buyerService;
+
+
 
     @Autowired
     public InvoiceService(InvoiceRepository invoiceRepository,
                           InvoiceMapper invoiceMapper,
                           SupplierService supplierService,
                           TimeSheetService timeSheetService,
-                          PaymentFeignClient paymentFeignClient) {
+                          PaymentFeignClient paymentFeignClient,
+                          BuyerService buyerService) {
         this.invoiceRepository = invoiceRepository;
         this.invoiceMapper = invoiceMapper;
         this.supplierService = supplierService;
         this.timeSheetService = timeSheetService;
         this.paymentFeignClient = paymentFeignClient;
+        this.buyerService = buyerService;
     }
 
     public List<InvoiceCardDto> getAllInvoicesForTheBuyerReturnedAsCard(UUID loggedUserUUid) {
@@ -72,4 +83,22 @@ public class InvoiceService {
 
         this.paymentFeignClient.createPayment(requestDto);
     }
+
+    public void saveInvoice(CreateInvoiceDto invoiceDto, UUID loggedBuyerUuid) {
+        Invoice invoiceToSave = new Invoice();
+        invoiceToSave.setInvoiceId(invoiceDto.getInvoiceId());
+        invoiceToSave.setBuyer(this.buyerService.getBuyerByUuid(loggedBuyerUuid));
+        invoiceToSave.setSupplierName(this.supplierService.getSupplierFullNameForUuid(invoiceDto.getSupplierId()));
+        invoiceToSave.setTotalAmount(invoiceDto.getTotalAmount());
+        //TODO after test change the status to Created
+        invoiceToSave.setStatus(InvoiceStatus.PENDING_APPROVAL);
+        invoiceToSave.setTimeSheets(this.getTimeSheetsById(invoiceDto.getTimeSheetIds()));
+        this.invoiceRepository.save(invoiceToSave);
+        this.timeSheetService.saveInvoiceIdToTimeSheet(invoiceDto.getTimeSheetIds(), invoiceToSave);
+    }
+
+    private List<TimeSheet> getTimeSheetsById(List<String> timeSheetIds) {
+        return this.timeSheetService.getTimeSheetsByTimeSheetId(timeSheetIds);
+    }
+
 }

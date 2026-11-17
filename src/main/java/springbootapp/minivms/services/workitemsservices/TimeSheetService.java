@@ -6,6 +6,7 @@ import springbootapp.minivms.model.dto.workitemdto.timesheet.*;
 import springbootapp.minivms.model.entities.enums.TimeSheetStatus;
 import springbootapp.minivms.model.entities.persons.Buyer;
 import springbootapp.minivms.model.entities.persons.Worker;
+import springbootapp.minivms.model.entities.workitems.Invoice;
 import springbootapp.minivms.model.entities.workitems.WorkOrder;
 import springbootapp.minivms.model.entities.workitems.timesheets.TimeSheet;
 import springbootapp.minivms.model.entities.workitems.timesheets.TimeSheetDay;
@@ -14,8 +15,10 @@ import springbootapp.minivms.repositories.workitems.TimeSheetRepository;
 import springbootapp.minivms.repositories.workitems.WorkOrderRepository;
 
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -195,6 +198,23 @@ public class TimeSheetService {
     public List<TimeSheetDataForInvoiceDTO> getTimeSheetDataForInvoiceDto(UUID supplierUuid) {
         List<TimeSheet> allTimeSheetsForTheSupplier = this.timeSheetRepository.getAllByWorkOrder_Supplier_UuidAndStatus(supplierUuid, TimeSheetStatus.APPROVED);
         return this.timeSheetMapper.mapListTimeSheetToListTimeSheetDataForInvoiceDto(allTimeSheetsForTheSupplier);
+    }
+
+    public void saveInvoiceIdToTimeSheet(List<String> timeSheetIds, Invoice invoice) {
+        for(String timeSheetId : timeSheetIds) {
+            TimeSheet ts = this.timeSheetRepository.getTimeSheetByTimeSheetId(timeSheetId);
+            ts.setInvoice(invoice);
+            this.timeSheetRepository.save(ts);
+        }
+    }
+
+    public List<TimeSheet> getTimeSheetsByTimeSheetId(List<String> timeSheets) {
+        List<TimeSheet> timeSheetsToReturn = this.timeSheetRepository.getByTimeSheetIdIn(timeSheets);
+
+        if(timeSheetsToReturn.size() != timeSheets.size()) {
+            throw new IllegalArgumentException("Some Time Sheets were not found");
+        }
+        return timeSheetsToReturn;
     }
 
 }

@@ -30,15 +30,6 @@ public class Invoice {
     @OneToMany(mappedBy = "invoice")
     private List<TimeSheet> timeSheets = new ArrayList<>();
 
-    @Column(name = "worker_full_name", nullable = false)
-    @NotBlank
-    private String workerFullName;
-
-    @Column(name = "total_hours")
-    private BigDecimal totalHours;
-
-    @Column(name = "worker_amount")
-    private BigDecimal workerAmount;
 
     @Column(name = "total_amout")
     private BigDecimal totalAmount;
@@ -80,30 +71,6 @@ public class Invoice {
 
     public void setTimeSheets(List<TimeSheet> timeSheets) {
         this.timeSheets = timeSheets;
-    }
-
-    public String getWorkerFullName() {
-        return workerFullName;
-    }
-
-    public void setWorkerFullName(String workerFullName) {
-        this.workerFullName = workerFullName;
-    }
-
-    public BigDecimal getTotalHours() {
-        return totalHours;
-    }
-
-    public void setTotalHours(BigDecimal totalHours) {
-        this.totalHours = totalHours;
-    }
-
-    public BigDecimal getWorkerAmount() {
-        return workerAmount;
-    }
-
-    public void setWorkerAmount(BigDecimal workerAmount) {
-        this.workerAmount = workerAmount;
     }
 
     public BigDecimal getTotalAmount() {

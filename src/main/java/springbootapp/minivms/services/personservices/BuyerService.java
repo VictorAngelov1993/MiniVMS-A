@@ -8,6 +8,7 @@ import springbootapp.minivms.repositories.personrepositories.SupplierRepository;
 import springbootapp.minivms.repositories.personrepositories.WorkerRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class BuyerService {
@@ -37,5 +38,10 @@ public class BuyerService {
     }
     public Optional<Buyer> getBuyerByUsername(String username) {
         return this.buyerRepository.getBuyerByUsername(username);
+    }
+
+    public Buyer getBuyerByUuid(UUID uuid) {
+        // TODO here create Custom new BuyerNotFoundException(uuid
+        return this.buyerRepository.getBuyerByUuid(uuid).orElseThrow(() -> new IllegalArgumentException("Buyer Not Found"));
     }
 }
