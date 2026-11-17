@@ -2,7 +2,9 @@ package springbootapp.minivms.services.workitemsservices;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import springbootapp.minivms.feign.PaymentFeignClient;
 import springbootapp.minivms.mappers.InvoiceMapper;
+import springbootapp.minivms.model.dto.paymentdto.PaymentRequestDto;
 import springbootapp.minivms.model.dto.workitemdto.invoice.InvoiceCardDto;
 import springbootapp.minivms.model.dto.workitemdto.invoice.InvoicePreviewDTO;
 import springbootapp.minivms.model.dto.workitemdto.timesheet.TimeSheetDataForInvoiceDTO;
@@ -17,20 +19,23 @@ import java.util.UUID;
 @Service
 public class InvoiceService {
 
-    private InvoiceRepository invoiceRepository;
-    private InvoiceMapper invoiceMapper;
-    private SupplierService supplierService;
-    private TimeSheetService timeSheetService;
+    private final InvoiceRepository invoiceRepository;
+    private final InvoiceMapper invoiceMapper;
+    private final SupplierService supplierService;
+    private final TimeSheetService timeSheetService;
+    private final PaymentFeignClient paymentFeignClient;
 
     @Autowired
     public InvoiceService(InvoiceRepository invoiceRepository,
                           InvoiceMapper invoiceMapper,
                           SupplierService supplierService,
-                          TimeSheetService timeSheetService) {
+                          TimeSheetService timeSheetService,
+                          PaymentFeignClient paymentFeignClient) {
         this.invoiceRepository = invoiceRepository;
         this.invoiceMapper = invoiceMapper;
         this.supplierService = supplierService;
         this.timeSheetService = timeSheetService;
+        this.paymentFeignClient = paymentFeignClient;
     }
 
     public List<InvoiceCardDto> getAllInvoicesForTheBuyerReturnedAsCard(UUID loggedUserUUid) {
@@ -55,5 +60,16 @@ public class InvoiceService {
         preview.setTotalAmount(totalAmountOfAllTimeSheets);
         return preview;
 
+    }
+
+
+
+    public void approveInvoice(String invoiceId) {
+        PaymentRequestDto requestDto = new PaymentRequestDto();
+
+
+        // ge tthe invoice from the DB and then add the invoice ID supplier name and amount in the requestDto
+
+        this.paymentFeignClient.createPayment(requestDto);
     }
 }
