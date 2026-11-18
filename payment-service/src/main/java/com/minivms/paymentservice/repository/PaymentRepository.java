@@ -1,0 +1,9 @@
+package com.minivms.paymentservice.repository;
+
+import com.minivms.paymentservice.model.entities.Payment;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.UUID;
+
+public interface PaymentRepository extends JpaRepository<Payment, UUID> {
+}
