@@ -19,7 +19,7 @@ public class HomeController {
     // TODO can be removed once behavior is observed
     @GetMapping("/set-cookies")
     public String setCookies(HttpServletResponse response) {
-        Cookie cookie = new Cookie("Manual Cookie", "onlyOn/set-cookiesURI");
+        Cookie cookie = new Cookie("This is a set cookie", "onlyOn/set-cookiesURI");
         // the setPath tells which uri's will get the cookie.
         cookie.setPath("/");
         cookie.setMaxAge(3600);

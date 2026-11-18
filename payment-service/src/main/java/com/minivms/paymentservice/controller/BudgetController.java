@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/budgets")
+@RequestMapping("/api/budgets")
 public class BudgetController {
 
     private final BudgetServiceImpl budgetService;
@@ -20,7 +20,7 @@ public class BudgetController {
         this.budgetService = budgetService;
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public BudgetResponseDto addBudget(@RequestBody BudgetRequestDto requestDto) {
         return this.budgetService.addBudget(requestDto.getBuyerUuid(), requestDto.getAmountToAdd());
     }
