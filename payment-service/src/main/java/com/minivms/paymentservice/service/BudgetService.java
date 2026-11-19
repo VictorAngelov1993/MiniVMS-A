@@ -8,4 +8,5 @@ import java.util.UUID;
 public interface BudgetService {
 
     BudgetResponseDto addBudget(UUID buyerUuid, BigDecimal amount);
+    BudgetResponseDto viewBudget(UUID buyerUuid);
 }

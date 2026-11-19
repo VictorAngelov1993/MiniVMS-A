@@ -59,4 +59,8 @@ public class BuyerService {
 
         return paymentFeignClient.addBudget(requestDto);
     }
+
+    public BudgetResponseDto viewBudget(UUID buyerUuid) {
+        return this.paymentFeignClient.viewBudget(buyerUuid);
+    }
 }

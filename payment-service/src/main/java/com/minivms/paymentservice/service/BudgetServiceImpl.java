@@ -6,6 +6,7 @@ import com.minivms.paymentservice.repository.BudgetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,6 +23,11 @@ public class BudgetServiceImpl implements BudgetService{
 
     @Override
     public BudgetResponseDto addBudget(UUID buyerUuid, BigDecimal amount) {
+
+        if(amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Value must be greater or equal to 0.01");
+        }
+
        Optional <BuyerBudget> buyerBudget = this.budgetRepository.getBuyerBudgetByBuyerUuid(buyerUuid);
        if(buyerBudget.isEmpty()) {
            BuyerBudget newBudget = new BuyerBudget();
@@ -37,4 +43,14 @@ public class BudgetServiceImpl implements BudgetService{
                buyerBudget.get().getAvailableBudget());
 
     }
+    @Override
+    public BudgetResponseDto viewBudget(UUID buyerUuid) {
+        Optional<BuyerBudget> buyerBudget = this.budgetRepository.getBuyerBudgetByBuyerUuid(buyerUuid);
+        if(buyerBudget.isPresent()) {
+            return new BudgetResponseDto("Current Budger", buyerBudget.get().getAvailableBudget());
+        }
+        // TODO below should be custom BudgetNotFoundException
+        throw new IllegalArgumentException("No budget account found.");
+    }
+
 }

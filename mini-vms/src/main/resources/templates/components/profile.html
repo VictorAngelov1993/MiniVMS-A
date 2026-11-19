@@ -104,6 +104,12 @@
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 
+            <!-- Error / Failed Alert Banner -->
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+              <span th:text="${errorMessage}">Error message here</span>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
             <!-- BUYER BUDGET ACTIONS (Visible only to Buyers) -->
             <div th:if="${#strings.equalsIgnoreCase(user.role, 'Buyer')}" class="d-flex flex-wrap gap-2">
               <a th:href="@{/budgets}" class="btn btn-check-budget d-inline-flex align-items-center gap-2">

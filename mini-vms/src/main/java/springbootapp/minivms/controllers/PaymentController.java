@@ -26,10 +26,8 @@ public class PaymentController {
     }
 
     @GetMapping("/budgets/add")
-    public String loadAddBudgetPage(@AuthenticationPrincipal LoggedUserDto loggedUserDto, Model model) {
-
+    public String loadAddBudgetPage() {
         return "buyer/add-budget";
-
     }
 
     @PostMapping("/budgets/add")
@@ -42,6 +40,13 @@ public class PaymentController {
 
         return "redirect:/profile";
 
+    }
+
+    @GetMapping("/budgets")
+    public String loadBudget(@AuthenticationPrincipal LoggedUserDto loggedUserDto, Model model) {
+        BudgetResponseDto responseDto = this.buyerService.viewBudget(loggedUserDto.getUuid());
+        model.addAttribute("budgetAmount", responseDto.getTotalBudget());
+        return "buyer/display-budget";
     }
 
 }
