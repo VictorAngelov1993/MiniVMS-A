@@ -79,4 +79,13 @@ public class InvoiceController {
         return "buyer/invoice-details";
     }
 
+    @PostMapping("buyer/invoices/{id}/pay")
+    public String processPayment(@PathVariable("id") String invoiceId,
+                                 @AuthenticationPrincipal LoggedUserDto loggerUser) {
+
+        this.invoiceService.processPayment(loggerUser.getUuid(), invoiceId);
+
+        return "redirect:/buyer/invoices";
+    }
+
 }

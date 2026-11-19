@@ -3,8 +3,8 @@
   Page: buyer/invoice-details.html
   Route: GET /buyer/invoices/{id}
   Model attributes expected:
-    - invoice (invoiceId, supplierName, status, totalAmount, timeSheets)
-    - item in invoice.timeSheets (timesheetId, workerFullName, totalHours, totalAmount)
+- invoice (invoiceId, supplierName, status, totalAmount, timeSheets)
+- item in invoice.timeSheets (timesheetId, workerFullName, totalHours, totalAmount)
 -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -78,9 +78,19 @@
 
       <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
         <h1 class="h3 mb-0">Invoice Details</h1>
-        <a class="btn btn-outline-secondary" href="/buyer/invoices" th:href="@{/buyer/invoices}">
-          <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Back to Invoices
-        </a>
+        <div class="d-flex align-items-center gap-2">
+          <form th:if="${invoice.status.name() == 'CREATED'}"
+                th:action="@{/buyer/invoices/{id}/pay(id=${invoice.invoiceId})}"
+                method="post"
+                class="m-0">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-send me-1" aria-hidden="true"></i> Send for Payment
+            </button>
+          </form>
+          <a class="btn btn-outline-secondary" href="/buyer/invoices" th:href="@{/buyer/invoices}">
+            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Back to Invoices
+          </a>
+        </div>
       </div>
 
       <!-- Invoice Document Card -->

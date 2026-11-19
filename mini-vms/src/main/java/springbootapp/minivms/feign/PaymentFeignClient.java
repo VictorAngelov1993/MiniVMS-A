@@ -16,8 +16,6 @@ import java.util.UUID;
 
 public interface PaymentFeignClient {
 
-    @PostMapping("/api/payments")
-    PaymentResponseDto createPayment(@RequestBody PaymentRequestDto requestDto);
 
     @PostMapping("/api/budgets/add")
     BudgetResponseDto addBudget(@RequestBody BudgetRequestDto requestDto);
@@ -25,7 +23,8 @@ public interface PaymentFeignClient {
     @GetMapping("/api/budgets/view")
     BudgetResponseDto viewBudget(@RequestParam UUID buyerUuid);
 
-
+    @PostMapping("api/payments/process")
+    PaymentResponseDto processPayment(@RequestBody PaymentRequestDto requestDto);
 
 
 }

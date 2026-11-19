@@ -10,4 +10,5 @@ public interface BudgetRepository extends JpaRepository<BuyerBudget, UUID> {
     Optional <BuyerBudget> getBuyerBudgetByBuyerUuid(UUID buyerUuid);
 
 
+
 }

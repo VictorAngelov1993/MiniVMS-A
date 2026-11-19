@@ -75,13 +75,16 @@ public class InvoiceService {
 
 
 
-    public void approveInvoice(String invoiceId) {
+    public void processPayment(UUID buyerUuid, String invoiceId) {
         PaymentRequestDto requestDto = new PaymentRequestDto();
-
-
-        // ge tthe invoice from the DB and then add the invoice ID supplier name and amount in the requestDto
-
-        this.paymentFeignClient.createPayment(requestDto);
+        Invoice invoice = this.invoiceRepository.getInvoiceByInvoiceId(invoiceId);
+        requestDto.setInvoiceId(invoiceId);
+        requestDto.setAmount(invoice.getTotalAmount());
+        requestDto.setBuyerUuid(buyerUuid);
+        requestDto.setSupplierName(invoice.getSupplierName());
+        this.paymentFeignClient.processPayment(requestDto);
+        invoice.setStatus(InvoiceStatus.PAID);
+        this.invoiceRepository.save(invoice);
     }
 
     public void saveInvoice(CreateInvoiceDto invoiceDto, UUID loggedBuyerUuid) {

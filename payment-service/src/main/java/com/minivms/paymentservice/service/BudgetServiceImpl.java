@@ -3,6 +3,7 @@ package com.minivms.paymentservice.service;
 import com.minivms.paymentservice.model.dto.BudgetResponseDto;
 import com.minivms.paymentservice.model.entities.BuyerBudget;
 import com.minivms.paymentservice.repository.BudgetRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +52,16 @@ public class BudgetServiceImpl implements BudgetService{
         }
         // TODO below should be custom BudgetNotFoundException
         throw new IllegalArgumentException("No budget account found.");
+    }
+
+    @Override
+    public void decreaseBudget(UUID buyerUuid, BigDecimal value) {
+       BuyerBudget budget = this.budgetRepository.getBuyerBudgetByBuyerUuid(buyerUuid)
+               .orElseThrow(() -> new EntityNotFoundException("Budget not found"));
+
+       budget.setAvailableBudget(budget.getAvailableBudget().subtract(value));
+       this.budgetRepository.save(budget);
+
     }
 
 }

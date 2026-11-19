@@ -1,11 +1,13 @@
 package com.minivms.paymentservice.model.dto;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public class PaymentRequestDto {
     private String invoiceId;
     private String supplierName;
     private BigDecimal amount;
+    private UUID buyerUuid;
 
     public PaymentRequestDto() {
 
@@ -33,5 +35,13 @@ public class PaymentRequestDto {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public UUID getBuyerUuid() {
+        return buyerUuid;
+    }
+
+    public void setBuyerUuid(UUID buyerUuid) {
+        this.buyerUuid = buyerUuid;
     }
 }

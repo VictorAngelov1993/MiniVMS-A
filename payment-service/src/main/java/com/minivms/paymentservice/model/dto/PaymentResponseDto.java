@@ -11,6 +11,10 @@ public class PaymentResponseDto {
         return invoiceId;
     }
 
+    public PaymentResponseDto() {
+
+    }
+
     public PaymentResponseDto(String invoiceId, PaymentStatus status) {
         this.setInvoiceId(invoiceId);
         this.setStatus(status);

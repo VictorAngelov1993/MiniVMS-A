@@ -9,4 +9,5 @@ public interface BudgetService {
 
     BudgetResponseDto addBudget(UUID buyerUuid, BigDecimal amount);
     BudgetResponseDto viewBudget(UUID buyerUuid);
+    void decreaseBudget(UUID buyerUuid ,BigDecimal value);
 }
