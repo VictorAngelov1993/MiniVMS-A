@@ -5,8 +5,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import springbootapp.minivms.model.dto.persondto.LoggedUserDto;
 import springbootapp.minivms.model.dto.persondto.ProfileDetailDto;
+import springbootapp.minivms.model.dto.persondto.ProfileEditDto;
 import springbootapp.minivms.services.personservices.ProfileService;
 
 import java.util.UUID;
@@ -31,6 +34,20 @@ public class ProfileController {
         }
         model.addAttribute("user", loggedUserDetails);
         return "components/profile";
+    }
 
+    @GetMapping("/profile/edit")
+    public String openProfileEdit(Model model) {
+        model.addAttribute("profileEditDto", new ProfileEditDto());
+        return "components/profile-edit";
+    }
+
+    @PostMapping("/profile/edit")
+    public String editProfile(@AuthenticationPrincipal LoggedUserDto loggedUser,
+                              @ModelAttribute("profileEditDto") ProfileEditDto profileEditDto) {
+
+        this.profileService.editProfile(loggedUser, profileEditDto);
+        // TODO check why the data is not reflecting in the UI
+        return "redirect:/profile";
     }
 }

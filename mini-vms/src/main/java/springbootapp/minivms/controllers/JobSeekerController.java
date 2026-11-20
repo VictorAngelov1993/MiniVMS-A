@@ -53,11 +53,10 @@ public class JobSeekerController {
 
     @PostMapping("supplier/create-job-seeker")
     public String createJobSeeker(@AuthenticationPrincipal LoggedUserDto loggedUser,
-                                  @ModelAttribute("jobSeekerDto") JobSeekerCreateDto jobSeekerCreateDto,
-                                  Model model) {
+                                  @ModelAttribute("jobSeekerDto") JobSeekerCreateDto jobSeekerCreateDto
+                                  ) {
 
         this.jobSeekerService.createJobSeeker(jobSeekerCreateDto, loggedUser.getUuid());
-
         return "redirect:/supplier/job-seekers";
 
     }

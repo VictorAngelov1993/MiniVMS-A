@@ -9,8 +9,6 @@ import java.util.UUID;
 @MappedSuperclass
 public class AbstractPerson implements Person {
 
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
@@ -56,6 +54,7 @@ public class AbstractPerson implements Person {
         return firstName;
     }
 
+    @Override
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -63,7 +62,7 @@ public class AbstractPerson implements Person {
     public String getLastName() {
         return lastName;
     }
-
+    @Override
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
@@ -71,7 +70,7 @@ public class AbstractPerson implements Person {
     public String getEmail() {
         return email;
     }
-
+    @Override
     public void setEmail(String email) {
         this.email = email;
     }
