@@ -1,12 +1,17 @@
 package com.minivms.paymentservice.model.dto;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
 public class PaymentRequestDto {
+    @NotNull(message = "invoiceId is required")
     private String invoiceId;
+    @NotNull(message = "supplierName is required")
     private String supplierName;
+    @NotNull(message = "Amount is required")
     private BigDecimal amount;
+    @NotNull(message = "buyerUuid is required")
     private UUID buyerUuid;
 
     public PaymentRequestDto() {
