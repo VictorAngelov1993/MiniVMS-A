@@ -1,5 +1,7 @@
 package com.minivms.paymentservice.exception;
 
+import com.minivms.paymentservice.exception.custom.BudgetNotFoundException;
+import com.minivms.paymentservice.exception.custom.InvalidAmountException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,20 +33,20 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // TODO below should be custom exception only for REST APIs
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, Object>> handleIllegalArgumentException(IllegalArgumentException ex) {
-        Map<String, Object> body = Map.of(
-                "timestamp", Instant.now().toString(),
-                "status", HttpStatus.BAD_REQUEST.value(), // I need to use Bad Request for this because I want 403
-                "error", "Bad Request",
-                "message", ex.getMessage()
+    @ExceptionHandler(InvalidAmountException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidAmountException(InvalidAmountException exception) {
+        return this.buildErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                exception.getMessage() != null ? exception.getMessage() : "Bad Request"
         );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
-    //TODO after creating the custom Exceptions add logic here to handle the proper Responses.
-
-    // public ResponseEntity<Map<String, Object>> is only for REST
+    @ExceptionHandler(BudgetNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleBudgetNotFoundException(BudgetNotFoundException exception) {
+        return this.buildErrorResponse(
+                HttpStatus.NOT_FOUND,
+                exception.getMessage() != null ? exception.getMessage() : "Not Found"
+        );
+    }
 
 }

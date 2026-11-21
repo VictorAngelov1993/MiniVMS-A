@@ -37,6 +37,7 @@ public class PaymentServiceImpl implements PaymentService{
     }
     @Override
      public PaymentResponseDto getPayment(UUID id) {
+        // TODO implement the get payment.
         return null;
     }
 

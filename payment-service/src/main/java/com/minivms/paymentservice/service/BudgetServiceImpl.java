@@ -1,5 +1,6 @@
 package com.minivms.paymentservice.service;
 
+import com.minivms.paymentservice.exception.custom.BudgetNotFoundException;
 import com.minivms.paymentservice.exception.custom.InvalidAmountException;
 import com.minivms.paymentservice.model.dto.BudgetResponseDto;
 import com.minivms.paymentservice.model.entities.BuyerBudget;
@@ -51,8 +52,7 @@ public class BudgetServiceImpl implements BudgetService{
         if(buyerBudget.isPresent()) {
             return new BudgetResponseDto("Current Budger", buyerBudget.get().getAvailableBudget());
         }
-        // TODO below should be custom BudgetNotFoundException
-        throw new IllegalArgumentException("No budget account found.");
+        throw new BudgetNotFoundException("No budget account found.");
     }
 
     @Override
