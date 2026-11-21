@@ -1,5 +1,6 @@
 package com.minivms.paymentservice.service;
 
+import com.minivms.paymentservice.exception.custom.InvalidAmountException;
 import com.minivms.paymentservice.model.dto.BudgetResponseDto;
 import com.minivms.paymentservice.model.entities.BuyerBudget;
 import com.minivms.paymentservice.repository.BudgetRepository;
@@ -26,7 +27,7 @@ public class BudgetServiceImpl implements BudgetService{
     public BudgetResponseDto addBudget(UUID buyerUuid, BigDecimal amount) {
 
         if(amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Value must be greater or equal to 0.01");
+            throw new InvalidAmountException("Value must be greater or equal to 0.01");
         }
 
        Optional <BuyerBudget> buyerBudget = this.budgetRepository.getBuyerBudgetByBuyerUuid(buyerUuid);
