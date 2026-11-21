@@ -112,14 +112,9 @@
         <h1 class="h3 mb-4">Workers</h1>
 
         <div class="row" th:if="${workers != null and !workers.isEmpty()}">
-          <!--Thymeleaf processes th:replace BEFORE th:each so below will cause errors when the list contains more than 1 value-->
-          <!--<div th:replace="~{components/worker-card :: worker-card(worker=${w})}"
-               th:each="w : ${workers}"></div>-->
-          <!--below is the correct-->
-          <div th:each="w : ${workers}">
+          <th:block th:each="w : ${workers}">
             <div th:replace="~{components/worker-card :: worker-card(worker=${w})}"></div>
-          </div>
-
+          </th:block>
         </div>
 
         <div class="empty-state" th:if="${workers == null or workers.isEmpty()}">
