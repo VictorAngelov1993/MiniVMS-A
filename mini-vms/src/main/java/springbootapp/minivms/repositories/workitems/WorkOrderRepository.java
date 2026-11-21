@@ -9,6 +9,7 @@ import springbootapp.minivms.model.entities.persons.Supplier;
 import springbootapp.minivms.model.entities.persons.Worker;
 import springbootapp.minivms.model.entities.workitems.WorkOrder;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,4 +35,6 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, UUID> {
 
 
     WorkOrder getWorkOrderByWorkOrderId(String workOrderId);
+
+    List<WorkOrder> getAllByEndDateBefore(LocalDate endDateBefore);
 }

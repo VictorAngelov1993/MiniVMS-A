@@ -19,6 +19,7 @@ import springbootapp.minivms.repositories.workitems.JobSeekerRepository;
 import springbootapp.minivms.repositories.workitems.TimeSheetRepository;
 import springbootapp.minivms.repositories.workitems.WorkOrderRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -123,6 +124,11 @@ public class WorkOrderService {
         WorkOrder workOrderToClose = this.workOrderRepository.getWorkOrderByWorkOrderId(workOrderId);
         workOrderToClose.setStatus(WorkOrderStatus.CLOSED);
         this.workOrderRepository.save(workOrderToClose);
+    }
+
+    public void closeExpiredWorkOrders() {
+        List<WorkOrder> expiredWorkOrders = this.workOrderRepository.getAllByEndDateBefore(LocalDate.now());
+        expiredWorkOrders.forEach(workOrder -> this.closeWorkOrderByWorkOrderId(workOrder.getWorkOrderId()));
     }
 
 
