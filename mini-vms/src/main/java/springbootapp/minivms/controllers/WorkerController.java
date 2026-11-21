@@ -33,13 +33,7 @@ public class WorkerController {
 
     @GetMapping("buyer/workers/{id}")
     public String loadWorkerDetails(@PathVariable String id, Model model) {
-        WorkerDetailDto workerDetailDto = null;
-        try {
-             workerDetailDto = this.workerService.getWorkerDetailByWorkerId(id);
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "redirect:/access-denied";
-        }
+        WorkerDetailDto workerDetailDto = this.workerService.getWorkerDetailByWorkerId(id);
         model.addAttribute("worker", workerDetailDto);
         return "buyer/worker-details";
 

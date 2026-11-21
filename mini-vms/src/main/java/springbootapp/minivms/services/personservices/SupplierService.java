@@ -3,7 +3,7 @@ package springbootapp.minivms.services.personservices;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import springbootapp.minivms.model.dto.persondto.SupplierDashboardDto;
+import springbootapp.minivms.exception.custom.NotExistingSupplier;
 import springbootapp.minivms.model.dto.persondto.SupplierDropDownDto;
 import springbootapp.minivms.model.entities.enums.WorkOrderStatus;
 import springbootapp.minivms.model.entities.persons.Supplier;
@@ -74,11 +74,10 @@ public class SupplierService {
 
     public String getSupplierFullNameForUuid(UUID uuid) {
         Optional<Supplier> supplier = this.supplierRepository.getSupplierByUuid(uuid);
-        // TODO Implement CUSTOM EXCEPTION HANDLING HERE.
 
         return this.supplierRepository.getSupplierByUuid(uuid)
                 .map(Supplier::getFullName)
-                .orElseThrow(() -> new RuntimeException("Supplier not found with ID: " + uuid));
+                .orElseThrow(() -> new NotExistingSupplier("User not found"));
 
 
     }

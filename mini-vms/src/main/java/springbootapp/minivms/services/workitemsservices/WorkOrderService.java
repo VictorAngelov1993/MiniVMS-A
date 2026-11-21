@@ -2,6 +2,7 @@ package springbootapp.minivms.services.workitemsservices;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import springbootapp.minivms.exception.custom.NotExistingWorkOrder;
 import springbootapp.minivms.mappers.WorkOrderMapper;
 import springbootapp.minivms.model.dto.workitemdto.workorder.WorkOrderCardDto;
 import springbootapp.minivms.model.dto.workitemdto.workorder.WorkOrderCreateDto;
@@ -86,14 +87,14 @@ public class WorkOrderService {
 
     public WorkOrderDetailDto getWorkOrderDetails(String workOrderId) {
         WorkOrder workOrder = this.workOrderRepository.findWorkOrderByWorkOrderId(workOrderId)
-                .orElseThrow(() -> new RuntimeException("Work Order not found with ID: " + workOrderId));
+                .orElseThrow(() -> new NotExistingWorkOrder("Work Order not found with ID: " + workOrderId));
 
         return this.workOrderMapper.mapWorkOrderToWorkOrderDetailDto(workOrder);
     }
 
     public WorkOrderDetailDto getWorkOrderForRegisteredWorker(String workOrderId) {
         WorkOrder workOrder = this.workOrderRepository.findWorkOrderByWorkOrderId(workOrderId)
-                .orElseThrow(() -> new RuntimeException("Work Order not found with ID: " + workOrderId));
+                .orElseThrow(() -> new NotExistingWorkOrder("Work Order not found with ID: " + workOrderId));
 
         WorkOrderDetailDto dto = this.workOrderMapper.mapWorkOrderToWorkOrderDetailDto(workOrder);
         dto.setAssignedWorker(workOrder.getWorker());
@@ -103,7 +104,7 @@ public class WorkOrderService {
 
     public WorkOrder getWorkOrderById(String workOrderId) {
         Optional<WorkOrder> optionalWorkOrder = this.workOrderRepository.findWorkOrderByWorkOrderId(workOrderId);
-        return optionalWorkOrder.orElseThrow(() -> new RuntimeException("Invalid Work Order id"));
+        return optionalWorkOrder.orElseThrow(() -> new NotExistingWorkOrder("Invalid Work Order id"));
     }
 
     public long countWorkerWorkOrders(Worker worker) {

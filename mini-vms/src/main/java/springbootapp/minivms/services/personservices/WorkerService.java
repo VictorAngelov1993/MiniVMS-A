@@ -2,6 +2,7 @@ package springbootapp.minivms.services.personservices;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import springbootapp.minivms.exception.custom.NotExistingWorker;
 import springbootapp.minivms.mappers.WorkerMapper;
 import springbootapp.minivms.model.dto.workitemdto.worker.WorkerCardDto;
 import springbootapp.minivms.model.dto.workitemdto.worker.WorkerDetailDto;
@@ -88,10 +89,8 @@ public class WorkerService {
     }
 
     public WorkerDetailDto getWorkerDetailByWorkerId(String workerId) {
-        Worker worker = this.getWorkerByWorkerId(workerId).orElseThrow(() -> new RuntimeException("Invalid Worker Id"));
-        WorkerDetailDto workerDetailDto = this.modelMapper.map(worker, WorkerDetailDto.class);
-
-        return workerDetailDto;
+        Worker worker = this.getWorkerByWorkerId(workerId).orElseThrow(() -> new NotExistingWorker("Invalid Worker Id"));
+        return this.modelMapper.map(worker, WorkerDetailDto.class);
 
     }
 }

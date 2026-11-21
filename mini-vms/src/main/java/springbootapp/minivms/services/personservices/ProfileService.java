@@ -2,6 +2,7 @@ package springbootapp.minivms.services.personservices;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import springbootapp.minivms.exception.custom.UserNotFoundException;
 import springbootapp.minivms.mappers.UserMapper;
 import springbootapp.minivms.model.dto.persondto.LoggedUserDto;
 import springbootapp.minivms.model.dto.persondto.ProfileDetailDto;
@@ -39,11 +40,9 @@ public class ProfileService {
 
     public void editProfile(LoggedUserDto loggedUser, ProfileEditDto editDto) {
         Person userToUpdate;
-        //TODO create custom Exception User not found and use it instead of illegal argument
-
         if(loggedUser.getRole().equals(Role.BUYER)) {
             userToUpdate = this.buyerRepository.getBuyerByUuid(loggedUser.getUuid())
-                    .orElseThrow(() -> new IllegalArgumentException("User Not found"));
+                    .orElseThrow(() -> new UserNotFoundException("User Not found"));
 
             this.getDataFromDto(userToUpdate, editDto);
             this.buyerRepository.save((Buyer) userToUpdate);
@@ -51,7 +50,7 @@ public class ProfileService {
         }
         if(loggedUser.getRole().equals(Role.SUPPLIER)) {
             userToUpdate = this.supplierRepository.getSupplierByUuid(loggedUser.getUuid())
-                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                    .orElseThrow(() -> new UserNotFoundException("User not found"));
 
             this.getDataFromDto(userToUpdate, editDto);
             this.supplierRepository.save((Supplier) userToUpdate);
@@ -59,7 +58,7 @@ public class ProfileService {
         }
         if(loggedUser.getRole().equals(Role.WORKER)) {
             userToUpdate = this.workerRepository.getWorkerByUuid(loggedUser.getUuid())
-                    .orElseThrow(() -> new IllegalArgumentException("User Does Not Exist"));
+                    .orElseThrow(() -> new UserNotFoundException("User Does Not Exist"));
 
             this.getDataFromDto(userToUpdate, editDto);
             this.workerRepository.save((Worker) userToUpdate);

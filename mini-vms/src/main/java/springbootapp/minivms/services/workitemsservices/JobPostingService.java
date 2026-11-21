@@ -80,7 +80,9 @@ public class JobPostingService {
         jobPostingToReturn.setPayRate(jobPosting.getPayRate());
         jobPostingToReturn.setJobPostingId(jobPostingId);
 
+
         // TODO Here when the Work Order entity is created I will need to add it to the dto jobPostingToReturn.
+        // Above might not be needed.
 
         return jobPostingToReturn;
 

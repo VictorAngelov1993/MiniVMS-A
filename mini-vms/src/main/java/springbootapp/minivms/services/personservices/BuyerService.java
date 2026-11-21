@@ -2,6 +2,7 @@ package springbootapp.minivms.services.personservices;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import springbootapp.minivms.exception.custom.UserNotFoundException;
 import springbootapp.minivms.feign.PaymentFeignClient;
 import springbootapp.minivms.model.dto.paymentdto.BudgetRequestDto;
 import springbootapp.minivms.model.dto.paymentdto.BudgetResponseDto;
@@ -48,8 +49,7 @@ public class BuyerService {
     }
 
     public Buyer getBuyerByUuid(UUID uuid) {
-        // TODO here create Custom new BuyerNotFoundException(uuid
-        return this.buyerRepository.getBuyerByUuid(uuid).orElseThrow(() -> new IllegalArgumentException("Buyer Not Found"));
+        return this.buyerRepository.getBuyerByUuid(uuid).orElseThrow(() -> new UserNotFoundException("Buyer Not Found"));
     }
 
     public BudgetResponseDto addBudget(UUID buyerUuid, BigDecimal amountToAdd) {
