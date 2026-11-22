@@ -1,5 +1,7 @@
 package springbootapp.minivms.services.workitemsservices;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import springbootapp.minivms.mappers.TimeSheetMapper;
 import springbootapp.minivms.model.dto.workitemdto.timesheet.*;
@@ -13,13 +15,11 @@ import springbootapp.minivms.model.entities.workitems.timesheets.TimeSheetDay;
 import springbootapp.minivms.repositories.personrepositories.WorkerRepository;
 import springbootapp.minivms.repositories.workitems.TimeSheetRepository;
 import springbootapp.minivms.repositories.workitems.WorkOrderRepository;
-import springbootapp.minivms.services.personservices.BuyerService;
+
 
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -184,7 +184,7 @@ public class TimeSheetService {
     public long countPendingTimeSheetForBuyerByBuyerUuid(Buyer buyer) {
         return this.timeSheetRepository.countPendingTimeSheetsForBuyer(buyer);
     }
-
+    @CacheEvict(value = "approvedTimesheetCounts", allEntries = true)
     public void approveTimeSheet(String timeSheetId) {
         TimeSheet timeSheetToApprove = this.timeSheetRepository.getTimeSheetByTimeSheetId(timeSheetId);
         timeSheetToApprove.setStatus(TimeSheetStatus.APPROVED);
@@ -200,7 +200,7 @@ public class TimeSheetService {
         List<TimeSheet> allTimeSheetsForTheSupplier = this.timeSheetRepository.getAllByWorkOrder_Supplier_UuidAndStatus(supplierUuid, TimeSheetStatus.APPROVED);
         return this.timeSheetMapper.mapListTimeSheetToListTimeSheetDataForInvoiceDto(allTimeSheetsForTheSupplier);
     }
-
+    @CacheEvict(value = "approvedTimesheetCounts", key = "#invoice.buyer.uuid")
     public void saveInvoiceIdToTimeSheet(List<String> timeSheetIds, Invoice invoice) {
         for(String timeSheetId : timeSheetIds) {
             TimeSheet ts = this.timeSheetRepository.getTimeSheetByTimeSheetId(timeSheetId);
@@ -223,6 +223,7 @@ public class TimeSheetService {
         return this.timeSheetMapper.mapListTimeSheetToListTimeSheetDataForInvoiceDto(timeSheets);
     }
 
+    @Cacheable(value = "approvedTimesheetCounts", key = "#buyer.uuid")
     public Long countApprovedTimeSheetsForBuyer(Buyer buyer) {
         return this.timeSheetRepository.countApprovedTimeSheetByBuyer(buyer);
     }
