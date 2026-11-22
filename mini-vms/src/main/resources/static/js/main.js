@@ -89,11 +89,7 @@
     field.classList.add("is-invalid");
     var feedback = field.parentElement.querySelector(".invalid-feedback");
     if (feedback && message) {
-      // adding if statement so the error message from the DTO are displaye
-      if (!feedback.textContent) {
-        feedback.textContent = message;
-      }
-
+      feedback.textContent = message;
     }
   }
 

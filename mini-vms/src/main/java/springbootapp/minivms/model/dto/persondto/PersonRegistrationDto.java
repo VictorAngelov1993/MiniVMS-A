@@ -1,5 +1,8 @@
 package springbootapp.minivms.model.dto.persondto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import springbootapp.minivms.model.entities.enums.Role;
 
 
@@ -9,10 +12,15 @@ public class PersonRegistrationDto {
     // I have tried to work with the jakarta.validation.constraints.* to validate the data via Annotations in the DTO
     // ,but it's not working well with the JS that I have, so I
     // have moved all the validation in the Service.
+    @Size(min = 4, message = "Username should be at least 4 characters")
     private  String username;
+    @NotNull(message = "Name should be at least 1 character")
     private String firstName;
+    @NotNull(message = "Name should be at least 1 character")
     private String lastName;
+    @Pattern(regexp = "^[A-Za-z0-9]+([._-][A-Za-z0-9]+)*@[A-Za-z]+(-[A-Za-z]+)*(\\.[A-Za-z]+(-[A-Za-z]+)*)+$", message = "Email format should match global standards example@example.com")
     private String email;
+    @Size(min = 5, message = "Password should be at least 5 characters")
     private String password;
     private String confirmPassword;
     private Role role;

@@ -56,10 +56,13 @@
         <!-- th:errors="*{username} displays the error that is stored in the BindingResult Object -->
         <div class="mb-3">
           <label for="username" class="form-label">Username<span class="required-marker">*</span></label>
-          <input type="text" class="form-control" th:field="*{username}" id="username" required
-                 autocomplete="username" aria-required="true" minlength="3">
-          <div class="invalid-feedback">Required Field At Least 3 Characters</div>
-
+          <input type="text" class="form-control" th:field="*{username}"
+                 th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'"
+                 id="username" required autocomplete="username" aria-required="true" minlength="3">
+          <div class="invalid-feedback"
+               th:text="${#fields.hasErrors('username')} ? ${#fields.errors('username')[0]} : 'Required Field At Least 3 Characters'">
+            Required Field At Least 3 Characters
+          </div>
         </div>
 
         <!-- Adding the First and Last Name fields -->
