@@ -12,6 +12,7 @@ import springbootapp.minivms.repositories.personrepositories.SupplierRepository;
 import springbootapp.minivms.repositories.personrepositories.WorkerRepository;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -62,5 +63,9 @@ public class BuyerService {
 
     public BudgetResponseDto viewBudget(UUID buyerUuid) {
         return this.paymentFeignClient.viewBudget(buyerUuid);
+    }
+
+    public List<Buyer> getAllBuyers() {
+        return this.buyerRepository.findAll();
     }
 }

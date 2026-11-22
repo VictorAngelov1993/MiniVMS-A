@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import springbootapp.minivms.model.dto.persondto.LoggedUserDto;
 import springbootapp.minivms.model.dto.workitemdto.jobposting.JobPostingCreateDto;
 import springbootapp.minivms.model.dto.workitemdto.jobposting.JobPostingDetailsDto;
-import springbootapp.minivms.model.entities.enums.Role;
 import springbootapp.minivms.model.entities.workitems.JobPosting;
 import springbootapp.minivms.services.workitemsservices.JobPostingService;
 
@@ -32,7 +31,6 @@ public class JobPostingController {
         this.jobPostingService = jobPostingService;
     }
 
-    // @PreAuthorize("hasRole('BUYER')") this is for the advanced course because it is part of spring security.
     @GetMapping("/buyer/job-postings")
     public String showBuyerJobPostings(@AuthenticationPrincipal LoggedUserDto loggedUser, Model model) {
 

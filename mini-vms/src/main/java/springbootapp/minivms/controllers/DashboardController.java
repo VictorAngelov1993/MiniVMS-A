@@ -14,6 +14,7 @@ import springbootapp.minivms.model.dto.persondto.WorkerDashboardStatsDto;
 import springbootapp.minivms.model.entities.persons.Buyer;
 import springbootapp.minivms.model.entities.persons.Supplier;
 import springbootapp.minivms.model.entities.persons.Worker;
+import springbootapp.minivms.schedulers.ApprovedTimeSheetReminderScheduler;
 import springbootapp.minivms.services.personservices.BuyerService;
 import springbootapp.minivms.services.personservices.SupplierService;
 import springbootapp.minivms.services.personservices.WorkerService;
@@ -35,6 +36,7 @@ public class DashboardController {
     private final WorkOrderService workOrderService;
     private final WorkerService workerService;
     private final TimeSheetService timeSheetService;
+    private final ApprovedTimeSheetReminderScheduler approvedTimeSheetReminderScheduler;
 
     @Autowired
     public DashboardController(JobPostingService jobPostingService,
@@ -43,7 +45,8 @@ public class DashboardController {
                                JobSeekerService jobSeekerService,
                                WorkOrderService workOrderService,
                                WorkerService workerService,
-                               TimeSheetService timeSheetService) {
+                               TimeSheetService timeSheetService,
+                               ApprovedTimeSheetReminderScheduler approvedTimeSheetReminderScheduler) {
         this.jobPostingService = jobPostingService;
         this.buyerService = buyerService;
         this.supplierService = supplierService;
@@ -51,6 +54,7 @@ public class DashboardController {
         this.workOrderService = workOrderService;
         this.workerService = workerService;
         this.timeSheetService = timeSheetService;
+        this.approvedTimeSheetReminderScheduler = approvedTimeSheetReminderScheduler;
     }
 
 
@@ -82,6 +86,9 @@ public class DashboardController {
 
         long countPendingTimeSheets = this.timeSheetService.countPendingTimeSheetForBuyerByBuyerUuid(buyer);
         stats.setPendingTimesheetCount(countPendingTimeSheets);
+
+        Long approvedTimeSheetToInvoice = this.approvedTimeSheetReminderScheduler.getUninvoicedApprovedCountForUser(buyer.getUuid());
+        model.addAttribute("approvedTimesheetsToInvoice", approvedTimeSheetToInvoice);
         // add the status to the model so that thymeleaf can get them.
         model.addAttribute("stats", stats);
 

@@ -13,6 +13,7 @@ import springbootapp.minivms.model.entities.workitems.timesheets.TimeSheetDay;
 import springbootapp.minivms.repositories.personrepositories.WorkerRepository;
 import springbootapp.minivms.repositories.workitems.TimeSheetRepository;
 import springbootapp.minivms.repositories.workitems.WorkOrderRepository;
+import springbootapp.minivms.services.personservices.BuyerService;
 
 import java.math.BigDecimal;
 import java.sql.Time;
@@ -220,6 +221,10 @@ public class TimeSheetService {
 
     public List<TimeSheetDataForInvoiceDTO> getTimeSheetDetailsForInvoiceDetails(List<TimeSheet> timeSheets) {
         return this.timeSheetMapper.mapListTimeSheetToListTimeSheetDataForInvoiceDto(timeSheets);
+    }
+
+    public Long countApprovedTimeSheetsForBuyer(Buyer buyer) {
+        return this.timeSheetRepository.countApprovedTimeSheetByBuyer(buyer);
     }
 
 }

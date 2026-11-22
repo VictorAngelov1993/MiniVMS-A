@@ -12,7 +12,6 @@ import springbootapp.minivms.model.dto.persondto.ProfileDetailDto;
 import springbootapp.minivms.model.dto.persondto.ProfileEditDto;
 import springbootapp.minivms.services.personservices.ProfileService;
 
-import java.util.UUID;
 
 @Controller
 public class ProfileController {
@@ -47,7 +46,6 @@ public class ProfileController {
                               @ModelAttribute("profileEditDto") ProfileEditDto profileEditDto) {
 
         this.profileService.editProfile(loggedUser, profileEditDto);
-        // TODO check why the data is not reflecting in the UI
         return "redirect:/profile";
     }
 }
