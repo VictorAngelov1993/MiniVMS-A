@@ -13,6 +13,7 @@ import springbootapp.minivms.model.entities.enums.InvoiceStatus;
 import springbootapp.minivms.model.entities.workitems.Invoice;
 import springbootapp.minivms.model.entities.workitems.timesheets.TimeSheet;
 import springbootapp.minivms.repositories.workitems.InvoiceRepository;
+import springbootapp.minivms.schedulers.ApprovedTimeSheetReminderScheduler;
 import springbootapp.minivms.services.personservices.BuyerService;
 import springbootapp.minivms.services.personservices.SupplierService;
 
@@ -31,6 +32,7 @@ public class InvoiceService {
     private final TimeSheetService timeSheetService;
     private final PaymentFeignClient paymentFeignClient;
     private final BuyerService buyerService;
+    private final ApprovedTimeSheetReminderScheduler approvedTimeSheetReminderScheduler;
 
 
 
@@ -40,13 +42,15 @@ public class InvoiceService {
                           SupplierService supplierService,
                           TimeSheetService timeSheetService,
                           PaymentFeignClient paymentFeignClient,
-                          BuyerService buyerService) {
+                          BuyerService buyerService,
+                          ApprovedTimeSheetReminderScheduler approvedTimeSheetReminderScheduler) {
         this.invoiceRepository = invoiceRepository;
         this.invoiceMapper = invoiceMapper;
         this.supplierService = supplierService;
         this.timeSheetService = timeSheetService;
         this.paymentFeignClient = paymentFeignClient;
         this.buyerService = buyerService;
+        this.approvedTimeSheetReminderScheduler = approvedTimeSheetReminderScheduler;
     }
 
     public List<InvoiceCardDto> getAllInvoicesForTheBuyerReturnedAsCard(UUID loggedUserUUid) {
@@ -97,6 +101,7 @@ public class InvoiceService {
         invoiceToSave.setTimeSheets(this.getTimeSheetsById(invoiceDto.getTimeSheetIds()));
         this.invoiceRepository.save(invoiceToSave);
         this.timeSheetService.saveInvoiceIdToTimeSheet(invoiceDto.getTimeSheetIds(), invoiceToSave);
+        this.approvedTimeSheetReminderScheduler.refreshForBuyerUuid(loggedBuyerUuid);
     }
 
     private List<TimeSheet> getTimeSheetsById(List<String> timeSheetIds) {

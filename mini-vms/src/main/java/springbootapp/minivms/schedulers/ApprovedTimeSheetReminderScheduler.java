@@ -32,10 +32,24 @@ public class ApprovedTimeSheetReminderScheduler {
         List<Buyer> buyers = this.buyerService.getAllBuyers();
 
         for(Buyer buyer : buyers) {
-            Long count = this.timeSheetService.countApprovedTimeSheetsForBuyer(buyer);
-            uninvoicedApprovedCounts.put(buyer.getUuid(), count);
+            this.refreshForBuyer(buyer);
         }
         log.info("Hourly check complete: evaluated approved timesheets for {} buyer(s)", buyers.size());
+    }
+
+    public void refreshForBuyer(Buyer buyer) {
+        if(buyer == null || buyer.getUuid() == null) {
+            return;
+        }
+        Long count = this.timeSheetService.countApprovedTimeSheetsForBuyer(buyer);
+        uninvoicedApprovedCounts.put(buyer.getUuid(), count != null ? count : 0L);
+    }
+
+    public void refreshForBuyerUuid(UUID uuid) {
+        if(uuid == null) {
+            return;
+        }
+        this.refreshForBuyer(this.buyerService.getBuyerByUuid(uuid));
     }
 
     public Long getUninvoicedApprovedCountForUser(UUID buyerUuid) {

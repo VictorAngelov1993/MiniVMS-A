@@ -68,4 +68,6 @@ public class BuyerService {
     public List<Buyer> getAllBuyers() {
         return this.buyerRepository.findAll();
     }
+
+
 }
