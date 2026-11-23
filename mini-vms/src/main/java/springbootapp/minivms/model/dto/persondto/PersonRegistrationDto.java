@@ -12,7 +12,7 @@ public class PersonRegistrationDto {
     // I have tried to work with the jakarta.validation.constraints.* to validate the data via Annotations in the DTO
     // ,but it's not working well with the JS that I have, so I
     // have moved all the validation in the Service.
-    @Size(min = 4, message = "Username should be at least 4 characters")
+    @Size(min = 3, message = "Username should be at least 3 characters")
     private  String username;
     @NotNull(message = "Name should be at least 1 character")
     private String firstName;

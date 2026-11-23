@@ -2,9 +2,11 @@ package com.minivms.paymentservice.service;
 
 import com.minivms.paymentservice.model.dto.PaymentRequestDto;
 import com.minivms.paymentservice.model.dto.PaymentResponseDto;
+import com.minivms.paymentservice.model.dto.PaymentResponseFullDataDto;
 import com.minivms.paymentservice.model.entities.Payment;
 import com.minivms.paymentservice.model.entities.enums.PaymentStatus;
 import com.minivms.paymentservice.repository.PaymentRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +18,14 @@ public class PaymentServiceImpl implements PaymentService{
 
     private final BudgetServiceImpl budgetService;
     private final PaymentRepository paymentRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public PaymentServiceImpl(BudgetServiceImpl budgetService, PaymentRepository paymentRepository) {
+    public PaymentServiceImpl(BudgetServiceImpl budgetService, PaymentRepository paymentRepository,
+                              ModelMapper modelMapper) {
         this.budgetService = budgetService;
         this.paymentRepository = paymentRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -36,9 +41,9 @@ public class PaymentServiceImpl implements PaymentService{
         return new PaymentResponseDto(request.getInvoiceId(), PaymentStatus.PAID);
     }
     @Override
-     public PaymentResponseDto getPayment(UUID id) {
-        // TODO implement the get payment.
-        return null;
+     public PaymentResponseFullDataDto getPaymentFullData(String invoiceID) {
+        Payment payment = this.paymentRepository.getPaymentByInvoiceId(invoiceID);
+        return this.modelMapper.map(payment, PaymentResponseFullDataDto.class);
     }
 
 

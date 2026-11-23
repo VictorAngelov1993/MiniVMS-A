@@ -3,6 +3,7 @@ package com.minivms.paymentservice.controller;
 import com.minivms.paymentservice.model.dto.BudgetResponseDto;
 import com.minivms.paymentservice.model.dto.PaymentRequestDto;
 import com.minivms.paymentservice.model.dto.PaymentResponseDto;
+import com.minivms.paymentservice.model.dto.PaymentResponseFullDataDto;
 import com.minivms.paymentservice.model.entities.Payment;
 import com.minivms.paymentservice.model.entities.enums.PaymentStatus;
 import com.minivms.paymentservice.service.BudgetServiceImpl;
@@ -27,8 +28,8 @@ public class PaymentController {
 
 
     @GetMapping("/{id}")
-    public PaymentResponseDto getPayment(@PathVariable("id") String invoiceId) {
-        return null;
+    public PaymentResponseFullDataDto getPayment(@PathVariable("id") String invoiceId) {
+       return this.paymentService.getPaymentFullData(invoiceId);
     }
 
     @PostMapping("/process")
