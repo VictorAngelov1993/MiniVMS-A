@@ -1,15 +1,18 @@
 package springbootapp.minivms.services.workitemsservices;
 
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import springbootapp.minivms.feign.PaymentFeignClient;
 import springbootapp.minivms.mappers.InvoiceMapper;
 import springbootapp.minivms.model.dto.paymentdto.PaymentRequestDto;
+import springbootapp.minivms.model.dto.paymentdto.PaymentResponseDto;
 import springbootapp.minivms.model.dto.workitemdto.invoice.CreateInvoiceDto;
 import springbootapp.minivms.model.dto.workitemdto.invoice.InvoiceCardDto;
 import springbootapp.minivms.model.dto.workitemdto.invoice.InvoicePreviewDTO;
 import springbootapp.minivms.model.dto.workitemdto.timesheet.TimeSheetDataForInvoiceDTO;
 import springbootapp.minivms.model.entities.enums.InvoiceStatus;
+import springbootapp.minivms.model.entities.enums.PaymentStatus;
 import springbootapp.minivms.model.entities.workitems.Invoice;
 import springbootapp.minivms.model.entities.workitems.timesheets.TimeSheet;
 import springbootapp.minivms.repositories.workitems.InvoiceRepository;
@@ -86,9 +89,16 @@ public class InvoiceService {
         requestDto.setAmount(invoice.getTotalAmount());
         requestDto.setBuyerUuid(buyerUuid);
         requestDto.setSupplierName(invoice.getSupplierName());
-        this.paymentFeignClient.processPayment(requestDto);
-        invoice.setStatus(InvoiceStatus.PAID);
-        this.invoiceRepository.save(invoice);
+
+        PaymentResponseDto response = this.paymentFeignClient.processPayment(requestDto);
+        if(response.getStatus() != PaymentStatus.REJECTED) {
+            invoice.setStatus(InvoiceStatus.PAID);
+            this.invoiceRepository.save(invoice);
+        }
+        if (response.getStatus() == PaymentStatus.REJECTED) {
+            invoice.setStatus(InvoiceStatus.REJECTED);
+            this.invoiceRepository.save(invoice);
+        }
     }
 
     public void saveInvoice(CreateInvoiceDto invoiceDto, UUID loggedBuyerUuid) {
