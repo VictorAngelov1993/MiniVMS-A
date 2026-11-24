@@ -2,12 +2,14 @@ package springbootapp.minivms.services.personservices;
 
 
 
+import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import springbootapp.minivms.exception.custom.BudgetNotFoundException;
 import springbootapp.minivms.exception.custom.UserNotFoundException;
 import springbootapp.minivms.feign.PaymentFeignClient;
 import springbootapp.minivms.model.dto.paymentdto.BudgetRequestDto;
@@ -71,7 +73,11 @@ public class BuyerService {
     }
 
     public BudgetResponseDto viewBudget(UUID buyerUuid) {
-        return this.paymentFeignClient.viewBudget(buyerUuid);
+        try {
+            return this.paymentFeignClient.viewBudget(buyerUuid);
+        } catch (FeignException.NotFound ex) {
+            throw new BudgetNotFoundException("No budget account found.");
+        }
     }
     @Cacheable(value = "buyersList", key = "'all'")
     public List<Buyer> getAllBuyers() {

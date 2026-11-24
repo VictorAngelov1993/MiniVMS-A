@@ -7,10 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import springbootapp.minivms.exception.custom.NotExistingSupplier;
-import springbootapp.minivms.exception.custom.NotExistingWorkOrder;
-import springbootapp.minivms.exception.custom.NotExistingWorker;
-import springbootapp.minivms.exception.custom.UserNotFoundException;
+import springbootapp.minivms.exception.custom.*;
 
 
 @ControllerAdvice
@@ -52,6 +49,14 @@ public class GlobalExceptionHandler {
     public String handleNotExistingWorkOrderException(Exception exception, Model model) {
         model.addAttribute("errorTitle", "Not Found");
         model.addAttribute("errorMessage", exception.getMessage() != null ? exception.getMessage() : "Not Existing Work Order");
+        return "custom-error";
+    }
+
+    @ExceptionHandler(BudgetNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleBudgetNotFoundException(Exception exception, Model model) {
+        model.addAttribute("errorTitle", "Not Found");
+        model.addAttribute("errorMessage", exception.getMessage() != null ? exception.getMessage() : "No budget account exists");
         return "custom-error";
     }
 

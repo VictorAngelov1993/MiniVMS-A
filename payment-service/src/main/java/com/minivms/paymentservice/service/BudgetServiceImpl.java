@@ -52,7 +52,7 @@ public class BudgetServiceImpl implements BudgetService{
         if(buyerBudget.isPresent()) {
             return new BudgetResponseDto("Current Budger", buyerBudget.get().getAvailableBudget());
         }
-        throw new BudgetNotFoundException("No budget account found.");
+        throw new BudgetNotFoundException("No budget account exists for this user.");
     }
 
     @Override
