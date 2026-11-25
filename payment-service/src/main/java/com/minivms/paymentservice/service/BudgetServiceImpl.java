@@ -6,6 +6,8 @@ import com.minivms.paymentservice.model.dto.BudgetResponseDto;
 import com.minivms.paymentservice.model.entities.BuyerBudget;
 import com.minivms.paymentservice.repository.BudgetRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ import java.util.UUID;
 public class BudgetServiceImpl implements BudgetService{
 
     private final BudgetRepository budgetRepository;
+    private static final Logger log = LoggerFactory.getLogger(BudgetServiceImpl.class);
 
     @Autowired
     public BudgetServiceImpl(BudgetRepository budgetRepository) {
@@ -26,8 +29,9 @@ public class BudgetServiceImpl implements BudgetService{
 
     @Override
     public BudgetResponseDto addBudget(UUID buyerUuid, BigDecimal amount) {
-
+        log.info("Starting the process of add budget");
         if(amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            log.warn("The User submitted negative value, addBudget will not continue");
             throw new InvalidAmountException("Value must be greater or equal to 0.01");
         }
 
@@ -37,11 +41,13 @@ public class BudgetServiceImpl implements BudgetService{
            newBudget.setBuyerUuid(buyerUuid);
            newBudget.setAvailableBudget(amount);
            this.budgetRepository.save(newBudget);
+           log.info("New Budged created for buyer with UUID {}", buyerUuid);
            return new BudgetResponseDto("Budget for Buyer " + buyerUuid + " added",
                    newBudget.getAvailableBudget());
        }
        buyerBudget.get().setAvailableBudget(buyerBudget.get().getAvailableBudget().add(amount));
        this.budgetRepository.save(buyerBudget.get());
+       log.info("Buyer with UUID {} added budget", buyerUuid);
        return new BudgetResponseDto("Budget for Buyer " + buyerUuid + " added",
                buyerBudget.get().getAvailableBudget());
 
@@ -50,8 +56,10 @@ public class BudgetServiceImpl implements BudgetService{
     public BudgetResponseDto viewBudget(UUID buyerUuid) {
         Optional<BuyerBudget> buyerBudget = this.budgetRepository.getBuyerBudgetByBuyerUuid(buyerUuid);
         if(buyerBudget.isPresent()) {
+            log.info("Buyer with UUID {} requested to see his budget", buyerUuid);
             return new BudgetResponseDto("Current Budger", buyerBudget.get().getAvailableBudget());
         }
+        log.warn("The User needs to create new budget");
         throw new BudgetNotFoundException("No budget account exists for this user.");
     }
 
