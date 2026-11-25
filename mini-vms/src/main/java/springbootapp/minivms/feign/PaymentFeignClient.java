@@ -1,10 +1,8 @@
 package springbootapp.minivms.feign;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import springbootapp.minivms.config.security.FeignSecurityConfig;
 import springbootapp.minivms.model.dto.paymentdto.BudgetRequestDto;
 import springbootapp.minivms.model.dto.paymentdto.BudgetResponseDto;
 import springbootapp.minivms.model.dto.paymentdto.PaymentRequestDto;
@@ -12,7 +10,7 @@ import springbootapp.minivms.model.dto.paymentdto.PaymentResponseDto;
 
 import java.util.UUID;
 
-@FeignClient(name = "payment-service", url = "http://localhost:8081")
+@FeignClient(name = "payment-service", url = "http://localhost:8081", configuration = FeignSecurityConfig.class)
 
 public interface PaymentFeignClient {
 
@@ -23,7 +21,7 @@ public interface PaymentFeignClient {
     @GetMapping("/api/budgets/view")
     BudgetResponseDto viewBudget(@RequestParam UUID buyerUuid);
 
-    @PostMapping("api/payments/process")
+    @PostMapping("/api/payments/process")
     PaymentResponseDto processPayment(@RequestBody PaymentRequestDto requestDto);
 
 

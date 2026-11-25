@@ -2,6 +2,7 @@ package springbootapp.minivms.services.personservices;
 
 
 
+import feign.Feign;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import springbootapp.minivms.config.security.FeignJwtService;
 import springbootapp.minivms.exception.custom.BudgetNotFoundException;
 import springbootapp.minivms.exception.custom.UserNotFoundException;
 import springbootapp.minivms.feign.PaymentFeignClient;
@@ -34,6 +36,7 @@ public class BuyerService {
     private final PaymentFeignClient paymentFeignClient;
     private static final Logger log = LoggerFactory.getLogger(BuyerService.class);
 
+
     @Autowired
     public BuyerService(BuyerRepository buyerRepository,
                         SupplierRepository supplierRepository,
@@ -43,6 +46,7 @@ public class BuyerService {
         this.supplierRepository = supplierRepository;
         this.workerRepository = workerRepository;
         this.paymentFeignClient = paymentFeignClient;
+
     }
     @CacheEvict(value = "buyersList", allEntries = true)
     public void register(Buyer buyer) {
