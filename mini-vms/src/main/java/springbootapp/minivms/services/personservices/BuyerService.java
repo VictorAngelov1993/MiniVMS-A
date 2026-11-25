@@ -2,7 +2,6 @@ package springbootapp.minivms.services.personservices;
 
 
 
-import feign.Feign;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import springbootapp.minivms.config.security.FeignJwtService;
 import springbootapp.minivms.exception.custom.BudgetNotFoundException;
 import springbootapp.minivms.exception.custom.UserNotFoundException;
 import springbootapp.minivms.feign.PaymentFeignClient;
@@ -54,9 +52,11 @@ public class BuyerService {
         if(this.buyerRepository.countAllByUsername(buyer.getUsername()) == 1
         || this.supplierRepository.countAllByUsername(buyer.getUsername()) == 1
         || this.workerRepository.countAllByUsername(buyer.getUsername()) == 1) {
+            log.warn("Buyer registration rejected: username '{}' already exists", buyer.getUsername());
             throw new IllegalArgumentException("Username already exist");
         }
         this.buyerRepository.save(buyer);
+        log.info("Registered new buyer with username='{}'", buyer.getUsername());
 
     }
     @Cacheable(value = "buyersList", key = "'username:' + #username")
@@ -72,14 +72,20 @@ public class BuyerService {
         BudgetRequestDto requestDto = new BudgetRequestDto();
         requestDto.setBuyerUuid(buyerUuid);
         requestDto.setAmountToAdd(amountToAdd);
-
-        return paymentFeignClient.addBudget(requestDto);
+        log.info("Sending Buyer UUID {} and budget amount {} to the payment service", buyerUuid, amountToAdd);
+        BudgetResponseDto response = paymentFeignClient.addBudget(requestDto);
+        log.info("Successfully added {} to buyer with UUID {}", amountToAdd, buyerUuid);
+        return response;
     }
 
     public BudgetResponseDto viewBudget(UUID buyerUuid) {
+        log.info("Requesting budget details for buyerUuid={}", buyerUuid);
         try {
-            return this.paymentFeignClient.viewBudget(buyerUuid);
+            BudgetResponseDto responseDto = this.paymentFeignClient.viewBudget(buyerUuid);
+            log.info("Retrieved budget details for buyerUuid={}", buyerUuid);
+            return responseDto;
         } catch (FeignException.NotFound ex) {
+            log.warn("No budget account found in payment service for buyerUuid={}", buyerUuid);
             throw new BudgetNotFoundException("No budget account found.");
         }
     }

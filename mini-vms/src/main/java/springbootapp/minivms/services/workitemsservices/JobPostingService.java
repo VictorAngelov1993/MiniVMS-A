@@ -1,5 +1,7 @@
 package springbootapp.minivms.services.workitemsservices;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import springbootapp.minivms.model.dto.workitemdto.jobposting.JobPostingCreateDto;
@@ -19,6 +21,7 @@ public class JobPostingService {
 
     private final JobPostingRepository jobPostingRepository;
     private final BuyerRepository buyerRepository;
+    private static final Logger log = LoggerFactory.getLogger(JobPostingService.class);
 
     @Autowired
     public JobPostingService(JobPostingRepository jobPostingRepository,
@@ -36,10 +39,11 @@ public class JobPostingService {
     }
 
     public void createJobPosting(JobPostingCreateDto dto, UUID buyerUuid) {
-
+        log.info("Starting the process of creating Job Posting");
         Optional<Buyer> buyer = this.buyerRepository.getBuyerByUuid(buyerUuid);
         Buyer buyerUser = buyer.orElseThrow( () -> new IllegalStateException("Invalid logged User"));
         if(dto.getEndDate().isBefore(dto.getStartDate())) {
+            log.warn("User entered end date before start date");
             throw new IllegalArgumentException("End Date cannot be before Start Date");
         }
         JobPosting jobPosting = new JobPosting();
@@ -53,6 +57,7 @@ public class JobPostingService {
         jobPosting.setBuyer(buyerUser);
 
         this.jobPostingRepository.save(jobPosting);
+        log.info("Job Posting successfully created");
 
     }
 

@@ -1,5 +1,7 @@
 package springbootapp.minivms.services.workitemsservices;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,7 @@ public class TimeSheetService {
     private final WorkerRepository workerRepository;
     private final TimeSheetMapper timeSheetMapper;
     private final WorkOrderRepository workOrderRepository;
+    private static final Logger log = LoggerFactory.getLogger(TimeSheetService.class);
 
 
     public TimeSheetService(TimeSheetRepository timeSheetRepository,
@@ -66,6 +69,7 @@ public class TimeSheetService {
     }
 
     private void generateWorkerTimeSheets(WorkOrder workerWorkOrder) {
+        log.info("Starting the process of Generating Time Sheets for the worker");
         LocalDate start = workerWorkOrder.getStartDate();
         LocalDate end = workerWorkOrder.getEndDate();
         // below will get Monday of the starting week.
@@ -124,6 +128,7 @@ public class TimeSheetService {
 
             weekStartDay = weekStartDay.plusWeeks(1);
         }
+        log.info("All Time Sheets were created for Worker {}", workerWorkOrder.getWorker().getFullName());
 
     }
 
@@ -170,6 +175,7 @@ public class TimeSheetService {
         }
         //then we save the time sheet.
         this.timeSheetRepository.save(timeSheet);
+        log.info("Time Sheet with ID {} was successfully submitted", timeSheet.getTimeSheetId());
 
     }
 

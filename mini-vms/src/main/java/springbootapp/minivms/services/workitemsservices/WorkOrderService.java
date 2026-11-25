@@ -1,5 +1,7 @@
 package springbootapp.minivms.services.workitemsservices;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import springbootapp.minivms.exception.custom.NotExistingWorkOrder;
@@ -26,11 +28,13 @@ import java.util.UUID;
 
 @Service
 public class WorkOrderService {
+    private static final Logger log = LoggerFactory.getLogger(WorkOrderService.class);
     private final WorkOrderRepository workOrderRepository;
     private final WorkOrderMapper workOrderMapper;
     private final JobPostingRepository jobPostingRepository;
     private final JobSeekerRepository jobSeekerRepository;
     private final TimeSheetRepository timeSheetRepository;
+
 
 
     @Autowired
@@ -53,7 +57,8 @@ public class WorkOrderService {
         return this.workOrderMapper.mapListOfWorkOrderToListCardDto(allWorkOrders);
     }
 
-    public void createWorOrder(WorkOrderCreateDto dto) {
+    public void createWorkOrder(WorkOrderCreateDto dto) {
+        log.info("Starting the process of creating Work Order");
         JobPosting jobPosting = this.jobPostingRepository.getJobPostingByJobPostingId(dto.getJobPostingId());
         JobSeeker jobSeeker = this.jobSeekerRepository.getJobSeekerByJobSeekerId(dto.getJobSeekerId());
         Supplier supplier = jobSeeker.getSupplier();
@@ -69,8 +74,7 @@ public class WorkOrderService {
         workOrder.setSupplier(supplier);
         workOrder.setStatus(WorkOrderStatus.ACTIVE);
         this.workOrderRepository.save(workOrder);
-
-
+        log.info("Work Order with id {} created", workOrder.getWorkOrderId());
     }
 
 
@@ -130,8 +134,6 @@ public class WorkOrderService {
         List<WorkOrder> expiredWorkOrders = this.workOrderRepository.getAllByEndDateBefore(LocalDate.now());
         expiredWorkOrders.forEach(workOrder -> this.closeWorkOrderByWorkOrderId(workOrder.getWorkOrderId()));
     }
-
-
 
 
 }

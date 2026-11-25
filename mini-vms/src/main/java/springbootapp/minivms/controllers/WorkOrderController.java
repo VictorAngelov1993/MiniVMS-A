@@ -75,7 +75,7 @@ public class WorkOrderController {
 
         // create and save the work order in the DB.
         try {
-            this.workOrderService.createWorOrder(dto);
+            this.workOrderService.createWorkOrder(dto);
             return "redirect:/buyer/workorders";
         } catch (Exception exception) {
             model.addAttribute("errorMessage", exception.getMessage());

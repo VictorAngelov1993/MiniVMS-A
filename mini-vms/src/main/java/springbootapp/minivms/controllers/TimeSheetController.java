@@ -92,9 +92,6 @@ public class TimeSheetController {
 
     @PostMapping("buyer/timesheets/{id}/reject")
     public String buyerRejectTimeSheet(@PathVariable String id) {
-        // Reject the time sheet
-        //TODO the UI has section for Reject Reason. I will need to implement that in the future.
-        // because I do not have a field for Reject reason in the Time Sheet entity
         this.timeSheetService.rejectTimeSheet(id);
 
         return "redirect:/buyer/timesheets";

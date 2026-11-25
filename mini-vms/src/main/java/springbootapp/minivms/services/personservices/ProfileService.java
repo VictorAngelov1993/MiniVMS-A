@@ -1,5 +1,7 @@
 package springbootapp.minivms.services.personservices;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import springbootapp.minivms.exception.custom.UserNotFoundException;
@@ -13,7 +15,7 @@ import springbootapp.minivms.repositories.personrepositories.BuyerRepository;
 import springbootapp.minivms.repositories.personrepositories.SupplierRepository;
 import springbootapp.minivms.repositories.personrepositories.WorkerRepository;
 
-import java.util.UUID;
+
 
 @Service
 public class ProfileService {
@@ -22,6 +24,7 @@ public class ProfileService {
     private final SupplierRepository supplierRepository;
     private final WorkerRepository workerRepository;
     private final UserMapper userMapper;
+    private static final Logger log = LoggerFactory.getLogger(ProfileService.class);
 
 
     @Autowired
@@ -35,6 +38,7 @@ public class ProfileService {
     }
 
     public ProfileDetailDto getLoggedUserDetails(LoggedUserDto loggedUserUuid) {
+        log.info("Getting the User profile data");
         return this.userMapper.mapLoggedUserToProfileDto(loggedUserUuid);
     }
 
@@ -47,6 +51,7 @@ public class ProfileService {
             this.getDataFromDto(userToUpdate, editDto);
             this.buyerRepository.save((Buyer) userToUpdate);
             this.updateLoggedUserDtoToReflectTheProfileUpdate(loggedUser, userToUpdate);
+            log.info("User with username {} has updated their profile", ((Buyer) userToUpdate).getUsername());
         }
         if(loggedUser.getRole().equals(Role.SUPPLIER)) {
             userToUpdate = this.supplierRepository.getSupplierByUuid(loggedUser.getUuid())
@@ -55,6 +60,7 @@ public class ProfileService {
             this.getDataFromDto(userToUpdate, editDto);
             this.supplierRepository.save((Supplier) userToUpdate);
             this.updateLoggedUserDtoToReflectTheProfileUpdate(loggedUser, userToUpdate);
+            log.info("User with username {} has updated their profile", ((Supplier) userToUpdate).getUsername());
         }
         if(loggedUser.getRole().equals(Role.WORKER)) {
             userToUpdate = this.workerRepository.getWorkerByUuid(loggedUser.getUuid())
@@ -63,6 +69,7 @@ public class ProfileService {
             this.getDataFromDto(userToUpdate, editDto);
             this.workerRepository.save((Worker) userToUpdate);
             this.updateLoggedUserDtoToReflectTheProfileUpdate(loggedUser, userToUpdate);
+            log.info("User with username {} has updated their profile", ((Worker) userToUpdate).getUsername());
         }
 
 

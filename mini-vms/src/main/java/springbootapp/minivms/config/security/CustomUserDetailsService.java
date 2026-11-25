@@ -1,6 +1,8 @@
 package springbootapp.minivms.config.security;
 
 import org.jspecify.annotations.NullMarked;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,6 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final SupplierRepository supplierRepository;
     private final WorkerRepository workerRepository;
     private final MapAbstractPersonToLoggedUserDto mapAbstractPersonToLoggedUserDto;
+    private static final Logger log = LoggerFactory.getLogger(CustomUserDetailsService.class);
 
     public CustomUserDetailsService(BuyerRepository buyerRepository,
                                     SupplierRepository supplierRepository,
@@ -39,19 +42,22 @@ public class CustomUserDetailsService implements UserDetailsService {
         // Get the user who is login in and pass it to Spring Security.
         Optional<Buyer> optionalBuyer = this.buyerRepository.getBuyerByUsername(username);
         if(optionalBuyer.isPresent()) {
+            log.info("The User was identified as Buyer");
             return this.mapAbstractPersonToLoggedUserDto.getLoggedUser(optionalBuyer.get());
         }
 
         Optional<Supplier> supplierOptional = this.supplierRepository.getSupplierByUsername(username);
         if(supplierOptional.isPresent()) {
+            log.info("The User was identified as Supplier");
             return this.mapAbstractPersonToLoggedUserDto.getLoggedUser(supplierOptional.get());
         }
 
         Optional<Worker> workerOptional = this.workerRepository.getWorkerByUsername(username);
         if(workerOptional.isPresent()) {
+            log.info("The User was identified as Worker");
             return this.mapAbstractPersonToLoggedUserDto.getLoggedUser(workerOptional.get());
         }
-
+        log.warn("Could not find User with username {}", username);
         throw new UsernameNotFoundException("User with Username " + username + " not found");
 
     }

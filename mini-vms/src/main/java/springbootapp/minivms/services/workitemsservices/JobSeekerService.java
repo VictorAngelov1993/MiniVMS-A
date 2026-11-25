@@ -1,5 +1,7 @@
 package springbootapp.minivms.services.workitemsservices;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import springbootapp.minivms.exception.custom.NotExistingSupplier;
@@ -18,9 +20,10 @@ import java.util.UUID;
 @Service
 public class JobSeekerService {
 
-    private JobSeekerRepository jobSeekerRepository;
-    private SupplierRepository supplierRepository;
-    private JobSeekerMapper jobSeekerMapper;
+    private final JobSeekerRepository jobSeekerRepository;
+    private final SupplierRepository supplierRepository;
+    private final JobSeekerMapper jobSeekerMapper;
+    private static final Logger log = LoggerFactory.getLogger(JobSeekerService.class);
 
     @Autowired
     public JobSeekerService(JobSeekerRepository jobSeekerRepository,
@@ -40,9 +43,15 @@ public class JobSeekerService {
     }
 
     public void createJobSeeker(JobSeekerCreateDto jobSeekerCreateDto, UUID supplierUuid) {
+        log.info("Starting the process of creating Job Seeker");
         // Get the supplier who is logged in so to map it to the Job Seeker so that we know who created the Job Seeker
         Optional <Supplier> loggedSupplier = this.supplierRepository.getSupplierByUuid(supplierUuid);
-        Supplier supplier = loggedSupplier.orElseThrow(() -> new NotExistingSupplier("Not Existing Supplier"));
+        Supplier supplier = loggedSupplier.orElseThrow(() ->{
+            log.warn("Supplier with UUID {} does not exist", supplierUuid);
+            return new NotExistingSupplier("Not Existing Supplier");
+        });
+
+        log.info("Supplier with UUID {} is creating the Job Seeker", supplierUuid);
 
         JobSeeker jobSeeker = this.jobSeekerMapper.mapJobSeekerCreateDtoToJobSeekerEntity(jobSeekerCreateDto, supplier);
 
@@ -51,6 +60,7 @@ public class JobSeekerService {
         jobSeeker.setJobSeekerId(jobSeekerId);
 
         this.jobSeekerRepository.save(jobSeeker);
+        log.info("Job Seeker with id {} was created", jobSeekerId);
     }
 
     public List<JobSeekerSubmitDto> getAllJobSeekersSuitableForSubmission(UUID supplierUuid) {

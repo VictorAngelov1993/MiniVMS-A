@@ -1,5 +1,7 @@
 package springbootapp.minivms.services.personservices;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ public class PersonAuthenticationService {
     private final WorkerRepository workerRepository;
     private final PasswordEncoder passwordEncoder;
     private final MapAbstractPersonToLoggedUserDto mapAbstractPersonToLoggedUserDto;
+    private static final Logger log = LoggerFactory.getLogger(PersonAuthenticationService.class);
 
     // This service is used for the Login process.
     @Autowired
@@ -38,10 +41,14 @@ public class PersonAuthenticationService {
 
         // Checks if the Username exists if yes it will return the person if not it will throw exception
         AbstractPerson abstractPerson = this.findPersonByUsername(username)
-                                .orElseThrow(() -> new IllegalArgumentException("Invalid Username or Password"));
+                                .orElseThrow(() -> {
+                                    log.warn("Authentication or lookup failed: unknown username '{}'", username);
+                                    return new IllegalArgumentException("Invalid Username or Password");
+                                });
 
         // Then checks if the password is correct. If not correct it will throw exception
         if(!passwordEncoder.matches(rawPassword, abstractPerson.getPassword())) {
+            log.warn("Wrong Password");
             throw new IllegalArgumentException("Invalid Username or Password");
         }
         // Map the abstract person to logged user dto and return the Dto.

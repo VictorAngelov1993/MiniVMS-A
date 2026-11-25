@@ -1,6 +1,8 @@
 package springbootapp.minivms.services.personservices;
 
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import springbootapp.minivms.exception.custom.NotExistingWorker;
 import springbootapp.minivms.mappers.WorkerMapper;
@@ -28,6 +30,7 @@ public class WorkerService {
     private final JobPostingRepository jobPostingRepository;
     private final WorkerMapper workerMapper;
     private final ModelMapper modelMapper;
+    private static final Logger log = LoggerFactory.getLogger(WorkerService.class);
 
     public WorkerService(WorkerRepository workerRepository,
                          BuyerRepository buyerRepository,
@@ -48,6 +51,7 @@ public class WorkerService {
         if(this.workerRepository.countAllByUsername(worker.getUsername()) == 1
         || this.buyerRepository.countAllByUsername(worker.getUsername()) == 1
         || this.supplierRepository.countAllByUsername(worker.getUsername()) == 1) {
+            log.warn("Username {} already exists", worker.getUsername());
             throw new IllegalArgumentException("Username already exist");
         }
         // The Work Order validation is happening in the Work Order Service. The Worker here will have valid Work Order.

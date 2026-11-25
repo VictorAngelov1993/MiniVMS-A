@@ -1,6 +1,8 @@
 package springbootapp.minivms.services.workitemsservices;
 
 import feign.FeignException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import springbootapp.minivms.exception.custom.BudgetNotFoundException;
@@ -22,7 +24,6 @@ import springbootapp.minivms.services.personservices.BuyerService;
 import springbootapp.minivms.services.personservices.SupplierService;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -37,6 +38,7 @@ public class InvoiceService {
     private final PaymentFeignClient paymentFeignClient;
     private final BuyerService buyerService;
     private final ApprovedTimeSheetReminderScheduler approvedTimeSheetReminderScheduler;
+    private static final Logger log = LoggerFactory.getLogger(InvoiceService.class);
 
 
 
@@ -77,6 +79,7 @@ public class InvoiceService {
                 .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         preview.setTotalAmount(totalAmountOfAllTimeSheets);
+        log.info("Invoice preview successfully generated");
         return preview;
 
     }

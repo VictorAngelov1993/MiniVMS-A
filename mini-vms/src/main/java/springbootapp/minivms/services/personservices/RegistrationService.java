@@ -1,6 +1,8 @@
 package springbootapp.minivms.services.personservices;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ public class RegistrationService {
     private final PasswordEncoder passwordEncoder;
     private final WorkOrderService workOrderService;
     private final WorkOrderRepository workOrderRepository;
+    private static final Logger log = LoggerFactory.getLogger(RegistrationService.class);
 
     // This service helps with the Registration of Users
     @Autowired
@@ -46,7 +49,7 @@ public class RegistrationService {
     public void registerUser(PersonRegistrationDto personRegistrationDto) {
 
         this.validatePersonRegistrationDto(personRegistrationDto);
-
+        log.info("The User Data was validated");
         // no need for default because the value is coming from a dropdown and will always be one of the tree.
         switch (personRegistrationDto.getRole()) {
             // the .register() method checks if the Username already exists
@@ -54,11 +57,13 @@ public class RegistrationService {
                 Buyer buyer = this.mapper.registrationDtoToBuyer(personRegistrationDto);
                 this.encodePassword(buyer);
                 this.buyerService.register(buyer);
+                log.info("Buyer User successfully registered");
             }
             case SUPPLIER ->{
                 Supplier supplier = this.mapper.registrationDtoToSupplier(personRegistrationDto);
                 this.encodePassword(supplier);
                 this.supplierService.register(supplier);
+                log.info("Supplier User successfully registered");
             }
             case WORKER -> {
                 // If Invalid WorkOrder id is added in the registration from the below getWorkOrderById will throw the exception
@@ -67,8 +72,8 @@ public class RegistrationService {
                 this.encodePassword(worker);
                 workerWorkOrder.setWorker(worker);
                 worker.getWorkOrders().add(workerWorkOrder);
-
                 this.workerService.register(worker);
+                log.info("Worker User successfully registered");
                 workOrderRepository.save(workerWorkOrder);
             }
         }
