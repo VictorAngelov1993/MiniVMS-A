@@ -3,6 +3,7 @@ package springbootapp.minivms.services.workitemsservices;
 import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import springbootapp.minivms.exception.custom.BudgetNotFoundException;
 import springbootapp.minivms.feign.PaymentFeignClient;
 import springbootapp.minivms.mappers.InvoiceMapper;
 import springbootapp.minivms.model.dto.paymentdto.PaymentRequestDto;
@@ -89,8 +90,14 @@ public class InvoiceService {
         requestDto.setAmount(invoice.getTotalAmount());
         requestDto.setBuyerUuid(buyerUuid);
         requestDto.setSupplierName(invoice.getSupplierName());
+        PaymentResponseDto response;
+        try {
+             response = this.paymentFeignClient.processPayment(requestDto);
+        } catch (FeignException.NotFound ex) {
+            throw new BudgetNotFoundException("No Budget please add Budget in your Profile");
+        }
 
-        PaymentResponseDto response = this.paymentFeignClient.processPayment(requestDto);
+
         if(response.getStatus() != PaymentStatus.REJECTED) {
             invoice.setStatus(InvoiceStatus.PAID);
             this.invoiceRepository.save(invoice);
