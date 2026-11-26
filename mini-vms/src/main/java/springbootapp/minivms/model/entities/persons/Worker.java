@@ -4,6 +4,8 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import springbootapp.minivms.model.entities.workitems.WorkOrder;
 
 import java.util.ArrayList;
@@ -14,16 +16,16 @@ public class Worker extends AbstractPerson{
 
 
 
-    @Column(name = "worker_id")
+    @NotBlank(message = "Worker ID is required")
+    @Size(max = 50, message = "Worker ID cannot exceed 50 characters")
+    @Column(name = "worker_id", length = 50)
     private String workerId;
 
     @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL)
     private List<WorkOrder> workOrders = new ArrayList<>();
 
-    @Column(name = "phone_number")
+    @Column(name = "phone_number", length = 30)
     private String phoneNumber;
-
-
 
 
     public List<WorkOrder> getWorkOrders() {

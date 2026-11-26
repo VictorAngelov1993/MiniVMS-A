@@ -77,6 +77,7 @@ public class JobSeekerController {
         List<JobSeekerSubmitDto> jobSeekers = this.jobSeekerService.getAllJobSeekersSuitableForSubmission(loggedUser.getUuid());
         JobPostingDetailsDto jobPosting = this.jobPostingService.getJobPostingCreateDtoById(jobPostingId);
 
+        model.addAttribute("selectedJobSeeker", new JobSeekerSubmitDto());
         model.addAttribute("jobSeekers", jobSeekers);
         model.addAttribute("jobPosting", jobPosting);
         model.addAttribute("jobPostingId", jobPostingId);
@@ -87,13 +88,23 @@ public class JobSeekerController {
 
     @PostMapping("/supplier/submit-job-seeker")
     public String submitJobSeeker(
-            @RequestParam("jobSeekerId") String jobSeekerId,
             @RequestParam("jobPostingId") String jobPostingId,
+            @Valid @ModelAttribute("selectedJobSeeker") JobSeekerSubmitDto selectedJobSeeker,
+            BindingResult bindingResult,
+            @AuthenticationPrincipal LoggedUserDto loggedUser,
             Model model) {
 
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("jobSeekers",
+                    this.jobSeekerService.getAllJobSeekersSuitableForSubmission(loggedUser.getUuid()));
+            model.addAttribute("jobPosting",
+                    this.jobPostingService.getJobPostingCreateDtoById(jobPostingId));
+            model.addAttribute("jobPostingId", jobPostingId);
+            return "supplier/submit-job-seeker";
+        }
 
         JobPostingDetailsDto jobPosting = this.jobPostingService.getJobPostingCreateDtoById(jobPostingId);
-        JobSeekerSubmitDto jobSeeker = this.jobSeekerService.getJobSeekerSubmitDtoById(jobSeekerId);
+        JobSeekerSubmitDto jobSeeker = this.jobSeekerService.getJobSeekerSubmitDtoById(selectedJobSeeker.getJobSeekerId());
 
         this.jobSeekerSubmissionService.createJobSeekerSubmit(jobSeeker, jobPosting);
 

@@ -163,7 +163,10 @@
                  th:href="@{/buyer/timesheets(workOrderId=${workorder != null ? workorder.id : 1})}">
                 <i class="bi bi-clock-history" aria-hidden="true"></i> View Timesheets
               </a>
-              <button type="button" class="btn btn-outline-danger" data-confirm-modal="#confirmCloseModal">
+              <button type="button"
+                      class="btn btn-outline-danger"
+                      data-confirm-modal="#confirmCloseModal"
+                      th:if="${workorder != null and workorder.status != T(springbootapp.minivms.model.entities.enums.WorkOrderStatus).CLOSED}">
                 <i class="bi bi-x-circle" aria-hidden="true"></i> Close Work Order
               </button>
             </div>

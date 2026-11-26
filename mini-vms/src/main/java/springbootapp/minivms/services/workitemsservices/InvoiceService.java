@@ -24,6 +24,7 @@ import springbootapp.minivms.services.personservices.BuyerService;
 import springbootapp.minivms.services.personservices.SupplierService;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -114,7 +115,9 @@ public class InvoiceService {
         invoiceToSave.setInvoiceId(invoiceDto.getInvoiceId());
         invoiceToSave.setBuyer(this.buyerService.getBuyerByUuid(loggedBuyerUuid));
         invoiceToSave.setSupplierName(this.supplierService.getSupplierFullNameForUuid(invoiceDto.getSupplierId()));
-        invoiceToSave.setTotalAmount(invoiceDto.getTotalAmount());
+        BigDecimal totalAmount = invoiceDto.getTotalAmount() != null ? invoiceDto.getTotalAmount().setScale(2, RoundingMode.HALF_UP)
+                : BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+        invoiceToSave.setTotalAmount(totalAmount);
         invoiceToSave.setStatus(InvoiceStatus.CREATED);
         invoiceToSave.setTimeSheets(this.getTimeSheetsById(invoiceDto.getTimeSheetIds()));
         this.invoiceRepository.save(invoiceToSave);

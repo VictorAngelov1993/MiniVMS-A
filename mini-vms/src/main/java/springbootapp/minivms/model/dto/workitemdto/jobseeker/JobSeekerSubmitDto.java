@@ -1,6 +1,9 @@
 package springbootapp.minivms.model.dto.workitemdto.jobseeker;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class JobSeekerSubmitDto {
+    @NotBlank(message = "Please select a job seeker")
     private String jobSeekerId;
     private String firstName;
     private String lastName;

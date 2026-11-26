@@ -142,8 +142,10 @@
                        class="form-control day-input"
                        th:id="${'day-' + stat.index}"
                        th:field="*{days[__${stat.index}__].hours}"
-                       th:classappend="${#fields.hasErrors('days[__${stat.index}__].hours')} ? 'is-invalid' : ''"
-                       th:disabled="${timesheet != null and timesheet.days != null and !timesheet.days[__${stat.index}__].editable}">
+                       th:with="isReadonly=${timesheet != null and timesheet.days != null and !timesheet.days[__${stat.index}__].editable}"
+                       th:readonly="${isReadonly}"
+                       th:attrappend="tabindex=${isReadonly} ? '-1' : null"
+                       th:classappend="${(#fields.hasErrors('days[__${stat.index}__].hours') ? 'is-invalid ' : '') + (isReadonly ? 'bg-body-secondary text-muted locked-day-input' : '')}">
                 <div class="invalid-feedback d-block"
                      th:if="${#fields.hasErrors('days[__${stat.index}__].hours')}"
                      th:errors="*{days[__${stat.index}__].hours}">

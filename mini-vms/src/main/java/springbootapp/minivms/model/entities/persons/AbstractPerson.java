@@ -1,7 +1,9 @@
 package springbootapp.minivms.model.entities.persons;
 
 import jakarta.persistence.*;
-
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -13,19 +15,30 @@ public class AbstractPerson implements Person {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
 
-    @Column(name = "username", nullable = false, unique = true)
+    @NotBlank(message = "Username is required")
+    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
+    @Column(name = "username", nullable = false, unique = true, length = 50)
     private String username;
 
-    @Column(name = "first_name", nullable = false)
+    @NotBlank(message = "First name is required")
+    @Size(max = 50, message = "First name cannot exceed 50 characters")
+    @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
-    @Column(name = "last_name", nullable = false)
+    @NotBlank(message = "Last name is required")
+    @Size(max = 50, message = "Last name cannot exceed 50 characters")
+    @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
-    @Column(name = "email", nullable = false)
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email format should match global standards example@example.com")
+    @Size(max = 100, message = "Email cannot exceed 100 characters")
+    @Column(name = "email", nullable = false, length = 100)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @NotBlank(message = "Password is required")
+    @Size(max = 255, message = "Password cannot exceed 255 characters")
+    @Column(name = "password", nullable = false, length = 255)
     private  String password;
 
     @Column(name = "is_active", nullable = false)

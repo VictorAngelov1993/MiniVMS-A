@@ -1,7 +1,7 @@
 package springbootapp.minivms.model.entities.workitems;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import springbootapp.minivms.model.entities.enums.InvoiceStatus;
 import springbootapp.minivms.model.entities.persons.Buyer;
 import springbootapp.minivms.model.entities.workitems.timesheets.TimeSheet;
@@ -20,23 +20,31 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
 
-    @Column(name = "invoice_id", unique = true, nullable = false)
+    @NotBlank(message = "Invoice ID is required")
+    @Size(max = 50, message = "Invoice ID cannot exceed 50 characters")
+    @Column(name = "invoice_id", unique = true, nullable = false, length = 50)
     private String invoiceId;
 
-    @Column(name = "supplier_name", nullable = false)
-    @NotBlank
+    @NotBlank(message = "Supplier name is required")
+    @Size(max = 100, message = "Supplier name cannot exceed 100 characters")
+    @Column(name = "supplier_name", nullable = false, length = 100)
     private String supplierName;
 
     @OneToMany(mappedBy = "invoice")
     private List<TimeSheet> timeSheets = new ArrayList<>();
 
-
-    @Column(name = "total_amout")
+    @NotNull(message = "Total amount is required")
+    @DecimalMin(value = "0.01", inclusive = true, message = "Total amount must be at least 0.01")
+    @Digits(integer = 10, fraction = 2, message = "Total amount can have up to 10 integer digits and 2 decimal places")
+    @Column(name = "total_amount", precision = 12, scale = 2, nullable = false)
     private BigDecimal totalAmount;
 
+    @NotNull(message = "Status is required")
     @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private InvoiceStatus status;
 
+    @NotNull(message = "Buyer is required")
     @ManyToOne
     @JoinColumn(name = "buyer_id", nullable = false)
     private Buyer buyer;

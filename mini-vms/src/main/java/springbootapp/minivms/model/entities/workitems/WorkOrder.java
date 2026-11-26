@@ -1,7 +1,7 @@
 package springbootapp.minivms.model.entities.workitems;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import springbootapp.minivms.model.entities.enums.WorkOrderStatus;
 import springbootapp.minivms.model.entities.persons.Supplier;
 import springbootapp.minivms.model.entities.persons.Worker;
@@ -21,30 +21,40 @@ public class WorkOrder {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
 
+    @NotNull(message = "Job posting is required")
     @ManyToOne
     @JoinColumn(name = "job_posting_id", nullable = false)
     private JobPosting jobPosting;
 
-    @Column(name = "work_order_id", nullable = false, unique = true)
-    @NotBlank
+    @NotBlank(message = "Work order ID is required")
+    @Size(max = 50, message = "Work order ID cannot exceed 50 characters")
+    @Column(name = "work_order_id", nullable = false, unique = true, length = 50)
     private String workOrderId;
 
+    @NotNull(message = "Job seeker is required")
     @ManyToOne
     @JoinColumn(name = "job_seeker_id", nullable = false)
     private JobSeeker jobSeeker;
 
+    @NotNull(message = "Start date is required")
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
+    @NotNull(message = "End date is required")
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
-    @Column(name = "pay_rate")
+    @NotNull(message = "Pay rate is required")
+    @DecimalMin(value = "0.01", inclusive = true, message = "Pay rate must be at least 0.01")
+    @Digits(integer = 8, fraction = 2, message = "Pay rate can have up to 8 integer digits and 2 decimal places")
+    @Column(name = "pay_rate", precision = 10, scale = 2, nullable = false)
     private BigDecimal payRate;
 
-    @Column(columnDefinition = "TEXT")
+    @Size(max = 5000, message = "Notes cannot exceed 5000 characters")
+    @Column(name = "notes", columnDefinition = "TEXT")
     private String notes;
 
+    @NotNull(message = "Supplier is required")
     @ManyToOne
     @JoinColumn(name = "supplier_id", nullable = false)
     private Supplier supplier;
@@ -57,7 +67,9 @@ public class WorkOrder {
     @OneToMany(mappedBy = "workOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TimeSheet> timeSheets = new ArrayList<>();
 
+    @NotNull(message = "Status is required")
     @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private WorkOrderStatus status;
 
     public WorkOrder() {

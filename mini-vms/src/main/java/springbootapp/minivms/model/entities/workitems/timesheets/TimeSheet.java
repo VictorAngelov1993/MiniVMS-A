@@ -1,6 +1,10 @@
 package springbootapp.minivms.model.entities.workitems.timesheets;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import springbootapp.minivms.model.entities.enums.TimeSheetStatus;
 import springbootapp.minivms.model.entities.workitems.Invoice;
 import springbootapp.minivms.model.entities.workitems.WorkOrder;
@@ -18,29 +22,35 @@ public class TimeSheet {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
 
+    @NotNull(message = "Work order is required")
     @ManyToOne
     @JoinColumn(name = "work_order_id")
     private WorkOrder workOrder;
 
+    @NotNull(message = "Week start date is required")
     @Column(name = "week_start_day")
     private LocalDate weekStartDay;
 
+    @NotNull(message = "Week end date is required")
     @Column(name = "week_end_day")
     private LocalDate weekEndDay;
 
-
+    @Valid
     @OneToMany(mappedBy = "timeSheet", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("date ASC")
     private List<TimeSheetDay> days = new ArrayList<>();
 
-
+    @Size(max = 5000, message = "Notes cannot exceed 5000 characters")
     @Column(columnDefinition = "TEXT")
     private String notes;
 
+    @NotNull(message = "Status is required")
     @Enumerated(EnumType.STRING)
     private TimeSheetStatus status;
 
-    @Column(name = "time_sheet_id", nullable = false)
+    @NotBlank(message = "Timesheet ID is required")
+    @Size(max = 50, message = "Timesheet ID cannot exceed 50 characters")
+    @Column(name = "time_sheet_id", nullable = false, length = 50)
     private String timeSheetId;
 
     @ManyToOne(fetch = FetchType.LAZY)

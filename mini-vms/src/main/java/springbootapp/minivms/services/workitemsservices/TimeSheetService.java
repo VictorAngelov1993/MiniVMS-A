@@ -92,7 +92,6 @@ public class TimeSheetService {
                     timeSheetDay.setTimeSheet(timeSheet);
                     timeSheetDay.setDate(weekStartDay.plusDays(a));
 
-                    // Below two if statements prevent the worker to add hours on days outside his work order dates
                     if(currentDate.isBefore(start)) {
                         timeSheetDay.setHours(BigDecimal.ZERO);
                         timeSheetDay.setEditable(false);

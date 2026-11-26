@@ -99,21 +99,30 @@
       <div class="alert alert-danger form-error-alert d-none" role="alert" aria-live="assertive"></div>
 
       <form id="submitJobSeekerForm" action="/supplier/submit-job-seeker" method="post"
-            th:action="@{/supplier/submit-job-seeker}" class="card card-compact" data-validate novalidate>
+            th:action="@{/supplier/submit-job-seeker}" th:object="${selectedJobSeeker}"
+            class="card card-compact" data-validate novalidate>
         <div class="card-body">
           <input type="hidden" name="_csrf" th:if="${_csrf}" th:value="${_csrf.token}"/>
-          <input type="hidden" name="jobPostingId" th:value="${jobPostingId}" value="1"/>
+          <input type="hidden" name="jobPostingId" th:value="${jobPostingId}"/>
 
           <div class="mb-3">
             <label for="jobSeekerId" class="form-label">Job Seeker<span class="required-marker">*</span></label>
-            <select class="form-select" id="jobSeekerId" name="jobSeekerId" required aria-required="true">
-              <option value="" selected disabled>Select a job seeker&hellip;</option>
-              <option th:each="seeker : ${jobSeekers}" th:value="${seeker.jobSeekerId}"
-                      th:text="${seeker.firstName + ' ' + seeker.lastName}">
+            <select id="jobSeekerId" class="form-select" th:field="*{jobSeekerId}"
+                    th:errorclass="is-invalid" required aria-required="true">
+              <option value="">Select a job seeker&hellip;</option>
+              <option th:each="seeker : ${jobSeekers}"
+                      th:value="${seeker.jobSeekerId}"
+                      th:text="${seeker.fullName}">
                 Jane Candidate
               </option>
             </select>
-            <div class="invalid-feedback">Please select a job seeker to submit.</div>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('jobSeekerId')}"
+                 th:errors="*{jobSeekerId}">
+              Please select a job seeker to submit.
+            </div>
+            <div class="invalid-feedback" th:unless="${#fields.hasErrors('jobSeekerId')}">
+              Please select a job seeker to submit.
+            </div>
           </div>
 
           <button type="submit" class="btn btn-primary" data-confirm-modal="#confirmSubmitModal"
