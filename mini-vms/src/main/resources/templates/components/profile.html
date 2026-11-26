@@ -54,6 +54,28 @@
     .btn-check-budget:active {
       transform: translateY(0);
     }
+
+    .btn-get-payment {
+      background-color: #eff6ff;
+      color: #1d4ed8;
+      border: 1.5px solid #3b82f6;
+      border-radius: 50px;
+      padding: 0.45rem 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      transition: all 0.25s ease;
+    }
+
+    .btn-get-payment:hover {
+      background-color: #2563eb;
+      color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-get-payment:active {
+      transform: translateY(0);
+    }
   </style>
 </head>
 
@@ -121,6 +143,14 @@
                   <span>Add Budget</span>
                   <i class="bi bi-plus-circle-fill"></i>
                 </a>
+
+                <button type="button"
+                        class="btn btn-get-payment d-inline-flex align-items-center gap-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#getPaymentModal">
+                  <i class="bi bi-receipt fs-5"></i>
+                  <span>Get Payment</span>
+                </button>
               </th:block>
             </div>
           </div>
@@ -166,10 +196,111 @@
   </div>
 </div>
 
+<!-- Get Payment Modal (Buyer) -->
+<div class="modal fade" id="getPaymentModal" tabindex="-1" aria-labelledby="getPaymentModalLabel" aria-hidden="true"
+     th:if="${#strings.equalsIgnoreCase(user.role, 'Buyer')}">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="getPaymentModalLabel">
+          <i class="bi bi-receipt me-2"></i>Get Payment by Invoice ID
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <form id="getPaymentForm">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="invoiceIdInput" class="form-label fw-semibold">Invoice ID</label>
+            <input type="text"
+                   class="form-control"
+                   id="invoiceIdInput"
+                   name="invoiceId"
+                   placeholder="e.g. INV-001"
+                   maxlength="50"
+                   required>
+          </div>
+
+          <div id="paymentErrorAlert" class="alert alert-danger d-none mb-0" role="alert"></div>
+
+          <div id="paymentResultCard" class="card bg-light border-0 d-none mt-3">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-bold" id="resInvoiceId"></span>
+                <span class="badge bg-primary" id="resStatus"></span>
+              </div>
+              <div class="mb-1"><strong>Supplier:</strong> <span id="resSupplierName"></span></div>
+              <div class="mb-1"><strong>Amount:</strong> <span id="resAmount"></span></div>
+              <div><strong>Paid At:</strong> <span id="resPaidAt"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" id="fetchPaymentBtn">
+            <i class="bi bi-search me-1"></i> Fetch Payment
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <footer th:replace="~{components/footer :: app-footer}" class="app-footer mt-auto"></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/main.js" th:src="@{/js/main.js}"></script>
+
+<script th:if="${#strings.equalsIgnoreCase(user.role, 'Buyer')}">
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('getPaymentForm');
+    const input = document.getElementById('invoiceIdInput');
+    const errorAlert = document.getElementById('paymentErrorAlert');
+    const resultCard = document.getElementById('paymentResultCard');
+    const submitBtn = document.getElementById('fetchPaymentBtn');
+
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const invoiceId = input.value.trim();
+      if (!invoiceId) return;
+
+      errorAlert.classList.add('d-none');
+      errorAlert.textContent = '';
+      resultCard.classList.add('d-none');
+      submitBtn.disabled = true;
+
+      try {
+        const response = await fetch(`/buyer/payments/${encodeURIComponent(invoiceId)}`, {
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (!response.ok) {
+          const msg = response.status === 404
+                  ? `No payment found for invoice "${invoiceId}".`
+                  : `Could not retrieve payment (HTTP ${response.status}).`;
+          throw new Error(msg);
+        }
+
+        const data = await response.json();
+        document.getElementById('resInvoiceId').textContent = data.invoiceId ?? invoiceId;
+        document.getElementById('resSupplierName').textContent = data.supplierName ?? '-';
+        document.getElementById('resAmount').textContent = data.amount != null ? Number(data.amount).toFixed(2) : '-';
+        document.getElementById('resStatus').textContent = data.status ?? '-';
+        document.getElementById('resPaidAt').textContent = data.paidAt ?? 'Not paid yet';
+
+        resultCard.classList.remove('d-none');
+      } catch (err) {
+        errorAlert.textContent = err.message || 'Failed to fetch payment details.';
+        errorAlert.classList.remove('d-none');
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  });
+</script>
 
 </body>
 </html>

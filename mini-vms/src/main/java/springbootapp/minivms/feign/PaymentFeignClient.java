@@ -3,10 +3,7 @@ package springbootapp.minivms.feign;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 import springbootapp.minivms.config.security.FeignSecurityConfig;
-import springbootapp.minivms.model.dto.paymentdto.BudgetRequestDto;
-import springbootapp.minivms.model.dto.paymentdto.BudgetResponseDto;
-import springbootapp.minivms.model.dto.paymentdto.PaymentRequestDto;
-import springbootapp.minivms.model.dto.paymentdto.PaymentResponseDto;
+import springbootapp.minivms.model.dto.paymentdto.*;
 
 import java.util.UUID;
 
@@ -23,6 +20,9 @@ public interface PaymentFeignClient {
 
     @PostMapping("/api/payments/process")
     PaymentResponseDto processPayment(@RequestBody PaymentRequestDto requestDto);
+
+    @GetMapping("/api/payments/{id}")
+    PaymentResponseFullDataDto getPaymentByInvoiceId(@PathVariable("id") String invoiceId);
 
 
 }

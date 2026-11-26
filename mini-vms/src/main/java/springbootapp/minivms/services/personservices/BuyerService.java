@@ -10,17 +10,22 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import springbootapp.minivms.exception.custom.BudgetNotFoundException;
+import springbootapp.minivms.exception.custom.NotValidInvoiceId;
 import springbootapp.minivms.exception.custom.UserNotFoundException;
 import springbootapp.minivms.feign.PaymentFeignClient;
 import springbootapp.minivms.model.dto.paymentdto.BudgetRequestDto;
 import springbootapp.minivms.model.dto.paymentdto.BudgetResponseDto;
+import springbootapp.minivms.model.dto.paymentdto.PaymentResponseFullDataDto;
 import springbootapp.minivms.model.entities.persons.Buyer;
+import springbootapp.minivms.model.entities.workitems.Invoice;
 import springbootapp.minivms.repositories.personrepositories.BuyerRepository;
 import springbootapp.minivms.repositories.personrepositories.SupplierRepository;
 import springbootapp.minivms.repositories.personrepositories.WorkerRepository;
+import springbootapp.minivms.repositories.workitems.InvoiceRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,17 +38,20 @@ public class BuyerService {
     private final WorkerRepository workerRepository;
     private final PaymentFeignClient paymentFeignClient;
     private static final Logger log = LoggerFactory.getLogger(BuyerService.class);
+    private final InvoiceRepository invoiceRepository;
 
 
     @Autowired
     public BuyerService(BuyerRepository buyerRepository,
                         SupplierRepository supplierRepository,
                         WorkerRepository workerRepository,
-                        PaymentFeignClient paymentFeignClient) {
+                        PaymentFeignClient paymentFeignClient,
+                        InvoiceRepository invoiceRepository) {
         this.buyerRepository = buyerRepository;
         this.supplierRepository = supplierRepository;
         this.workerRepository = workerRepository;
         this.paymentFeignClient = paymentFeignClient;
+        this.invoiceRepository = invoiceRepository;
 
     }
     @CacheEvict(value = "buyersList", allEntries = true)
@@ -91,6 +99,15 @@ public class BuyerService {
     @Cacheable(value = "buyersList", key = "'all'")
     public List<Buyer> getAllBuyers() {
         return this.buyerRepository.findAll();
+    }
+
+    public PaymentResponseFullDataDto getPaymentData(String invoiceId, UUID buyerUuid) {
+        Invoice invoice = this.invoiceRepository.findByInvoiceId(invoiceId).orElseThrow(() -> new NotValidInvoiceId("Invalid Invoice Id"));
+        UUID invoiceOwnerUuid = invoice.getBuyer().getUuid() != null ? invoice.getBuyer().getUuid() : null;
+        if(!Objects.equals(invoiceOwnerUuid, buyerUuid)) {
+            throw new NotValidInvoiceId("Incorrect Invoice Id");
+        }
+        return this.paymentFeignClient.getPaymentByInvoiceId(invoiceId);
     }
 
 

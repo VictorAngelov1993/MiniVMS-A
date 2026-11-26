@@ -2,14 +2,17 @@ package springbootapp.minivms.controllers;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import springbootapp.minivms.model.dto.paymentdto.BudgetResponseDto;
+import springbootapp.minivms.model.dto.paymentdto.PaymentResponseFullDataDto;
 import springbootapp.minivms.model.dto.persondto.LoggedUserDto;
 import springbootapp.minivms.services.personservices.BuyerService;
 
@@ -46,6 +49,19 @@ public class PaymentController {
         BudgetResponseDto responseDto = this.buyerService.viewBudget(loggedUserDto.getUuid());
         model.addAttribute("budgetAmount", responseDto.getTotalBudget());
         return "buyer/display-budget";
+    }
+
+    @GetMapping("/buyer/payments/{id}")
+    public ResponseEntity<PaymentResponseFullDataDto> getPaymentDetails(@PathVariable("id") String invoiceId,
+                                                                        @AuthenticationPrincipal LoggedUserDto loggedUserDto) {
+
+        PaymentResponseFullDataDto paymentData = this.buyerService.getPaymentData(invoiceId, loggedUserDto.getUuid());
+
+        if(paymentData == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(paymentData);
     }
 
 }

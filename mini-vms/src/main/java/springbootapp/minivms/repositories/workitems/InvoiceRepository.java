@@ -6,6 +6,7 @@ import springbootapp.minivms.model.entities.workitems.Invoice;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -17,4 +18,6 @@ public interface InvoiceRepository extends JpaRepository<Invoice, UUID> {
     BigDecimal getAmountByInvoiceId(String invoiceId);
 
     String getSupplierNameByInvoiceId(String invoiceId);
+
+    Optional<Invoice> findByInvoiceId(String invoiceId);
 }

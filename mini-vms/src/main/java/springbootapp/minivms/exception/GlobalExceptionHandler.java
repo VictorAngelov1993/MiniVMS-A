@@ -60,5 +60,13 @@ public class GlobalExceptionHandler {
         return "custom-error";
     }
 
+    @ExceptionHandler(NotValidInvoiceId.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleNotValidInvoiceId(Exception exception, Model model) {
+        model.addAttribute("errorTitle", "Not Found");
+        model.addAttribute("errorMessage", exception.getMessage() != null ? exception.getMessage() : "Invalid Invoice Id");
+        return "custom-error";
+    }
+
 
 }
