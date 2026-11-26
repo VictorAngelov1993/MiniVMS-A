@@ -14,14 +14,13 @@ public class WorkerMapper {
         WorkerCardDto workerCardDto = new WorkerCardDto();
         workerCardDto.setId(worker.getWorkerId());
         workerCardDto.setFullName(worker.getFullName());
-        workerCardDto.setContactInfo(worker.getEmail()); // Here I will also need to add the phone number but the relation is hard will implement later
+        workerCardDto.setContactInfo(worker.getEmail());
         List<WorkOrder> workerWorkOrders = worker.getWorkOrders();
         workerCardDto.setAssignedWorkOrderCount(workerWorkOrders.size());
         return workerCardDto;
     }
 
     public List<WorkerCardDto> getWorkerCardsFromListOfWorkers(List<Worker> workers) {
-        // if no workers are registered .stream will throw an exception therefore below is to prevent that
         if(workers == null || workers.isEmpty()) {
             return List.of();
         }

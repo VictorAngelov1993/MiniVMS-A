@@ -4,7 +4,6 @@ import com.minivms.paymentservice.model.dto.BudgetResponseDto;
 import com.minivms.paymentservice.model.dto.PaymentRequestDto;
 import com.minivms.paymentservice.model.dto.PaymentResponseDto;
 import com.minivms.paymentservice.model.dto.PaymentResponseFullDataDto;
-import com.minivms.paymentservice.model.entities.Payment;
 import com.minivms.paymentservice.model.entities.enums.PaymentStatus;
 import com.minivms.paymentservice.service.BudgetServiceImpl;
 import com.minivms.paymentservice.service.PaymentServiceImpl;

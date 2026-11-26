@@ -1,17 +1,4 @@
 <!DOCTYPE html>
-<!--
-  Page: worker/timesheet-edit.html
-  Route: GET /worker/timesheets/{id}/edit (render form),
-         POST /worker/timesheets/{id}/save   (Save Timesheet - draft)
-         POST /worker/timesheets/{id}/submit (Submit for Approval)
-  Expected form fields: mon, tue, wed, thu, fri, sat, sun (hours),
-                         monNotes..sunNotes (optional per-day notes)
-  Model attributes expected:
-- timesheet (id, weekStartDate, weekEndDate, status, workOrderId,
-                  days: { mon, tue, wed, thu, fri, sat, sun } hours & notes)
-  Client validation (main.js): per-day max hours (24) and weekly total display;
-  server should also enforce weekly hour limits (e.g. 168) on submit.
--->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
@@ -38,10 +25,8 @@
       </button>
 
       <div class="collapse navbar-collapse" id="appNavbarCollapse">
-        <!-- Center: page title -->
         <span class="navbar-text page-title mx-auto d-none d-lg-inline">Edit Timesheet</span>
 
-        <!-- Right: account dropdown -->
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
           <li class="nav-item">
             <div class="dropdown">
@@ -105,7 +90,6 @@
         </ol>
       </nav>
 
-      <!-- Work Order ID & Week Header Section -->
       <div class="mb-3">
         <div class="text-muted small mb-1">
           <i class="bi bi-briefcase me-1" aria-hidden="true"></i> Work Order:
@@ -130,7 +114,6 @@
             data-validate novalidate>
         <input type="hidden" name="_csrf" th:if="${_csrf}" th:value="${_csrf.token}"/>
 
-        <!-- Add hidden field for timeSheetId so it binds to DTO -->
         <input type="hidden" th:field="*{id}" name="timeSheetId" />
 
         <div class="table-responsive">
@@ -147,10 +130,8 @@
             </tr>
             </thead>
             <tbody>
-            <!-- Iterate over the days list using th:each with a status variable (stat) -->
             <tr>
               <td th:each="day, stat : *{days}">
-                <!-- Hidden field to preserve the date for each day -->
                 <input type="hidden" th:field="*{days[__${stat.index}__].date}" />
 
                 <label th:for="${'day-' + stat.index}" class="visually-hidden">Day hours</label>
@@ -179,10 +160,6 @@
         </div>
 
         <div class="d-flex flex-wrap gap-2">
-          <!--for now I do not need save button-->
-          <!--<button type="submit" class="btn btn-outline-primary">
-            <i class="bi bi-save" aria-hidden="true"></i> Save Timesheet
-          </button>-->
           <button type="button" class="btn btn-primary"
                   th:if="${timesheet == null or !#strings.equalsIgnoreCase(timesheet.status, 'Approved')}"
                   data-confirm-modal="#confirmSubmitTimesheetModal"
@@ -195,7 +172,6 @@
         </div>
       </form>
 
-      <!-- Confirmation modal for submitting the timesheet for approval -->
       <div class="modal fade" id="confirmSubmitTimesheetModal" tabindex="-1"
            aria-labelledby="confirmSubmitTimesheetModalLabel" aria-hidden="true">
         <div class="modal-dialog">

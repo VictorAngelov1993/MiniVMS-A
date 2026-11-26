@@ -3,13 +3,9 @@ package springbootapp.minivms.mappers;
 import org.springframework.stereotype.Component;
 import springbootapp.minivms.model.dto.persondto.PersonRegistrationDto;
 import springbootapp.minivms.model.entities.persons.*;
-import springbootapp.minivms.model.entities.workitems.WorkOrder;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-// This mapper maps the Registration Dto to the User entity.
 @Component
 public class MapPersonRegistrationDtoToEntity {
 

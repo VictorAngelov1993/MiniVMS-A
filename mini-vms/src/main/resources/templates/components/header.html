@@ -38,7 +38,6 @@
       </button>
 
       <div class="collapse navbar-collapse" id="appNavbarCollapse">
-        <!-- Center: optional page title -->
         <span class="navbar-text page-title mx-auto d-none d-lg-inline" th:if="${pageTitle}" th:text="${pageTitle}">
           Page Title
         </span>
@@ -46,7 +45,6 @@
           Page Title
         </span>
 
-        <!-- Right: account dropdown -->
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
           <li class="nav-item">
             <div th:replace="~{components/account-dropdown :: account-dropdown}"></div>

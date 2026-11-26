@@ -19,7 +19,6 @@
   <header th:replace="~{components/header :: app-header(pageTitle='Job Postings')}" class="app-header bg-primary">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary" aria-label="Main navigation">
       <div class="container-fluid">
-        <!-- Left: brand / logo -->
         <a class="navbar-brand app-logo" href="/" aria-label="MiniVMS home">
           <img src="/assets/logo.svg" alt="MiniVMS logo" width="32" height="32">
           <span>MiniVMS</span>
@@ -32,10 +31,8 @@
         </button>
 
         <div class="collapse navbar-collapse" id="appNavbarCollapse">
-          <!-- Center: page title -->
           <span class="navbar-text page-title mx-auto d-none d-lg-inline">Job Postings</span>
 
-          <!-- Right: account dropdown -->
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
             <li class="nav-item">
               <div class="dropdown">
@@ -98,10 +95,6 @@
         <h1 class="h3 mb-4">Job Postings</h1>
 
         <div class="row" th:if="${jobPostings != null and !jobPostings.isEmpty()}">
-
-          <!--The below will cause issue, please check the job-posting.html from the buyer end for additional info as comments-->
-          <!--<div th:replace="~{components/job-posting-card :: job-posting-card(posting=${posting}, detailsUrlPrefix='/supplier/job-postings/')}"
-               th:each="posting : ${jobPostings}"></div>-->
 
           <div class="col-12 col-md-6 col-lg-4 mb-4"
                th:each="jobPosting : ${jobPostings}">

@@ -68,7 +68,6 @@ public class WorkOrderService {
         workOrder.setJobSeeker(jobSeeker);
         workOrder.setStartDate(jobPosting.getStartDate());
         workOrder.setEndDate(jobPosting.getEndDate());
-        // the Worker will be added to the Work Order during the registration of the Worker.
         workOrder.setNotes(dto.getNotes());
         workOrder.setPayRate(dto.getPayRate());
         workOrder.setSupplier(supplier);
@@ -79,14 +78,11 @@ public class WorkOrderService {
 
 
     public String generateWorkOrderId() {
-        // this will cause issues if the User can delete record from the database.
-        // but they are not supposed to delete from the db. The DB should keep the records forever
         long workOrderCount = this.workOrderRepository.count();
         return String.format("WO-%03d", workOrderCount + 1);
     }
 
     public int countBuyerWorkOrders(Buyer buyer) {
-        // Count the buyer work orders
         return this.workOrderRepository.countByJobPosting_Buyer(buyer);
     }
 

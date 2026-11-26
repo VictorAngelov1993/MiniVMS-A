@@ -12,7 +12,6 @@ public class JobPostingDetailsDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private BigDecimal payRate;
-    // The below will be used if a WorkOrder is created.
     private String workOrderId;
     private String jobPostingId;
 

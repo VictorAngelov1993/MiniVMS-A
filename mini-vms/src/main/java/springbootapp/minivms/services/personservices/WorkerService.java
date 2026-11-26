@@ -47,21 +47,18 @@ public class WorkerService {
     }
 
     public void register(Worker worker) {
-        //Below checks if a different user role has the same Username
         if(this.workerRepository.countAllByUsername(worker.getUsername()) == 1
         || this.buyerRepository.countAllByUsername(worker.getUsername()) == 1
         || this.supplierRepository.countAllByUsername(worker.getUsername()) == 1) {
             log.warn("Username {} already exists", worker.getUsername());
             throw new IllegalArgumentException("Username already exist");
         }
-        // The Work Order validation is happening in the Work Order Service. The Worker here will have valid Work Order.
         worker.setWorkerId(this.generateWorkerID());
         this.workerRepository.save(worker);
 
     }
 
     private String generateWorkerID() {
-        // This will fail if a worker is deleted from the database, but users should not be able to delete entities.
         return String.format("WK-%03d", workerRepository.count() + 1);
     }
 

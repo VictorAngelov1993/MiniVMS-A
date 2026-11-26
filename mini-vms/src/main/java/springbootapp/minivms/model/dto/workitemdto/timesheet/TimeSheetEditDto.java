@@ -1,7 +1,6 @@
 package springbootapp.minivms.model.dto.workitemdto.timesheet;
 
 import springbootapp.minivms.model.entities.enums.TimeSheetStatus;
-import springbootapp.minivms.model.entities.workitems.timesheets.TimeSheetDay;
 
 import java.time.LocalDate;
 import java.util.List;

@@ -7,7 +7,6 @@
    ========================================================================= */
 
 :root {
-  /* Brand palette - aligned with Bootstrap 5 default theme colors */
   --vms-primary: #0d6efd;
   --vms-primary-dark: #0b5ed7;
   --vms-secondary: #6c757d;
@@ -20,14 +19,12 @@
   --vms-body-bg: #f4f6f9;
   --vms-border-color: #dee2e6;
 
-  /* Spacing scale (mirrors Bootstrap spacer scale for consistency) */
   --vms-space-xs: 0.25rem;
   --vms-space-sm: 0.5rem;
   --vms-space-md: 1rem;
   --vms-space-lg: 1.5rem;
   --vms-space-xl: 3rem;
 
-  /* Layout */
   --vms-sidebar-width: 240px;
   --vms-header-height: 56px;
   --vms-radius: 0.5rem;
@@ -90,7 +87,7 @@ a.link-plain {
 /* Layout: sidebar + content shell used across role sections              */
 /* ---------------------------------------------------------------------- */
 .app-shell {
-  flex: 1 0 auto; /* Pushes the footer to the bottom when content is short */
+  flex: 1 0 auto;
   width: 100%;
 }
 
@@ -127,7 +124,7 @@ a.link-plain {
 }
 
 .app-footer {
-  flex-shrink: 0; /* Prevents footer from collapsing or getting pushed off */
+  flex-shrink: 0;
   background-color: #fff;
   border-top: 1px solid var(--vms-border-color);
   padding: var(--vms-space-md) 0;

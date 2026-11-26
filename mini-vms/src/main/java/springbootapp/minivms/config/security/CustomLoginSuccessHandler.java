@@ -13,9 +13,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Set;
 
-// we use the CustomLoginSuccessHandled to handle the success logins,
-// currently I use it only to redirect the user to the correct dashboard
-// this class tells the app what to happen after successfully login.
+
 @Component
 public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 

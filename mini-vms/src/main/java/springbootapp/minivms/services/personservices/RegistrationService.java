@@ -16,7 +16,6 @@ import springbootapp.minivms.model.entities.workitems.WorkOrder;
 import springbootapp.minivms.repositories.workitems.WorkOrderRepository;
 import springbootapp.minivms.services.workitemsservices.WorkOrderService;
 
-import java.util.List;
 
 @Service
 public class RegistrationService {
@@ -29,7 +28,6 @@ public class RegistrationService {
     private final WorkOrderRepository workOrderRepository;
     private static final Logger log = LoggerFactory.getLogger(RegistrationService.class);
 
-    // This service helps with the Registration of Users
     @Autowired
     public RegistrationService(BuyerService buyerService,
                                SupplierService supplierService,
@@ -50,9 +48,7 @@ public class RegistrationService {
 
         this.validatePersonRegistrationDto(personRegistrationDto);
         log.info("The User Data was validated");
-        // no need for default because the value is coming from a dropdown and will always be one of the tree.
         switch (personRegistrationDto.getRole()) {
-            // the .register() method checks if the Username already exists
             case BUYER -> {
                 Buyer buyer = this.mapper.registrationDtoToBuyer(personRegistrationDto);
                 this.encodePassword(buyer);
@@ -66,7 +62,6 @@ public class RegistrationService {
                 log.info("Supplier User successfully registered");
             }
             case WORKER -> {
-                // If Invalid WorkOrder id is added in the registration from the below getWorkOrderById will throw the exception
                 WorkOrder workerWorkOrder = this.workOrderService.getWorkOrderById(personRegistrationDto.getWorkOrderId());
                 Worker worker = this.mapper.registrationDtoToWorker(personRegistrationDto);
                 this.encodePassword(worker);

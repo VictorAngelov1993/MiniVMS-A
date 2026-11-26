@@ -32,7 +32,6 @@ public class TimeSheetController {
     @GetMapping("worker/timesheets")
     public String displayTimeSheetsForTheWorker(@AuthenticationPrincipal LoggedUserDto loggedUser, Model model) {
 
-        // get all worker time sheets from all work orders and display them.
         List<TimeSheetRowDto> workerTimeSheets = this.timeSheetService.getWorkerTimeSheetsRowDto(loggedUser.getUuid());
         model.addAttribute("timesheets", workerTimeSheets);
 
@@ -84,7 +83,6 @@ public class TimeSheetController {
 
     @PostMapping("buyer/timesheets/{id}/approve")
     public String buyerApproveTimeSheet(@PathVariable String id) {
-        // Approve the TimeSheet
         this.timeSheetService.approveTimeSheet(id);
 
         return "redirect:/buyer/timesheets";

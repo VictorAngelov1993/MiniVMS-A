@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import springbootapp.minivms.model.dto.persondto.PersonLoginDto;
 import springbootapp.minivms.services.personservices.PersonAuthenticationService;
 
-// This controller os used for the Login page
 @Controller
 public class LoginController {
 

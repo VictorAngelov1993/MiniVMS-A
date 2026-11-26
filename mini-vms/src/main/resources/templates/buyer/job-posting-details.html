@@ -18,7 +18,6 @@
   <header th:replace="~{components/header :: app-header(pageTitle='Job Posting Details')}" class="app-header bg-primary">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary" aria-label="Main navigation">
       <div class="container-fluid">
-        <!-- Left: brand / logo -->
         <a class="navbar-brand app-logo" href="/" aria-label="MiniVMS home">
           <img src="/assets/logo.svg" alt="MiniVMS logo" width="32" height="32">
           <span>MiniVMS</span>
@@ -31,10 +30,8 @@
         </button>
 
         <div class="collapse navbar-collapse" id="appNavbarCollapse">
-          <!-- Center: page title -->
           <span class="navbar-text page-title mx-auto d-none d-lg-inline">Job Posting Details</span>
 
-          <!-- Right: account dropdown -->
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
             <li class="nav-item">
               <div class="dropdown">
@@ -146,12 +143,10 @@
             </dl>
 
             <div class="mt-4">
-              <!-- If a Work Order already exists for this posting -->
               <a class="btn btn-outline-primary" th:if="${posting != null and posting.workOrderId != null}"
                  href="/buyer/workorders/1" th:href="@{'/buyer/workorders/' + ${posting.workOrderId}}">
                 <i class="bi bi-file-earmark-text" aria-hidden="true"></i> View Work Order
               </a>
-              <!-- If no Work Order exists yet -->
               <a class="btn btn-primary" th:if="${posting == null or posting.workOrderId == null}"
                   th:href="@{/buyer/create-workorder(jobPostingId=${posting != null ? posting.jobPostingId : 1})}">
                 <i class="bi bi-plus-lg" aria-hidden="true"></i> Create Work Order

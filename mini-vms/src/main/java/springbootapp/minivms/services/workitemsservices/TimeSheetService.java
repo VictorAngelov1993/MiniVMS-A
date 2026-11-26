@@ -51,12 +51,9 @@ public class TimeSheetService {
         Worker worker = this.workerRepository.getWorkerByUuid(workerUuid).orElseThrow(() -> new RuntimeException("Invalid Worker id"));
         List<WorkOrder> workerWorkOrders = worker.getWorkOrders();
 
-        // Below is the method that will generate the Worker Time Sheets on demand.
-        // In the future I will test the performance and check if adding time sheets is better to be in the registration method.
         for(WorkOrder wo : workerWorkOrders) {
             this.generateWorkerTimeSheets(wo);
         }
-
 
         return worker.getWorkOrders().stream()
                 .flatMap(wo -> wo.getTimeSheets().stream())
@@ -72,9 +69,7 @@ public class TimeSheetService {
         log.info("Starting the process of Generating Time Sheets for the worker");
         LocalDate start = workerWorkOrder.getStartDate();
         LocalDate end = workerWorkOrder.getEndDate();
-        // below will get Monday of the starting week.
         LocalDate weekStartDay = start.with(DayOfWeek.MONDAY);
-        // the below generates all of the worker time sheets and place them in draft status.
         while (!weekStartDay.isAfter(end)) {
             LocalDate weekEnd = weekStartDay.plusDays(6);
 
@@ -152,28 +147,21 @@ public class TimeSheetService {
     }
 
     public void submitTimeSheet(TimeSheetSubmitDto timeSheetSubmitDto) {
-        // we get the timesheet from the db.
         TimeSheet timeSheet = this.timeSheetRepository.getTimeSheetByTimeSheetId(timeSheetSubmitDto.getTimeSheetId());
-        // we set notes and status
         timeSheet.setNotes(timeSheetSubmitDto.getNotes());
         timeSheet.setStatus(TimeSheetStatus.SUBMITTED);
-        // now we get the list of entity TimeSheetDay
         List<TimeSheetDay> timeSheetDays = timeSheet.getDays();
-        // we also get the data from the DTO this is coming from the front end. Whatever the user added in the ui
         List<TimeSheetDayDto> timeSheetDayDtos = timeSheetSubmitDto.getDays();
 
         for(int a = 0; a < timeSheetDays.size(); a++) {
-            //below we get each time sheet day from the list and we add the value from the dto
             TimeSheetDay timeSheetDay = timeSheetDays.get(a);
             TimeSheetDayDto timeSheetDayDto = timeSheetDayDtos.get(a);
-            //Below is additional secure measure to prevent the worker to add time in days outside his work order dates.
             if(!timeSheetDay.isEditable()) {
                 continue;
             }
 
             timeSheetDay.setHours(timeSheetDayDto.getHours());
         }
-        //then we save the time sheet.
         this.timeSheetRepository.save(timeSheet);
         log.info("Time Sheet with ID {} was successfully submitted", timeSheet.getTimeSheetId());
 

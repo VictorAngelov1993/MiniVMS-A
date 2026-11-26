@@ -17,7 +17,6 @@
   <header th:replace="~{components/header :: app-header(pageTitle='Create Job Seeker')}" class="app-header bg-primary">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary" aria-label="Main navigation">
       <div class="container-fluid">
-        <!-- Left: brand / logo -->
         <a class="navbar-brand app-logo" href="/" aria-label="MiniVMS home">
           <img src="/assets/logo.svg" alt="MiniVMS logo" width="32" height="32">
           <span>MiniVMS</span>
@@ -30,10 +29,8 @@
         </button>
 
         <div class="collapse navbar-collapse" id="appNavbarCollapse">
-          <!-- Center: page title -->
           <span class="navbar-text page-title mx-auto d-none d-lg-inline">Create Job Seeker</span>
 
-          <!-- Right: account dropdown -->
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
             <li class="nav-item">
               <div class="dropdown">
@@ -128,16 +125,6 @@
                         placeholder="Skills, experience, and relevant background"></textarea>
               <div class="invalid-feedback">Description is required.</div>
             </div>
-
-            <!--I am commenting the below because it is better to have two different fields. One for phone one for email.-->
-
-           <!-- <div class="mb-3">
-              <label for="contactInfo" class="form-label">Contact Info<span class="required-marker">*</span></label>
-              <input type="text" class="form-control" id="contactInfo" name="contactInfo" required aria-required="true"
-                     placeholder="Email and/or phone number">
-              <div class="invalid-feedback">Contact info is required.</div>
-            </div>-->
-
             <div class="mb-3">
               <label for="email" class="form-label">Email<span class="required-marker">*</span></label>
               <input type="email" class="form-control" id="email" name="email" required

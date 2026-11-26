@@ -18,7 +18,6 @@ public class TimeSheetMapper {
         timeSheetRowDto.setWeekStartDate(timeSheet.getWeekStartDay());
         timeSheetRowDto.setWeekEndDate(timeSheet.getWeekEndDay());
         timeSheetRowDto.setStatus(timeSheet.getStatus());
-        // Below will get each day of the Time Sheet and will sum the hours. All Time Sheets are weekly
         BigDecimal totalHours = timeSheet.getDays().stream()
                 .map(TimeSheetDay::getHours)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);

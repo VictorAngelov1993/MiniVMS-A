@@ -37,8 +37,6 @@ public class WorkOrderController {
     public String loadTheWorkOrderList(@AuthenticationPrincipal LoggedUserDto loggedUser,
                                        Model model) {
 
-
-        // Get all the Work Orders of the User
         List<WorkOrderCardDto> allWorkOrderCards = this.workOrderService.getAllWorkOrdersAsCards(loggedUser.getUuid());
         model.addAttribute("workOrders", allWorkOrderCards);
 
@@ -51,15 +49,11 @@ public class WorkOrderController {
                                           @AuthenticationPrincipal LoggedUserDto loggedUser,
                                           Model model) {
 
-        // Add an empty WO dto that will be fill later
         model.addAttribute("workOrderCreateDto", new WorkOrderCreateDto());
-        // Get the Job Posting Details some of them will be prefilled in the form.
         JobPostingDetailsDto jobPosting = this.jobPostingService.getJobPostingCreateDtoById(jobPostingId);
         model.addAttribute("jobPosting", jobPosting);
-        // Auto generate Work Order id and pass it
         String workOrderId = this.workOrderService.generateWorkOrderId();
         model.addAttribute("generatedWorkOrderId", workOrderId);
-        // Get all the Job Seekers who are submitted for the Job Posting.
         List<JobSeekerSubmitDto> jobSeekers = this.jobSeekerSubmissionService.getAllJobSeekersSubmittedForThisJobPosting(jobPostingId);
         model.addAttribute("jobSeekers", jobSeekers);
 
@@ -72,8 +66,6 @@ public class WorkOrderController {
                                   @AuthenticationPrincipal LoggedUserDto loggedUser,
                                   Model model) {
 
-
-        // create and save the work order in the DB.
         try {
             this.workOrderService.createWorkOrder(dto);
             return "redirect:/buyer/workorders";

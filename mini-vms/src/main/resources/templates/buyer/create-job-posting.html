@@ -22,7 +22,6 @@
   <header th:replace="~{components/header :: app-header(pageTitle='Create Job Posting')}" class="app-header bg-primary">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary" aria-label="Main navigation">
       <div class="container-fluid">
-        <!-- Left: brand / logo -->
         <a class="navbar-brand app-logo" href="/" aria-label="MiniVMS home">
           <img src="/assets/logo.svg" alt="MiniVMS logo" width="32" height="32">
           <span>MiniVMS</span>
@@ -35,10 +34,8 @@
         </button>
 
         <div class="collapse navbar-collapse" id="appNavbarCollapse">
-          <!-- Center: page title -->
           <span class="navbar-text page-title mx-auto d-none d-lg-inline">Create Job Posting</span>
 
-          <!-- Right: account dropdown -->
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
             <li class="nav-item">
               <div class="dropdown">
@@ -163,23 +160,6 @@
                      required aria-required="true">
               <div class="invalid-feedback">Pay rate is required.</div>
             </div>
-
-           <!-- I have commented the below div because it is not needed.
-            The Submitting of Job Seeker lies down to the Supplier after they have received the Job Posing.-->
-
-           <!-- <div class="mb-3">
-              <label for="jobSeekerId" class="form-label">Job Seeker</label>
-              <select class="form-select" id="jobSeekerId" name="jobSeekerId"
-                      aria-describedby="jobSeekerHelp">
-                <option value="" selected>Select a job seeker (optional)&hellip;</option>
-                <option th:each="seeker : ${jobSeekers}" th:value="${seeker.id}" th:text="${seeker.fullName}">
-                  Jane Candidate
-                </option>
-              </select>
-              <div id="jobSeekerHelp" class="form-text">
-                Populated server-side with available job seekers. You can also assign one later when creating a work order.
-              </div>
-            </div>-->
 
             <button type="submit" class="btn btn-primary">Create Job Posting</button>
             <a class="btn btn-link" href="/buyer/job-postings" th:href="@{/buyer/job-postings}">Cancel</a>

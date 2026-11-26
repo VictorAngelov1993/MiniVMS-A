@@ -21,7 +21,6 @@
 <header th:replace="~{components/header :: app-header(pageTitle='Submit Job Seeker')}" class="app-header bg-primary">
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary" aria-label="Main navigation">
     <div class="container-fluid">
-      <!-- Left: brand / logo -->
       <a class="navbar-brand app-logo" href="/" aria-label="MiniVMS home">
         <img src="/assets/logo.svg" alt="MiniVMS logo" width="32" height="32">
         <span>MiniVMS</span>
@@ -34,10 +33,8 @@
       </button>
 
       <div class="collapse navbar-collapse" id="appNavbarCollapse">
-        <!-- Center: page title -->
         <span class="navbar-text page-title mx-auto d-none d-lg-inline">Submit Job Seeker</span>
 
-        <!-- Right: account dropdown -->
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
           <li class="nav-item">
             <div class="dropdown">
@@ -115,14 +112,6 @@
                       th:text="${seeker.firstName + ' ' + seeker.lastName}">
                 Jane Candidate
               </option>
-
-              <!--the below I Have used for one debuting because the jobSeekerId was null. The problem was I did not implement the
-              generateJobSeekerId method now it created and all is working fine.
-              <option th:each="seeker : ${jobSeekers}"
-                      th:value="${seeker.jobSeekerId}"
-                      th:text="${seeker.jobSeekerId + ' | ' + seeker.firstName + ' ' + seeker.lastName}">
-              </option>-->
-
             </select>
             <div class="invalid-feedback">Please select a job seeker to submit.</div>
           </div>
@@ -135,7 +124,6 @@
         </div>
       </form>
 
-      <!-- Confirmation modal on submit -->
       <div class="modal fade" id="confirmSubmitModal" tabindex="-1" aria-labelledby="confirmSubmitModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">

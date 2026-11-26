@@ -72,8 +72,6 @@ public class InvoiceService {
         InvoicePreviewDTO preview = new InvoicePreviewDTO();
         preview.setInvoiceId(currentInvoiceId);
         preview.setSupplierName(this.supplierService.getSupplierFullNameForUuid(supplierId));
-        // Below will get all the Time Sheets for all workers that are associated with the Supplier
-        // because the Invoices are per Supplier, the Buyer pays the supplier for each of the workers that the supplier has provided
         preview.setTimeSheets(this.timeSheetService.getTimeSheetDataForInvoiceDto(supplierId));
         BigDecimal totalAmountOfAllTimeSheets = preview.getTimeSheets().stream().map(TimeSheetDataForInvoiceDTO::getTotalAmount)
                 .filter(Objects::nonNull)

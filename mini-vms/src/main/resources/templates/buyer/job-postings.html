@@ -19,7 +19,6 @@
   <header th:replace="~{components/header :: app-header(pageTitle='Job Postings')}" class="app-header bg-primary">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary" aria-label="Main navigation">
       <div class="container-fluid">
-        <!-- Left: brand / logo -->
         <a class="navbar-brand app-logo" href="/" aria-label="MiniVMS home">
           <img src="/assets/logo.svg" alt="MiniVMS logo" width="32" height="32">
           <span>MiniVMS</span>
@@ -32,10 +31,8 @@
         </button>
 
         <div class="collapse navbar-collapse" id="appNavbarCollapse">
-          <!-- Center: page title -->
           <span class="navbar-text page-title mx-auto d-none d-lg-inline">Job Postings</span>
 
-          <!-- Right: account dropdown -->
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
             <li class="nav-item">
               <div class="dropdown">
@@ -117,25 +114,7 @@
           </a>
         </div>
 
-        <!-- Populated list (th:if renders when data exists) -->
         <div class="row" th:if="${jobPostings != null and !jobPostings.isEmpty()}">
-
-         <!-- the below commented html caused:
-
-          There was an unexpected error (type=Internal Server Error, status=500).
-          An error happened during template parsing (template: "class path resource [templates/buyer/job-postings.html]")
-          org.thymeleaf.exceptions.TemplateInputException: An error happened during template parsing (template: "class path resource [templates/buyer/job-postings.html]")-->
-
-          <!--Why the error happens with th:replace and th:each on the same tag
-          When you combine th:replace and th:each on the exact same HTML element, Thymeleaf evaluates th:replace first before th:each creates the loop context.
-          Because the loop hasn't started yet when th:replace executes, ${posting} resolves to null, causing the Property or field 'jobPostingId' cannot be found on null exception.-->
-
-          <!--<div th:replace="~{components/job-posting-card :: job-posting-card(posting=${posting}, detailsUrlPrefix='/buyer/job-postings/')}"
-               th:each="posting : ${jobPostings}"></div>-->
-
-          <!--So I am replacing it with: -->
-
-
           <div class="col-12 col-md-6 col-lg-4 mb-4"
                th:each="jobPosting : ${jobPostings}">
             <div th:replace="~{components/job-posting-card :: job-posting-card(posting=${jobPosting}, detailsUrlPrefix='/buyer/job-postings/')}"></div>
@@ -143,7 +122,6 @@
 
         </div>
 
-        <!-- Empty state -->
         <div class="empty-state" th:if="${jobPostings == null or jobPostings.isEmpty()}">
           <div class="empty-state-icon"><i class="bi bi-briefcase" aria-hidden="true"></i></div>
           <h2 class="h5">No job postings yet</h2>
@@ -152,11 +130,6 @@
             Create Job Posting
           </a>
         </div>
-
-        <!-- Static preview sample card (remove once server data is wired) -->
-        <!--<div class="row d-none">
-          <div th:replace="~{components/job-posting-card :: job-posting-card(posting=${posting}, detailsUrlPrefix='/buyer/job-postings/')}"></div>
-        </div>-->
 
       </main>
     </div>

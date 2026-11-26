@@ -37,10 +37,8 @@
       </button>
 
       <div class="collapse navbar-collapse" id="appNavbarCollapse">
-        <!-- Center: page title -->
         <span class="navbar-text page-title mx-auto d-none d-lg-inline">Timesheet Details</span>
 
-        <!-- Right: account dropdown -->
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
           <li class="nav-item">
             <div class="dropdown">
@@ -149,7 +147,6 @@
           </tr>
           </thead>
           <tbody>
-          <!-- Iterate over the days list securely as read-only values -->
           <tr>
             <td th:each="day : ${timesheet != null ? timesheet.days : {}}" class="text-center align-middle">
               <span th:text="${day.hours}">0.0</span>
@@ -167,7 +164,6 @@
         Buyers can review timesheets but cannot edit submitted hours.
       </p>
 
-      <!-- Approve & Reject actions: only shown while the timesheet is awaiting approval -->
       <div class="d-flex flex-wrap gap-2 mt-3"
            th:if="${timesheet != null and #strings.equalsIgnoreCase(timesheet.status, 'SUBMITTED')}">
         <button type="button" class="btn btn-success" data-confirm-modal="#confirmApproveModal"
@@ -180,37 +176,31 @@
         </button>
       </div>
 
-      <!-- Already-approved confirmation banner -->
       <div class="alert alert-success mt-3 d-flex align-items-center gap-2"
            th:if="${timesheet != null and timesheet.status == 'Approved'}">
         <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
         <span>This timesheet has been approved.</span>
       </div>
 
-      <!-- Already-rejected confirmation banner -->
       <div class="alert alert-danger mt-3 d-flex align-items-center gap-2"
            th:if="${timesheet != null and timesheet.status == 'Rejected'}">
         <i class="bi bi-x-circle-fill" aria-hidden="true"></i>
         <span>This timesheet has been rejected.</span>
       </div>
 
-      <!-- Approve Form -->
       <form id="approveTimesheetForm" action="/buyer/timesheets/1/approve" method="post"
             th:action="@{'/buyer/timesheets/' + ${timesheet != null ? timesheet.id : 1} + '/approve'}"
             th:object="${timesheet}">
         <input type="hidden" name="_csrf" th:if="${_csrf}" th:value="${_csrf.token}"/>
       </form>
 
-      <!-- Reject Form -->
       <form id="rejectTimesheetForm" action="/buyer/timesheets/1/reject" method="post"
             th:action="@{'/buyer/timesheets/' + ${timesheet != null ? timesheet.id : 1} + '/reject'}"
             th:object="${timesheet}">
         <input type="hidden" name="_csrf" th:if="${_csrf}" th:value="${_csrf.token}"/>
-        <!-- Optional hidden field if rejection reason is collected via the modal and appended dynamically by JS -->
         <input type="hidden" id="rejectReasonInput" name="reason"/>
       </form>
 
-      <!-- Confirmation modal for approving the timesheet -->
       <div class="modal fade" id="confirmApproveModal" tabindex="-1"
            aria-labelledby="confirmApproveModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -231,7 +221,6 @@
         </div>
       </div>
 
-      <!-- Confirmation modal for rejecting the timesheet -->
       <div class="modal fade" id="confirmRejectModal" tabindex="-1"
            aria-labelledby="confirmRejectModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -268,7 +257,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/main.js" th:src="@{/js/main.js}"></script>
 <script>
-  // Optional helper script snippet to pass the rejection reason textarea value into the hidden form field upon submission
   document.addEventListener('DOMContentLoaded', function () {
     const confirmRejectBtn = document.getElementById('confirmRejectBtn');
     if (confirmRejectBtn) {

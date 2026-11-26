@@ -55,15 +55,12 @@ public class JobPostingService {
         jobPosting.setStatus(JobPostingStatus.OPEN);
         jobPosting.setJobPostingId(this.generateJobPostingId());
         jobPosting.setBuyer(buyerUser);
-
         this.jobPostingRepository.save(jobPosting);
         log.info("Job Posting successfully created");
 
     }
 
     private String generateJobPostingId() {
-        // this method will cause issues if a Record is deleted from the DataBase
-        // I will use it for now because Users will not be able to Delete JP from the DB
         long countJobPostings = this.jobPostingRepository.count();
         return String.format("JP-%03d", countJobPostings + 1);
 
@@ -84,11 +81,6 @@ public class JobPostingService {
         jobPostingToReturn.setEndDate(jobPosting.getEndDate());
         jobPostingToReturn.setPayRate(jobPosting.getPayRate());
         jobPostingToReturn.setJobPostingId(jobPostingId);
-
-
-        // TODO Here when the Work Order entity is created I will need to add it to the dto jobPostingToReturn.
-        // Above might not be needed.
-
         return jobPostingToReturn;
 
     }

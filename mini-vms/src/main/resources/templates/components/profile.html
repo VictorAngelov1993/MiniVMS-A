@@ -10,7 +10,6 @@
   <link href="/css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet">
 
   <style>
-    /* Primary Add Budget button */
     .btn-budget {
       background: linear-gradient(135deg, #10b981 0%, #059669 100%);
       color: #ffffff;
@@ -34,7 +33,6 @@
       transform: translateY(0);
     }
 
-    /* Complementary Check Budget button */
     .btn-check-budget {
       background-color: #ecfdf5;
       color: #059669;
@@ -66,7 +64,6 @@
 <div class="container-fluid app-shell">
   <div class="row">
 
-    <!-- Sidebar -->
     <nav class="col-12 col-md-3 col-lg-2 app-sidebar" aria-label="Profile navigation">
       <ul class="nav flex-column">
         <li class="nav-item">
@@ -82,7 +79,6 @@
       </ul>
     </nav>
 
-    <!-- Main content -->
     <main class="col-12 col-md-9 col-lg-10 app-content">
       <h1 class="h3 mb-4">Profile</h1>
 
@@ -98,26 +94,22 @@
               </div>
             </div>
 
-            <!-- Success Alert Banner -->
             <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
               <span th:text="${successMessage}">Success message here</span>
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 
-            <!-- Error / Failed Alert Banner -->
             <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
               <span th:text="${errorMessage}">Error message here</span>
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 
-            <!-- PROFILE & ROLE ACTIONS (Visible to all roles) -->
             <div class="d-flex flex-wrap gap-2">
               <a th:href="@{/profile/edit}" class="btn btn-outline-primary d-inline-flex align-items-center gap-2">
                 <i class="bi bi-pencil-square"></i>
                 <span>Edit Profile</span>
               </a>
 
-              <!-- BUYER BUDGET ACTIONS (Visible only to Buyers) -->
               <th:block th:if="${#strings.equalsIgnoreCase(user.role, 'Buyer')}">
                 <a th:href="@{/budgets}" class="btn btn-check-budget d-inline-flex align-items-center gap-2">
                   <i class="bi bi-cash-stack fs-5"></i>

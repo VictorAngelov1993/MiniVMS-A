@@ -18,7 +18,6 @@ import springbootapp.minivms.services.workitemsservices.JobPostingService;
 
 import java.util.List;
 
-// This controller will handle the Job Posting request.
 
 @Controller
 public class JobPostingController {
@@ -67,22 +66,15 @@ public class JobPostingController {
                                              @AuthenticationPrincipal LoggedUserDto loggedUser,
                                              Model model) {
 
-        // Get the Job Posting that the user has clicked
         JobPostingDetailsDto jobPosting = this.jobPostingService.getJobPostingCreateDtoById(jobPostingId);
-        // Add the Job Posting to the model
-        // TODO here I need to implement the method that will get the WO id if it exist and instead create WO the show WO button will appear
-        // Above might not be needed. If I have time I will implement it.
         model.addAttribute("posting", jobPosting);
         return "buyer/job-posting-details";
     }
 
-    // Below are the Supplier Mappings
-    //-----------------------------------------------------------------------------
 
     @GetMapping("/supplier/job-postings")
     public String showSupplierJobPostings(@AuthenticationPrincipal LoggedUserDto loggedUser, Model model) {
 
-        // Every Supplier should see every Job Posting because they can submit Job Seekers for every Buyer
         List<JobPosting> supplierJobPostings = this.jobPostingService.getJobPostingForSupplier();
         model.addAttribute("jobPostings", supplierJobPostings);
 
@@ -94,9 +86,7 @@ public class JobPostingController {
     public String showSupplierJobPostingDetails(@PathVariable String jobPostingId,
                                                 @AuthenticationPrincipal LoggedUserDto loggedUser,
                                                 Model model) {
-        // Get the Job Posting that the user has clicked
         JobPostingDetailsDto jobPosting = this.jobPostingService.getJobPostingCreateDtoById(jobPostingId);
-        // Add the Job Posting to the model
         model.addAttribute("posting", jobPosting);
         return "supplier/job-posting-details";
     }

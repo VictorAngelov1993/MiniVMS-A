@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 
 
-// This class defines the application security rules
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity

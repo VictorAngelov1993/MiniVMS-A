@@ -60,12 +60,10 @@ public class DashboardController {
 
     @GetMapping("/buyer/dashboard")
     public String goToBuyerDashboard(Model model, Principal principal) {
-        // Get the username directly from Spring Security's authenticated session
         String username = principal.getName();
 
-        // create empty stats DTO to fill later
         BuyerDashboardStatsDto stats = new BuyerDashboardStatsDto();
-        // Get the Buyer who is the logged user.
+
         Optional<Buyer> getBuyer = this.buyerService.getBuyerByUsername(username);
         Buyer buyer;
         try {
@@ -74,7 +72,7 @@ public class DashboardController {
             model.addAttribute("errorMessage", exception.getMessage());
             return "redirect:/access-denied";
         }
-        // get the Job Postings for the logged user
+
         int countJobPostings = this.jobPostingService.countJobPostingsForBuyer(buyer);
         stats.setJobPostingCount(countJobPostings);
 
@@ -89,10 +87,10 @@ public class DashboardController {
 
         Long approvedTimeSheetToInvoice = this.approvedTimeSheetReminderScheduler.getUninvoicedApprovedCountForUser(buyer.getUuid());
         model.addAttribute("approvedTimesheetsToInvoice", approvedTimeSheetToInvoice);
-        // add the status to the model so that thymeleaf can get them.
+
         model.addAttribute("stats", stats);
 
-        // return the dashboard
+
         return "buyer/dashboard";
     }
 
@@ -136,7 +134,6 @@ public class DashboardController {
         long countWorkerWorkOrders = this.workOrderService.countWorkerWorkOrders(worker);
         WorkerDashboardStatsDto workerDashboardStatsDto = new WorkerDashboardStatsDto();
         workerDashboardStatsDto.setAssignedWorkOrderCount(countWorkerWorkOrders);
-        // count the worker pending time sheets, ts that are in draft or rejected status
         long countWorkerPendingTimeSheets = this.workOrderService.countWorkerPendingTimeSheets(worker);
         workerDashboardStatsDto.setPendingTimesheetCount(countWorkerPendingTimeSheets);
         model.addAttribute("stats", workerDashboardStatsDto);

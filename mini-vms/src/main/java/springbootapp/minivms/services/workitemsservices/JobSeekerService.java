@@ -35,7 +35,6 @@ public class JobSeekerService {
     }
 
     public List<JobSeeker> getAllJobSeekersForTheSupplier(UUID supplierUuid) {
-        // I will get the Supplier user here instead of the controller
         Optional <Supplier> loggedSupplier = this.supplierRepository.getSupplierByUuid(supplierUuid);
         Supplier supplier = loggedSupplier.orElseThrow(() -> new NotExistingSupplier("Not Existing Supplier"));
 
@@ -44,7 +43,6 @@ public class JobSeekerService {
 
     public void createJobSeeker(JobSeekerCreateDto jobSeekerCreateDto, UUID supplierUuid) {
         log.info("Starting the process of creating Job Seeker");
-        // Get the supplier who is logged in so to map it to the Job Seeker so that we know who created the Job Seeker
         Optional <Supplier> loggedSupplier = this.supplierRepository.getSupplierByUuid(supplierUuid);
         Supplier supplier = loggedSupplier.orElseThrow(() ->{
             log.warn("Supplier with UUID {} does not exist", supplierUuid);
@@ -54,8 +52,6 @@ public class JobSeekerService {
         log.info("Supplier with UUID {} is creating the Job Seeker", supplierUuid);
 
         JobSeeker jobSeeker = this.jobSeekerMapper.mapJobSeekerCreateDtoToJobSeekerEntity(jobSeekerCreateDto, supplier);
-
-        // generate the jobseeker id and add it.
         String jobSeekerId = this.generateJobSeekerId();
         jobSeeker.setJobSeekerId(jobSeekerId);
 

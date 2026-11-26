@@ -17,7 +17,6 @@
 <div class="container-fluid app-shell">
     <div class="row">
 
-        <!-- Sidebar -->
         <nav class="col-12 col-md-3 col-lg-2 app-sidebar" aria-label="Profile navigation">
             <ul class="nav flex-column">
                 <li class="nav-item">
@@ -33,14 +32,12 @@
             </ul>
         </nav>
 
-        <!-- Main content -->
         <main class="col-12 col-md-9 col-lg-10 app-content">
             <h1 class="h3 mb-4">Edit Profile</h1>
 
             <div class="card shadow-sm">
                 <div class="card-body">
 
-                    <!-- Error / Failed Alert Banner -->
                     <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
                         <span th:text="${errorMessage}">Error message here</span>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

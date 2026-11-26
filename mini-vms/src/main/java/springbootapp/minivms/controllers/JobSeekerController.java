@@ -38,7 +38,6 @@ public class JobSeekerController {
     @GetMapping("/supplier/job-seekers")
     public String loadJobSeekers(@AuthenticationPrincipal LoggedUserDto loggedUser, Model model) {
 
-        // Get the Job Seekers and add them to the model
         List<JobSeeker> jobSeekers = this.jobSeekerService.getAllJobSeekersForTheSupplier(loggedUser.getUuid());
         model.addAttribute("jobSeekers", jobSeekers);
 
@@ -66,12 +65,10 @@ public class JobSeekerController {
                                       @AuthenticationPrincipal LoggedUserDto loggedUser,
                                   Model model) {
 
-        // Get all the Job Seekers that are suitable for submission for the logged Supplier
+
         List<JobSeekerSubmitDto> jobSeekers = this.jobSeekerService.getAllJobSeekersSuitableForSubmission(loggedUser.getUuid());
-        // Get the Job Posting to which we are going to submit the Job Seeker
         JobPostingDetailsDto jobPosting = this.jobPostingService.getJobPostingCreateDtoById(jobPostingId);
 
-        // Add the Job Posting the Job Seeker and the Job Posting id to the model.
         model.addAttribute("jobSeekers", jobSeekers);
         model.addAttribute("jobPosting", jobPosting);
         model.addAttribute("jobPostingId", jobPostingId);
@@ -86,13 +83,10 @@ public class JobSeekerController {
             @RequestParam("jobPostingId") String jobPostingId,
             Model model) {
 
-        // I am using already created Dto's because I only need their Id in order to get the actual entity from the DB
-        // that's why i decided not to create new dto's but to use already available dto even if the name is a bit wrong.
+
         JobPostingDetailsDto jobPosting = this.jobPostingService.getJobPostingCreateDtoById(jobPostingId);
         JobSeekerSubmitDto jobSeeker = this.jobSeekerService.getJobSeekerSubmitDtoById(jobSeekerId);
 
-        // Below will create new jobSeekerSubmission. The jobSeekerSubmission class is used a s bridge
-        // between Supplier submitted Job Seekers and Buyer submitted Job Postings
         this.jobSeekerSubmissionService.createJobSeekerSubmit(jobSeeker, jobPosting);
 
         return "redirect:/supplier/job-postings";

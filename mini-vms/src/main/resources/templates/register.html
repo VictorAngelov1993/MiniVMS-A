@@ -26,34 +26,14 @@
       </a>
       <h1 class="h4 text-center mb-4">Create your account</h1>
 
-      <!-- Top-level error alert area -->
       <div class="alert alert-danger form-error-alert d-none" role="alert" aria-live="assertive"></div>
       <div class="alert alert-danger" role="alert" th:if="${errorMessage}" th:text="${errorMessage}">
         Registration failed. Please review the errors below.
       </div>
 
-      <!-- <form> defines an area on the page where the user can enter data and send it to the server. -->
-      <!-- method="post" tells the browser to send the data using the HTTP POST method. -->
-      <!-- th:action="@{/register}" — where the form is sent-->
-      <!-- th:action is the Thymeleaf version of the HTML action attribute.
-          It tells Thymeleaf: “Generate the URL where this form should be submitted.”
-          @{/register} means: “Use the /register route of my application.” -->
-      <!-- th:object="${registrationDto}" — which object the form is bound to -->
-      <!-- novalidate — disable browser’s built-in validation -->
-      <!-- data-validate → custom JS validation.  -->
-
       <form th:action="@{/register}" th:object="${personRegistrationDto}" method="post" data-validate novalidate>
       <input type="hidden" name="_csrf" th:if="${_csrf}" th:value="${_csrf.token}"/>
 
-        <!-- <div class="mb-3"> Bootstrap spacing (margin-bottom: 1rem). Just layout, no logic. -->
-        <!-- <label for="username" class="form-label">…</label> This is the text description for the input. -->
-        <!-- class="form-label" Bootstrap styling for labels. -->
-        <!-- Username<span class="required-marker">*</span>  The visible text.
-        Username → field name <span class="required-marker">*</span> → your custom red asterisk -->
-        <!-- <input …> — the actual field This is where the user types the username. -->
-        <!-- th:field="*{username}" (Thymeleaf magic) It binds the input to the username field of your DTO. -->
-        <!-- <div class="invalid-feedback">…</div> — error message This is Bootstrap’s built‑in error message container. -->
-        <!-- th:errors="*{username} displays the error that is stored in the BindingResult Object -->
         <div class="mb-3">
           <label for="username" class="form-label">Username<span class="required-marker">*</span></label>
           <input type="text" class="form-control" th:field="*{username}"
@@ -65,7 +45,6 @@
           </div>
         </div>
 
-        <!-- Adding the First and Last Name fields -->
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="firstName" class="form-label">First Name<span class="required-marker">*</span></label>
@@ -81,9 +60,6 @@
             <div class="invalid-feedback">Required Field</div>
           </div>
         </div>
-
-        <!-- --------------- -->
-
 
 
         <div class="mb-3">
@@ -119,7 +95,6 @@
           <div class="invalid-feedback"></div>
         </div>
 
-        <!-- Conditional field: shown only when Role == Worker (toggled by main.js) -->
         <div class="mb-3 d-none" id="work-order-id-group">
           <label for="workOrderId" class="form-label">Work Order ID<span class="required-marker">*</span></label>
           <input type="text" class="form-control" th:field="*{workOrderId}" id="workOrderId" name="workOrderId"

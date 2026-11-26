@@ -9,8 +9,6 @@ public class WorkerDetailDto {
     private String fullName;
     private String email;
     private String phone;
-    // below is not very good approach because I am passing the entity where a DTO should be sent,
-    //I’ll leave it as it is for now since this project is mainly for testing and I’m running a bit behind schedule.
     private List<WorkOrder> assignedWorkOrders;
 
     public WorkerDetailDto() {

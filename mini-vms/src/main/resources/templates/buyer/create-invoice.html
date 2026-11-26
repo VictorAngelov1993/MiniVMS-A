@@ -25,7 +25,6 @@
 <header th:replace="~{components/header :: app-header(pageTitle='Create Invoice')}" class="app-header bg-primary">
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary" aria-label="Main navigation">
     <div class="container-fluid">
-      <!-- Left: brand / logo -->
       <a class="navbar-brand app-logo" href="/" aria-label="MiniVMS home">
         <img src="/assets/logo.svg" alt="MiniVMS logo" width="32" height="32">
         <span>MiniVMS</span>
@@ -38,10 +37,8 @@
       </button>
 
       <div class="collapse navbar-collapse" id="appNavbarCollapse">
-        <!-- Center: page title -->
         <span class="navbar-text page-title mx-auto d-none d-lg-inline">Create Invoice</span>
 
-        <!-- Right: account dropdown -->
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
           <li class="nav-item">
             <div class="dropdown">
@@ -80,7 +77,6 @@
 
 <div class="container-fluid app-shell">
   <div class="row">
-    <!-- Left-side navigation -->
     <nav class="col-12 col-md-3 col-lg-2 app-sidebar" aria-label="Buyer navigation">
       <ul class="nav flex-column">
         <li class="nav-item">
@@ -116,7 +112,6 @@
       </ul>
     </nav>
 
-    <!-- Main content -->
     <main class="col-12 col-md-9 col-lg-10 app-content">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0">Create Invoice</h1>
@@ -125,7 +120,6 @@
         </a>
       </div>
 
-      <!-- Step 1: Invoice Parameters Form (Submits via GET to reload same page with preview) -->
       <div class="card card-compact bg-white mb-4">
         <div class="card-body p-4">
           <h2 class="h5 form-section-title">Invoice Details</h2>
@@ -133,7 +127,6 @@
             <div class="form-error-alert alert alert-danger d-none" role="alert"></div>
 
             <div class="row g-3 align-items-end">
-              <!-- Auto-populated Read-Only Invoice ID -->
               <div class="col-12 col-md-4">
                 <label for="invoiceId" class="form-label fw-semibold">Invoice ID</label>
                 <input type="text"
@@ -145,7 +138,6 @@
                        readonly>
               </div>
 
-              <!-- Supplier Dropdown -->
               <div class="col-12 col-md-5">
                 <label for="supplierId" class="form-label fw-semibold">
                   Supplier <span class="required-marker" aria-hidden="true">*</span>
@@ -162,7 +154,6 @@
                 <div class="invalid-feedback">Please select a supplier.</div>
               </div>
 
-              <!-- Generate Invoice Button -->
               <div class="col-12 col-md-3">
                 <button type="submit" class="btn btn-primary w-100">
                   <i class="bi bi-file-earmark-check me-1" aria-hidden="true"></i> Generate Invoice
@@ -173,7 +164,6 @@
         </div>
       </div>
 
-      <!-- Step 2: Generated Read-Only Invoice Preview (Shown after clicking Generate Invoice) -->
       <div class="card card-compact bg-white" th:if="${invoicePreview != null}">
         <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
           <div>
@@ -189,14 +179,12 @@
         </div>
 
         <div class="card-body p-4">
-          <!-- Empty state if supplier has no submitted timesheets -->
           <div class="empty-state py-4" th:if="${invoicePreview.timeSheets == null or invoicePreview.timeSheets.isEmpty()}">
             <div class="empty-state-icon"><i class="bi bi-clock-history" aria-hidden="true"></i></div>
             <h3 class="h6">No submitted timesheets found</h3>
             <p class="mb-0">There are currently no billable timesheets for this supplier.</p>
           </div>
 
-          <!-- Read-only Timesheets Table -->
           <div th:if="${invoicePreview.timeSheets != null and !invoicePreview.timeSheets.isEmpty()}">
             <div class="table-responsive mb-4">
               <table class="table table-bordered align-middle mb-0">
@@ -225,7 +213,6 @@
               </table>
             </div>
 
-            <!-- Optional Final Save / Issue Invoice Form -->
             <form method="post" action="/buyer/invoices/save" th:action="@{/buyer/invoices/save}" class="d-flex justify-content-end gap-2">
               <input type="hidden" name="invoiceId" th:value="${invoicePreview.invoiceId}">
               <input type="hidden" name="supplierId" th:value="${selectedSupplierId}">

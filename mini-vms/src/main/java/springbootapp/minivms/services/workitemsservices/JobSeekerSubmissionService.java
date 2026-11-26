@@ -41,14 +41,11 @@ public class JobSeekerSubmissionService {
     }
 
     public List<JobSeekerSubmitDto> getAllJobSeekersSubmittedForThisJobPosting(String jobPostingId) {
-        // Get the Job Posting for which we are creating the Work Order.
         JobPosting jobPosting = this.jobPostingService.getJobPostingById(jobPostingId);
-        // get all the Job Seekers associated to the Job Posting
         List <JobSeekerSubmission> submittedJobSeekers = this.jobSeekerSubmissionRepository.findByJobPosting(jobPosting);
         List<JobSeeker> jobSeekers = submittedJobSeekers.stream()
                 .map(JobSeekerSubmission::getJobSeeker)
                 .toList();
-        // Map them to the DTO
         return this.jobSeekerMapper.mapJobSeekersToJobSeekerSubmitDto(jobSeekers);
 
     }

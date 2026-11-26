@@ -16,7 +16,6 @@ import springbootapp.minivms.repositories.personrepositories.SupplierRepository;
 import springbootapp.minivms.repositories.personrepositories.WorkerRepository;
 import java.util.Optional;
 
-// This class gets the User who is login in.
 
 @NullMarked
 @Service
@@ -39,7 +38,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Get the user who is login in and pass it to Spring Security.
         Optional<Buyer> optionalBuyer = this.buyerRepository.getBuyerByUsername(username);
         if(optionalBuyer.isPresent()) {
             log.info("The User was identified as Buyer");

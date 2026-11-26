@@ -22,7 +22,6 @@
   <header th:replace="~{components/header :: app-header(pageTitle='Work Order Details')}" class="app-header bg-primary">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary" aria-label="Main navigation">
       <div class="container-fluid">
-        <!-- Left: brand / logo -->
         <a class="navbar-brand app-logo" href="/" aria-label="MiniVMS home">
           <img src="/assets/logo.svg" alt="MiniVMS logo" width="32" height="32">
           <span>MiniVMS</span>
@@ -35,10 +34,8 @@
         </button>
 
         <div class="collapse navbar-collapse" id="appNavbarCollapse">
-          <!-- Center: page title -->
           <span class="navbar-text page-title mx-auto d-none d-lg-inline">Work Order Details</span>
 
-          <!-- Right: account dropdown -->
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
             <li class="nav-item">
               <div class="dropdown">
@@ -134,10 +131,6 @@
             <dl class="row">
               <dt class="col-sm-3">Assigned Worker</dt>
               <dd class="col-sm-9">
-                <!--below is causing issue because the worker should be registered after the work order is created-->
-                <!--<a href="/buyer/workers/1" th:href="@{'/buyer/workers/' + ${workorder != null ? workorder.assignedWorkerId : 1}}"
-                   th:text="${workorder != null ? workorder.assignedWorkerName : 'John Smith'}">John Smith</a>-->
-                <!-- If a worker is assigned, render the clickable link -->
                 <a th:if="${workorder != null and workorder.assignedWorker != null}"
                    href="/buyer/workers/1"
                    th:href="@{'/buyer/workers/' + ${workorder.assignedWorker.workerId}}"
@@ -145,7 +138,6 @@
                   John Smith
                 </a>
 
-                <!-- If no worker is assigned yet, render placeholder text -->
                 <span th:unless="${workorder != null and workorder.assignedWorker != null}"
                       class="text-muted fst-italic">
    Unassigned
@@ -171,11 +163,6 @@
                  th:href="@{/buyer/timesheets(workOrderId=${workorder != null ? workorder.id : 1})}">
                 <i class="bi bi-clock-history" aria-hidden="true"></i> View Timesheets
               </a>
-              <!--removing the edit button for now will implement later -->
-              <!--<a class="btn btn-outline-secondary" href="/buyer/workorders/1/edit"
-                 th:href="@{'/buyer/workorders/' + ${workorder != null ? workorder.id : 1} + '/edit'}">
-                <i class="bi bi-pencil" aria-hidden="true"></i> Edit Work Order
-              </a>-->
               <button type="button" class="btn btn-outline-danger" data-confirm-modal="#confirmCloseModal">
                 <i class="bi bi-x-circle" aria-hidden="true"></i> Close Work Order
               </button>
@@ -183,7 +170,6 @@
           </div>
         </div>
 
-        <!-- Confirmation modal for destructive action -->
         <div class="modal fade" id="confirmCloseModal" tabindex="-1" aria-labelledby="confirmCloseModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">

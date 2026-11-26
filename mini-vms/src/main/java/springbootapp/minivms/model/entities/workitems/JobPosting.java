@@ -20,7 +20,6 @@ public class JobPosting {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
 
-    // I am creating the JP ID as String so that in the future we can introduce Company Codes.
     @Column(name = "job_posting_id", unique = true, nullable = false)
     @NotBlank
     private String jobPostingId;

@@ -18,7 +18,6 @@
   <header th:replace="~{components/header :: app-header(pageTitle='Work Orders')}" class="app-header bg-primary">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary" aria-label="Main navigation">
       <div class="container-fluid">
-        <!-- Left: brand / logo -->
         <a class="navbar-brand app-logo" href="/" aria-label="MiniVMS home">
           <img src="/assets/logo.svg" alt="MiniVMS logo" width="32" height="32">
           <span>MiniVMS</span>
@@ -31,10 +30,8 @@
         </button>
 
         <div class="collapse navbar-collapse" id="appNavbarCollapse">
-          <!-- Center: page title -->
           <span class="navbar-text page-title mx-auto d-none d-lg-inline">Work Orders</span>
 
-          <!-- Right: account dropdown -->
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
             <li class="nav-item">
               <div class="dropdown">
@@ -123,12 +120,6 @@
             <div th:replace="~{components/workorder-card :: workorder-card(workorder=${wo})}"></div>
           </th:block>
         </div>
-         <!--below is problematic so I have replaced it with the above -->
-        <!--<div class="row" th:if="${workOrders != null and !workOrders.isEmpty()}">
-          <div th:replace="~{components/workorder-card :: workorder-card(workorder=${wo})}"
-               th:each="wo : ${workOrders}"></div>
-        </div>-->
-
         <div class="empty-state" th:if="${workOrders == null or workOrders.isEmpty()}">
           <div class="empty-state-icon"><i class="bi bi-file-earmark-text" aria-hidden="true"></i></div>
           <h2 class="h5">No work orders yet</h2>
