@@ -2,6 +2,8 @@ package springbootapp.minivms.controllers;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -15,6 +17,7 @@ import springbootapp.minivms.model.dto.paymentdto.BudgetResponseDto;
 import springbootapp.minivms.model.dto.paymentdto.PaymentResponseFullDataDto;
 import springbootapp.minivms.model.dto.persondto.LoggedUserDto;
 import springbootapp.minivms.services.personservices.BuyerService;
+import springbootapp.minivms.services.workitemsservices.PaymentExportService;
 
 import java.math.BigDecimal;
 
@@ -22,9 +25,13 @@ import java.math.BigDecimal;
 public class PaymentController {
 
     private final BuyerService buyerService;
+    private final PaymentExportService paymentExportService;
+
     @Autowired
-    public PaymentController(BuyerService buyerService) {
+    public PaymentController(BuyerService buyerService,
+                             PaymentExportService paymentExportService) {
         this.buyerService = buyerService;
+        this.paymentExportService = paymentExportService;
     }
 
     @GetMapping("/budgets/add")
@@ -62,6 +69,27 @@ public class PaymentController {
         }
 
         return ResponseEntity.ok(paymentData);
+    }
+
+    @GetMapping("buyer/payments/{id}/pdf")
+    public ResponseEntity<byte[]> downloadPaymentPdf(@PathVariable("id") String invoiceId,
+                                                     @AuthenticationPrincipal LoggedUserDto loggedUserDto) {
+
+        PaymentResponseFullDataDto paymentData = this.buyerService.getPaymentData(invoiceId, loggedUserDto.getUuid());
+
+        if(paymentData == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        byte[] pdfBytes = this.paymentExportService.generatePaymentPdf(paymentData);
+        String safeInvoiceId = invoiceId.replaceAll("[^a-zA-Z0-9_-]", "_");
+        String fileName = "payment-" + safeInvoiceId + ".pdf";
+
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                .contentLength(pdfBytes.length)
+                .body(pdfBytes);
+
     }
 
 }

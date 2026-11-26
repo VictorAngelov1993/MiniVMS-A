@@ -231,7 +231,12 @@
               </div>
               <div class="mb-1"><strong>Supplier:</strong> <span id="resSupplierName"></span></div>
               <div class="mb-1"><strong>Amount:</strong> <span id="resAmount"></span></div>
-              <div><strong>Paid At:</strong> <span id="resPaidAt"></span></div>
+              <div class="mb-3"><strong>Paid At:</strong> <span id="resPaidAt"></span></div>
+              <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-sm btn-outline-primary" id="downloadPaymentBtn">
+                  <i class="bi bi-download me-1"></i> Download PDF
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -259,6 +264,8 @@
     const errorAlert = document.getElementById('paymentErrorAlert');
     const resultCard = document.getElementById('paymentResultCard');
     const submitBtn = document.getElementById('fetchPaymentBtn');
+    const downloadBtn = document.getElementById('downloadPaymentBtn');
+    let currentInvoiceId = null;
 
     if (!form) return;
 
@@ -267,6 +274,7 @@
       const invoiceId = input.value.trim();
       if (!invoiceId) return;
 
+      currentInvoiceId = null;
       errorAlert.classList.add('d-none');
       errorAlert.textContent = '';
       resultCard.classList.add('d-none');
@@ -285,7 +293,8 @@
         }
 
         const data = await response.json();
-        document.getElementById('resInvoiceId').textContent = data.invoiceId ?? invoiceId;
+        currentInvoiceId = data.invoiceId ?? invoiceId;
+        document.getElementById('resInvoiceId').textContent = currentInvoiceId;
         document.getElementById('resSupplierName').textContent = data.supplierName ?? '-';
         document.getElementById('resAmount').textContent = data.amount != null ? Number(data.amount).toFixed(2) : '-';
         document.getElementById('resStatus').textContent = data.status ?? '-';
@@ -299,6 +308,13 @@
         submitBtn.disabled = false;
       }
     });
+
+    if (downloadBtn) {
+      downloadBtn.addEventListener('click', () => {
+        if (!currentInvoiceId) return;
+        window.location.href = `/buyer/payments/${encodeURIComponent(currentInvoiceId)}/pdf`;
+      });
+    }
   });
 </script>
 
