@@ -1,10 +1,12 @@
 package springbootapp.minivms.controllers;
 
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import springbootapp.minivms.model.dto.persondto.LoggedUserDto;
 import springbootapp.minivms.model.dto.workitemdto.jobposting.JobPostingDetailsDto;
@@ -50,21 +52,22 @@ public class WorkOrderController {
                                           Model model) {
 
         model.addAttribute("workOrderCreateDto", new WorkOrderCreateDto());
-        JobPostingDetailsDto jobPosting = this.jobPostingService.getJobPostingCreateDtoById(jobPostingId);
-        model.addAttribute("jobPosting", jobPosting);
-        String workOrderId = this.workOrderService.generateWorkOrderId();
-        model.addAttribute("generatedWorkOrderId", workOrderId);
-        List<JobSeekerSubmitDto> jobSeekers = this.jobSeekerSubmissionService.getAllJobSeekersSubmittedForThisJobPosting(jobPostingId);
-        model.addAttribute("jobSeekers", jobSeekers);
+        this.populateCreateWorkOrderModel(jobPostingId, model);
 
         return "buyer/create-workorder";
     }
 
 
     @PostMapping("/buyer/create-workorder")
-    public String createWorkOrder(@ModelAttribute("workOrderCreateDto") WorkOrderCreateDto dto,
+    public String createWorkOrder(@Valid @ModelAttribute("workOrderCreateDto") WorkOrderCreateDto dto,
+                                  BindingResult bindingResult,
                                   @AuthenticationPrincipal LoggedUserDto loggedUser,
                                   Model model) {
+
+        if(bindingResult.hasErrors() ) {
+            this.populateCreateWorkOrderModel(dto.getJobPostingId(), model);
+            return "buyer/create-workorder";
+        }
 
         try {
             this.workOrderService.createWorkOrder(dto);
@@ -90,6 +93,14 @@ public class WorkOrderController {
     public String closeWorkOrder(@PathVariable("id") String workOrderId) {
         this.workOrderService.closeWorkOrderByWorkOrderId(workOrderId);
         return "redirect:/buyer/workorders";
+    }
+
+    private void populateCreateWorkOrderModel(String jobPostingId, Model model) {
+        if(jobPostingId != null && !jobPostingId.isBlank()) {
+            model.addAttribute("jobPosting", this.jobPostingService.getJobPostingCreateDtoById(jobPostingId));
+            model.addAttribute("jobSeekers", this.jobSeekerSubmissionService.getAllJobSeekersSubmittedForThisJobPosting(jobPostingId));
+        }
+        model.addAttribute("generatedWorkOrderId", this.workOrderService.generateWorkOrderId());
     }
 
 

@@ -101,20 +101,23 @@
             &ndash; <span th:text="${timesheet != null ? timesheet.weekEndDate : '2026-01-11'}">2026-01-11</span>
           </h1>
           <span class="badge status-badge bg-warning text-dark" th:text="${timesheet != null ? timesheet.status : 'Draft'}">
-              Draft
-            </span>
+            Draft
+          </span>
         </div>
       </div>
 
       <div class="alert alert-danger form-error-alert d-none" role="alert" aria-live="assertive"></div>
+      <div class="alert alert-danger" role="alert" th:if="${errorMessage}" th:text="${errorMessage}">
+        Unable to submit timesheet.
+      </div>
 
       <form id="timesheetForm" action="/worker/timesheets/1/submit" method="post"
             th:action="@{'/worker/timesheets/' + ${timesheet != null ? timesheet.id : 1} + '/submit'}"
-            th:object="${timesheet}"
-            data-validate novalidate>
+            th:object="${submitDto}"
+            novalidate>
         <input type="hidden" name="_csrf" th:if="${_csrf}" th:value="${_csrf.token}"/>
 
-        <input type="hidden" th:field="*{id}" name="timeSheetId" />
+        <input type="hidden" th:field="*{timeSheetId}" />
 
         <div class="table-responsive">
           <table class="table table-bordered timesheet-table" data-editable aria-label="Weekly timesheet (editable)">
@@ -139,9 +142,18 @@
                        class="form-control day-input"
                        th:id="${'day-' + stat.index}"
                        th:field="*{days[__${stat.index}__].hours}"
-                       th:disabled="${!day.editable}"
-                       value="0.0">
-                <div class="invalid-feedback">Max 24 hours per day.</div>
+                       th:classappend="${#fields.hasErrors('days[__${stat.index}__].hours')} ? 'is-invalid' : ''"
+                       th:disabled="${timesheet != null and timesheet.days != null and !timesheet.days[__${stat.index}__].editable}">
+                <div class="invalid-feedback d-block"
+                     th:if="${#fields.hasErrors('days[__${stat.index}__].hours')}"
+                     th:errors="*{days[__${stat.index}__].hours}">
+                  Max 24 hours per day.
+                </div>
+                <div class="invalid-feedback d-block"
+                     th:if="${#fields.hasErrors('days[__${stat.index}__].date')}"
+                     th:errors="*{days[__${stat.index}__].date}">
+                  Date is required.
+                </div>
               </td>
             </tr>
             <tr class="timesheet-total-row">
@@ -154,9 +166,12 @@
 
         <div class="mb-3">
           <label for="notes" class="form-label">Notes</label>
-          <textarea class="form-control" id="notes" name="notes" rows="3"
-                    placeholder="Optional notes for this week's timesheet"
-                    th:text="${timesheet != null ? timesheet.notes : ''}"></textarea>
+          <textarea class="form-control" id="notes" th:field="*{notes}" rows="3"
+                    th:classappend="${#fields.hasErrors('notes')} ? 'is-invalid' : ''"
+                    placeholder="Optional notes for this week's timesheet"></textarea>
+          <div class="invalid-feedback" th:if="${#fields.hasErrors('notes')}" th:errors="*{notes}">
+            Notes are invalid.
+          </div>
         </div>
 
         <div class="d-flex flex-wrap gap-2">

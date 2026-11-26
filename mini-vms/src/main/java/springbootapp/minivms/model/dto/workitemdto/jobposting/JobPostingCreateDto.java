@@ -1,21 +1,25 @@
 package springbootapp.minivms.model.dto.workitemdto.jobposting;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class JobPostingCreateDto {
 
-    @NotBlank
+    @Size(min = 3, max = 255, message = "Title must be between 3 and 255 characters")
+    @NotBlank(message = "Title is required")
     private String title;
-    @NotBlank
+    @NotBlank(message = "Description is required")
+    @Size(min = 3, max = 5000, message = "Description must be between 3 and 5000 characters")
     private String description;
-    @NotBlank
+    @NotNull(message = "Start Date is required")
     private LocalDate startDate;
-    @NotBlank
+    @NotNull(message = "End Date is required")
     private LocalDate endDate;
-    @NotBlank
+    @NotNull(message = "Pay Rate is required")
+    @DecimalMin(value = "0.01", inclusive = true, message = "Pay rate must be greater than 0")
+    @Digits(integer = 10, fraction = 2, message = "Pay rate can have up to 10 integer digits and 2 decimal places")
     private BigDecimal payRate;
 
     public JobPostingCreateDto() {

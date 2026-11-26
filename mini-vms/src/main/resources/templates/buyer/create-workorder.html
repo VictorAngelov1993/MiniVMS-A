@@ -22,7 +22,6 @@
   <header th:replace="~{components/header :: app-header(pageTitle='Create Work Order')}" class="app-header bg-primary">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary" aria-label="Main navigation">
       <div class="container-fluid">
-        <!-- Left: brand / logo -->
         <a class="navbar-brand app-logo" href="/" aria-label="MiniVMS home">
           <img src="/assets/logo.svg" alt="MiniVMS logo" width="32" height="32">
           <span>MiniVMS</span>
@@ -114,9 +113,14 @@
         <h1 class="h3 mb-4">Create Work Order</h1>
 
         <div class="alert alert-danger form-error-alert d-none" role="alert" aria-live="assertive"></div>
+        <div class="alert alert-danger" role="alert" th:if="${errorMessage}" th:text="${errorMessage}">
+          Unable to create work order.
+        </div>
 
-        <form action="/buyer/create-workorder" method="post" th:action="@{/buyer/create-workorder}"
-              class="card card-compact" data-validate novalidate>
+        <form action="/buyer/create-workorder" method="post"
+              th:action="@{/buyer/create-workorder}"
+              th:object="${workOrderCreateDto}"
+              class="card card-compact"  novalidate>
           <div class="card-body">
             <input type="hidden" name="_csrf" th:if="${_csrf}" th:value="${_csrf.token}"/>
 
@@ -124,10 +128,13 @@
               <label class="form-label">Job Posting</label>
 
               <input type="text" class="form-control"
-                     th:value="${jobPosting.title}" readonly>
+                     th:value="${jobPosting?.title}" readonly>
 
               <input type="hidden" name="jobPostingId"
-                     th:value="${jobPosting.jobPostingId}">
+                     th:value="${jobPosting?.jobPostingId}">
+              <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('jobPostingId')}" th:errors="*{jobPostingId}">
+                Job Posting Id is required.
+              </div>
             </div>
 
             <div class="mb-3">
@@ -143,13 +150,19 @@
 
             <div class="mb-3">
               <label for="jobSeekerId" class="form-label">Assigned Job Seeker<span class="required-marker">*</span></label>
-              <select class="form-select" id="jobSeekerId" name="jobSeekerId" required aria-required="true">
-                <option value="" selected disabled>Select a job seeker&hellip;</option>
-                <option th:each="seeker : ${jobSeekers}" th:value="${seeker.jobSeekerId}" th:text="${seeker.fullName}">
+              <select class="form-select" id="jobSeekerId" th:field="*{jobSeekerId}"
+                      th:classappend="${#fields.hasErrors('jobSeekerId')} ? 'is-invalid' : ''"
+                      required aria-required="true">
+                <option value="">Select a job seeker&hellip;</option>
+                <option th:each="seeker : ${jobSeekers}"
+                        th:value="${seeker.jobSeekerId}"
+                        th:text="${seeker.fullName}">
                   Jane Candidate
                 </option>
               </select>
-              <div class="invalid-feedback">Please select a job seeker.</div>
+              <div class="invalid-feedback" th:if="${#fields.hasErrors('jobSeekerId')}" th:errors="*{jobSeekerId}">
+                Please select a job seeker.
+              </div>
             </div>
 
             <div class="row">
@@ -161,7 +174,7 @@
                        class="form-control"
                        id="startDate"
                        name="startDate"
-                       th:value="${jobPosting.startDate}"
+                       th:value="${jobPosting?.startDate}"
                        readonly>
               </div>
 
@@ -173,9 +186,8 @@
                        class="form-control"
                        id="endDate"
                        name="endDate"
-                       th:value="${jobPosting.endDate}"
+                       th:value="${jobPosting?.endDate}"
                        readonly>
-
               </div>
             </div>
 
@@ -187,15 +199,23 @@
                      class="form-control"
                      id="payRate"
                      name="payRate"
-                     th:value="${jobPosting.payRate}">
+                     th:value="${jobPosting?.payRate}"
+                     th:classappend="${#fields.hasErrors('payRate')} ? 'is-invalid' : ''">
               <div id="payRateHelp" class="form-text">
                 Pre-filled with job posting default rate. Modify to override.
+              </div>
+              <div class="invalid-feedback" th:if="${#fields.hasErrors('payRate')}" th:errors="*{payRate}">
+                Pay rate is invalid.
               </div>
             </div>
 
             <div class="mb-3">
               <label for="notes" class="form-label">Notes</label>
-              <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+              <textarea class="form-control" id="notes" th:field="*{notes}" rows="3"
+                        th:classappend="${#fields.hasErrors('notes')} ? 'is-invalid' : ''"></textarea>
+              <div class="invalid-feedback" th:if="${#fields.hasErrors('notes')}" th:errors="*{notes}">
+                Notes are invalid.
+              </div>
             </div>
 
             <button type="submit" class="btn btn-primary">Create Work Order</button>

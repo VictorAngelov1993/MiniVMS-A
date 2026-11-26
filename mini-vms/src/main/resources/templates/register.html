@@ -31,78 +31,99 @@
         Registration failed. Please review the errors below.
       </div>
 
-      <form th:action="@{/register}" th:object="${personRegistrationDto}" method="post" data-validate novalidate>
-      <input type="hidden" name="_csrf" th:if="${_csrf}" th:value="${_csrf.token}"/>
+      <form th:action="@{/register}" th:object="${personRegistrationDto}" method="post" novalidate>
+        <input type="hidden" name="_csrf" th:if="${_csrf}" th:value="${_csrf.token}"/>
 
         <div class="mb-3">
           <label for="username" class="form-label">Username<span class="required-marker">*</span></label>
           <input type="text" class="form-control" th:field="*{username}"
-                 th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'"
-                 id="username" required autocomplete="username" aria-required="true" minlength="3">
-          <div class="invalid-feedback"
-               th:text="${#fields.hasErrors('username')} ? ${#fields.errors('username')[0]} : 'Required Field At Least 3 Characters'">
-            Required Field At Least 3 Characters
+                 th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''"
+                 id="username" required autocomplete="username" aria-required="true">
+          <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
+            Username should be at least 3 characters
           </div>
         </div>
 
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="firstName" class="form-label">First Name<span class="required-marker">*</span></label>
-            <input type="text" class="form-control" th:field="*{firstName}" id="firstName" name="firstName" required
-                   autocomplete="given-name" aria-required="true" minlength="1">
-            <div class="invalid-feedback">Required Field</div>
+            <input type="text" class="form-control" th:field="*{firstName}"
+                   th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid' : ''"
+                   id="firstName" required autocomplete="given-name" aria-required="true">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}">
+              First name is required
+            </div>
           </div>
 
           <div class="col-md-6 mb-3">
             <label for="lastName" class="form-label">Last Name<span class="required-marker">*</span></label>
-            <input type="text" class="form-control" th:field="*{lastName}" id="lastName" name="lastName" required
-                   autocomplete="family-name" aria-required="true" minlength="1">
-            <div class="invalid-feedback">Required Field</div>
+            <input type="text" class="form-control" th:field="*{lastName}"
+                   th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid' : ''"
+                   id="lastName" required autocomplete="family-name" aria-required="true">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">
+              Last name is required
+            </div>
           </div>
         </div>
 
-
         <div class="mb-3">
           <label for="email" class="form-label">Email<span class="required-marker">*</span></label>
-          <input type="email" class="form-control" th:field="*{email}" id="email" name="email" required
-                 autocomplete="email" aria-required="true">
-          <div class="invalid-feedback">Invalid Email</div>
+          <input type="email" class="form-control" th:field="*{email}"
+                 th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                 id="email" required autocomplete="email" aria-required="true">
+          <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+            Invalid Email
+          </div>
         </div>
 
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="password" class="form-label">Password<span class="required-marker">*</span></label>
-            <input type="password" class="form-control" th:field="*{password}" id="password" name="password" required
-                   autocomplete="new-password" aria-required="true" minlength="5">
-            <div class="invalid-feedback">Password needs to be at least 5 char</div>
+            <input type="password" class="form-control" th:field="*{password}"
+                   th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
+                   id="password" required autocomplete="new-password" aria-required="true">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+              Password should be at least 5 characters
+            </div>
           </div>
+
           <div class="col-md-6 mb-3">
             <label for="confirmPassword" class="form-label">Confirm Password<span class="required-marker">*</span></label>
-            <input type="password" class="form-control" th:field="*{confirmPassword}" id="confirmPassword" name="confirmPassword" required
-                   autocomplete="new-password" aria-required="true" minlength="5">
-            <div class="invalid-feedback">Password does not match</div>
+            <input type="password" class="form-control" th:field="*{confirmPassword}"
+                   th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid' : ''"
+                   id="confirmPassword" required autocomplete="new-password" aria-required="true">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">
+              Passwords do not match
+            </div>
           </div>
         </div>
 
         <div class="mb-3">
           <label for="role" class="form-label">Role<span class="required-marker">*</span></label>
-          <select class="form-select" th:field="*{role}" id="role" name="role" required aria-required="true">
-            <option value="" selected disabled>Select a role&hellip;</option>
+          <select class="form-select" th:field="*{role}"
+                  th:classappend="${#fields.hasErrors('role')} ? 'is-invalid' : ''"
+                  id="role" required aria-required="true">
+            <option value="">Select a role&hellip;</option>
             <option value="BUYER">Buyer</option>
             <option value="SUPPLIER">Supplier</option>
             <option value="WORKER">Worker</option>
           </select>
-          <div class="invalid-feedback"></div>
+          <div class="invalid-feedback" th:if="${#fields.hasErrors('role')}" th:errors="*{role}">
+            Role is required
+          </div>
         </div>
 
         <div class="mb-3 d-none" id="work-order-id-group">
           <label for="workOrderId" class="form-label">Work Order ID<span class="required-marker">*</span></label>
-          <input type="text" class="form-control" th:field="*{workOrderId}" id="workOrderId" name="workOrderId"
-                 aria-describedby="workOrderIdHelp">
+          <input type="text" class="form-control" th:field="*{workOrderId}"
+                 th:classappend="${#fields.hasErrors('workOrderId')} ? 'is-invalid' : ''"
+                 id="workOrderId" aria-describedby="workOrderIdHelp">
           <div id="workOrderIdHelp" class="form-text">
             Enter the Work Order ID provided by your buyer or supplier.
           </div>
-          <div class="invalid-feedback">Invalid Id</div>
+          <div class="invalid-feedback" th:if="${#fields.hasErrors('workOrderId')}" th:errors="*{workOrderId}">
+            Work Order ID is required for workers
+          </div>
         </div>
 
         <button type="submit" class="btn btn-primary w-100">Register</button>

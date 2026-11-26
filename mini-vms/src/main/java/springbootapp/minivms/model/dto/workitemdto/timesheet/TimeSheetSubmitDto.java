@@ -1,10 +1,15 @@
 package springbootapp.minivms.model.dto.workitemdto.timesheet;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
+
 import java.util.List;
 
 public class TimeSheetSubmitDto {
     private String timeSheetId;
+    @Valid
     private List<TimeSheetDayDto> days;
+    @Size(max = 5000, message = "Notes cannot exceed 5000 characters")
     private String notes;
 
     public TimeSheetSubmitDto() {

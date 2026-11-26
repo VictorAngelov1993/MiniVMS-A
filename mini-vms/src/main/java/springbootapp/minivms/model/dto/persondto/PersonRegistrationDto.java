@@ -1,5 +1,6 @@
 package springbootapp.minivms.model.dto.persondto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -9,17 +10,24 @@ import springbootapp.minivms.model.entities.enums.Role;
 
 public class PersonRegistrationDto {
 
-    @Size(min = 3, message = "Username should be at least 3 characters")
+    @NotBlank(message = "Username is required")
+    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
     private  String username;
-    @NotNull(message = "Name should be at least 1 character")
+    @NotBlank(message = "First name is required")
+    @Size(max = 50, message = "First name cannot exceed 50 characters")
     private String firstName;
-    @NotNull(message = "Name should be at least 1 character")
+    @NotBlank(message = "Last name is required")
+    @Size(max = 50, message = "Last name cannot exceed 50 characters")
     private String lastName;
+    @NotBlank(message = "Email is required")
     @Pattern(regexp = "^[A-Za-z0-9]+([._-][A-Za-z0-9]+)*@[A-Za-z]+(-[A-Za-z]+)*(\\.[A-Za-z]+(-[A-Za-z]+)*)+$", message = "Email format should match global standards example@example.com")
     private String email;
-    @Size(min = 5, message = "Password should be at least 5 characters")
+    @NotBlank(message = "Password is required")
+    @Size(min = 5, max = 100, message = "Password must be at least 5 characters")
     private String password;
+    @NotBlank(message = "Confirm password is required")
     private String confirmPassword;
+    @NotNull(message = "Role is required")
     private Role role;
     private String workOrderId;
 

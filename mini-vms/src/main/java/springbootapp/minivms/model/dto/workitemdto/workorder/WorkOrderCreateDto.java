@@ -1,12 +1,20 @@
 package springbootapp.minivms.model.dto.workitemdto.workorder;
 
 
+import jakarta.validation.constraints.*;
+
 import java.math.BigDecimal;
 
 public class WorkOrderCreateDto {
+    @NotBlank(message = "Job Posting Id is required")
     private String jobPostingId;
+    @NotBlank(message = "Job Seeker is required")
     private String jobSeekerId;
+    @Size(max = 5000, message = "Notes cannot exceed 5000 characters")
     private String notes;
+    @NotNull(message = "Pay Rate is mandatory")
+    @DecimalMin(value = "0.01", inclusive = true, message = "Pay rate must be greater than 0")
+    @Digits(integer = 10, fraction = 2, message = "Pay rate can have up to 10 integer digits and 2 decimal places")
     private BigDecimal payRate;
 
     public WorkOrderCreateDto() {

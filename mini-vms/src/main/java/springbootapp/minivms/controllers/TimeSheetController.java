@@ -1,11 +1,13 @@
 package springbootapp.minivms.controllers;
 
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,17 +45,30 @@ public class TimeSheetController {
     public String displayTimeSheetEditPage(@PathVariable String id,
                                            Model model) {
         TimeSheetEditDto timeSheet = this.timeSheetService.getTimeSheetEditDtoById(id);
+        TimeSheetSubmitDto submitDto = new TimeSheetSubmitDto();
+        submitDto.setTimeSheetId(timeSheet.getId());
+        submitDto.setDays(timeSheet.getDays());
+        submitDto.setNotes(timeSheet.getNotes());
+
         model.addAttribute("timesheet", timeSheet);
+        model.addAttribute("submitDto", submitDto);
 
         return "worker/timesheet-edit";
     }
 
+    @PreAuthorize("@timeSheetSecurity.isOwned(#id, authentication.name)")
     @PostMapping("/worker/timesheets/{id}/submit")
     public String submitTimeSheet(@PathVariable("id") String id,
-                                  @ModelAttribute("timesheet")TimeSheetSubmitDto submitDto) {
+                                  @Valid @ModelAttribute("submitDto")TimeSheetSubmitDto submitDto,
+                                  BindingResult bindingResult, Model model) {
 
         if (submitDto.getTimeSheetId() == null) {
             submitDto.setTimeSheetId(id);
+        }
+
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("timesheet", this.timeSheetService.getTimeSheetEditDtoById(id));
+            return "worker/timesheet-edit";
         }
 
         this.timeSheetService.submitTimeSheet(submitDto);

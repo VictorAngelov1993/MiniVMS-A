@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import springbootapp.minivms.model.dto.persondto.PersonRegistrationDto;
+import springbootapp.minivms.model.entities.enums.Role;
 import springbootapp.minivms.services.personservices.RegistrationService;
 
 @Controller
@@ -33,8 +34,12 @@ public class RegistrationController {
             BindingResult bindingResult,
             Model model) {
 
-        if (!personRegistrationDto.getPassword().equals(personRegistrationDto.getConfirmPassword())) {
+        if (!java.util.Objects.equals(personRegistrationDto.getPassword(), personRegistrationDto.getConfirmPassword())) {
             bindingResult.rejectValue("confirmPassword", "password.mismatch", "Passwords do not match");
+        }
+        if (Role.WORKER.equals(personRegistrationDto.getRole())
+                && (personRegistrationDto.getWorkOrderId() == null || personRegistrationDto.getWorkOrderId().isBlank())) {
+            bindingResult.rejectValue("workOrderId", "workOrderId.required", "Work Order ID is required for workers");
         }
 
         if (bindingResult.hasErrors()) {

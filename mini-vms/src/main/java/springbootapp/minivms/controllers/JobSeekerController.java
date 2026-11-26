@@ -1,10 +1,12 @@
 package springbootapp.minivms.controllers;
 
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,14 +48,20 @@ public class JobSeekerController {
 
     @GetMapping("supplier/create-job-seeker")
     public String showCreateJobSeeker(Model model) {
-        model.addAttribute("JobSeekerDto", new JobSeekerCreateDto());
+        if(!model.containsAttribute("jobSeekerDto")) {
+            model.addAttribute("jobSeekerDto", new JobSeekerCreateDto());
+        }
         return "supplier/create-job-seeker";
     }
 
     @PostMapping("supplier/create-job-seeker")
     public String createJobSeeker(@AuthenticationPrincipal LoggedUserDto loggedUser,
-                                  @ModelAttribute("jobSeekerDto") JobSeekerCreateDto jobSeekerCreateDto
+                                  @Valid @ModelAttribute("jobSeekerDto") JobSeekerCreateDto jobSeekerCreateDto,
+                                  BindingResult bindingResult
                                   ) {
+        if(bindingResult.hasErrors()) {
+            return "supplier/create-job-seeker";
+        }
 
         this.jobSeekerService.createJobSeeker(jobSeekerCreateDto, loggedUser.getUuid());
         return "redirect:/supplier/job-seekers";

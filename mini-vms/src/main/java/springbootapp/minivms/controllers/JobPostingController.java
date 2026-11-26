@@ -2,10 +2,12 @@ package springbootapp.minivms.controllers;
 
 
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,15 +43,21 @@ public class JobPostingController {
 
     @GetMapping("/buyer/create-job-posting")
     public String createJobPosting(Model model) {
-        // passing an empty Dto
-        model.addAttribute("jobPostingDto", new JobPostingCreateDto());
+        if(!model.containsAttribute("jobPostingDto")) {
+            model.addAttribute("jobPostingDto", new JobPostingCreateDto());
+        }
         return "buyer/create-job-posting";
     }
 
     @PostMapping("/buyer/create-job-posting")
-    public String processCreateJobPosting(@ModelAttribute("jobPostingDto") JobPostingCreateDto dto,
+    public String processCreateJobPosting(@Valid @ModelAttribute("jobPostingDto") JobPostingCreateDto dto,
+                                          BindingResult bindingResult,
                                           @AuthenticationPrincipal LoggedUserDto loggedUser,
                                           Model model) {
+
+        if(bindingResult.hasErrors()) {
+            return "buyer/create-job-posting";
+        }
 
         try {
             this.jobPostingService.createJobPosting(dto, loggedUser.getUuid());
