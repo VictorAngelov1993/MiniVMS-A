@@ -1,11 +1,14 @@
 package springbootapp.minivms.services.personservices;
 
 
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import springbootapp.minivms.events.WorkerRegisteredEvent;
 import springbootapp.minivms.mappers.MapPersonRegistrationDtoToEntity;
 import springbootapp.minivms.model.dto.persondto.PersonRegistrationDto;
 import springbootapp.minivms.model.entities.persons.AbstractPerson;
@@ -27,6 +30,7 @@ public class RegistrationService {
     private final WorkOrderService workOrderService;
     private final WorkOrderRepository workOrderRepository;
     private static final Logger log = LoggerFactory.getLogger(RegistrationService.class);
+    private final ApplicationEventPublisher eventPublisher;
 
     @Autowired
     public RegistrationService(BuyerService buyerService,
@@ -34,7 +38,9 @@ public class RegistrationService {
                                WorkerService workerService,
                                MapPersonRegistrationDtoToEntity mapper,
                                PasswordEncoder passwordEncoder,
-                               WorkOrderService workOrderService, WorkOrderRepository workOrderRepository) {
+                               WorkOrderService workOrderService,
+                               WorkOrderRepository workOrderRepository,
+                               ApplicationEventPublisher eventPublisher) {
         this.buyerService = buyerService;
         this.supplierService = supplierService;
         this.workerService = workerService;
@@ -42,6 +48,7 @@ public class RegistrationService {
         this.passwordEncoder = passwordEncoder;
         this.workOrderService = workOrderService;
         this.workOrderRepository = workOrderRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     public void registerUser(PersonRegistrationDto personRegistrationDto) {
@@ -70,6 +77,7 @@ public class RegistrationService {
                 this.workerService.register(worker);
                 log.info("Worker User successfully registered");
                 workOrderRepository.save(workerWorkOrder);
+                this.eventPublisher.publishEvent(new WorkerRegisteredEvent(worker.getUuid(), workerWorkOrder.getUuid()));
             }
         }
     }

@@ -65,7 +65,7 @@ public class TimeSheetService {
         return this.timeSheetMapper.mapListOfTimeSheetsToListOfTimeSheetRowDto(this.getWorkerTimeSheets(workerUuid));
     }
 
-    private void generateWorkerTimeSheets(WorkOrder workerWorkOrder) {
+    public void generateWorkerTimeSheets(WorkOrder workerWorkOrder) {
         log.info("Starting the process of Generating Time Sheets for the worker");
         LocalDate start = workerWorkOrder.getStartDate();
         LocalDate end = workerWorkOrder.getEndDate();

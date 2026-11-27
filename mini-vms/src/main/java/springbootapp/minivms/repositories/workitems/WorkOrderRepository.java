@@ -37,4 +37,6 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, UUID> {
     WorkOrder getWorkOrderByWorkOrderId(String workOrderId);
 
     List<WorkOrder> getAllByEndDateBefore(LocalDate endDateBefore);
+
+    Optional<WorkOrder> getWorkOrderByUuid(UUID uuid);
 }

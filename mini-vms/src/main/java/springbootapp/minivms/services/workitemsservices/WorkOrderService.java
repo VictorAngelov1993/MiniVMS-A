@@ -131,5 +131,9 @@ public class WorkOrderService {
         expiredWorkOrders.forEach(workOrder -> this.closeWorkOrderByWorkOrderId(workOrder.getWorkOrderId()));
     }
 
+    public Optional<WorkOrder> getWorkOrderByUuid(UUID workOrderUuid) {
+        return this.workOrderRepository.getWorkOrderByUuid(workOrderUuid);
+    }
+
 
 }
