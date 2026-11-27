@@ -5,6 +5,7 @@
   Model attributes expected:
 - invoice (invoiceId, supplierName, status, totalAmount, timeSheets)
 - item in invoice.timeSheets (timesheetId, workerFullName, totalHours, totalAmount)
+- conversion (targetCurrency, rate, convertedAmount, rateDate, available)
 -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -107,6 +108,38 @@
               <span class="text-uppercase text-muted small d-block fw-semibold">Total Invoice Amount</span>
               <span class="h3 fw-bold text-primary mb-0"
                     th:text="'$' + ${#numbers.formatDecimal(invoice.totalAmount, 1, 2)}">$3,200.00</span>
+
+              <!-- Live Currency Conversion Block -->
+              <div class="mt-2" th:if="${conversion != null}">
+                <div th:if="${conversion.available}" class="text-dark fw-semibold">
+                  <span>≈ </span>
+                  <span th:text="${#numbers.formatDecimal(conversion.convertedAmount, 1, 2)}">2,950.00</span>
+                  <span th:text="${conversion.targetCurrency}">EUR</span>
+                  <small class="text-muted fw-normal d-block">
+                    Rate: <span th:text="${conversion.rate}">0.92</span>
+                    <span th:if="${conversion.rateDate != null}">
+                      (<span th:text="${conversion.rateDate}">2026-11-27</span>)
+                    </span>
+                  </small>
+                </div>
+
+                <div th:unless="${conversion.available}" class="text-muted small">
+                  Live <span th:text="${conversion.targetCurrency}">EUR</span> rate currently unavailable
+                </div>
+
+                <!-- Currency Switcher Buttons -->
+                <div class="btn-group btn-group-sm mt-2" role="group" aria-label="Convert currency">
+                  <a th:href="@{/buyer/invoices/{id}(id=${invoice.invoiceId}, targetCurrency='EUR')}"
+                     th:classappend="${conversion.targetCurrency == 'EUR'} ? 'active' : ''"
+                     class="btn btn-outline-primary">EUR</a>
+                  <a th:href="@{/buyer/invoices/{id}(id=${invoice.invoiceId}, targetCurrency='GBP')}"
+                     th:classappend="${conversion.targetCurrency == 'GBP'} ? 'active' : ''"
+                     class="btn btn-outline-primary">GBP</a>
+                  <a th:href="@{/buyer/invoices/{id}(id=${invoice.invoiceId}, targetCurrency='CHF')}"
+                     th:classappend="${conversion.targetCurrency == 'CHF'} ? 'active' : ''"
+                     class="btn btn-outline-primary">CHF</a>
+                </div>
+              </div>
             </div>
           </div>
         </div>

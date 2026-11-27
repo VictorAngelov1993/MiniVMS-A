@@ -5,27 +5,33 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import springbootapp.minivms.model.dto.paymentdto.InvoiceConversionDto;
 import springbootapp.minivms.model.dto.persondto.LoggedUserDto;
 import springbootapp.minivms.model.dto.workitemdto.invoice.CreateInvoiceDto;
 import springbootapp.minivms.model.dto.workitemdto.invoice.InvoiceCardDto;
 import springbootapp.minivms.model.dto.workitemdto.invoice.InvoicePreviewDTO;
+import springbootapp.minivms.services.ExchangeRateService;
 import springbootapp.minivms.services.personservices.SupplierService;
 import springbootapp.minivms.services.workitemsservices.InvoiceService;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Controller
 public class InvoiceController {
 
-    private InvoiceService invoiceService;
-    private SupplierService supplierService;
+    private final InvoiceService invoiceService;
+    private final SupplierService supplierService;
+    private final ExchangeRateService exchangeRateService;
 
     @Autowired
     public InvoiceController(InvoiceService invoiceService,
-                             SupplierService supplierService) {
+                             SupplierService supplierService,
+                             ExchangeRateService exchangeRateService) {
         this.invoiceService = invoiceService;
         this.supplierService = supplierService;
+        this.exchangeRateService = exchangeRateService;
     }
 
     @GetMapping("buyer/invoices")
@@ -71,10 +77,25 @@ public class InvoiceController {
 
     @GetMapping("buyer/invoices/{id}")
     public String viewInvoiceDetails(@PathVariable("id") String invoiceId,
+                                     @RequestParam(name = "targetCurrency", required = false) String targetCurrency,
                                      Model model) {
 
         InvoicePreviewDTO invoiceDetails = this.invoiceService.getInvoiceDetails(invoiceId);
         model.addAttribute("invoice", invoiceDetails);
+
+        String invoiceCurrency = "USD";
+        String resolvedTarget = (targetCurrency != null && !targetCurrency.isBlank())
+                ? targetCurrency.trim().toUpperCase(Locale.ROOT)
+                : ("USD".equalsIgnoreCase(invoiceCurrency) ? "EUR" : "USD");
+
+        InvoiceConversionDto conversion = exchangeRateService.convertInvoiceAmount(
+                invoiceDetails.getTotalAmount(),
+                invoiceCurrency,
+                resolvedTarget
+        );
+
+        model.addAttribute("invoiceCurrency", invoiceCurrency);
+        model.addAttribute("conversion", conversion);
 
         return "buyer/invoice-details";
     }

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.client.RestClient;
 import springbootapp.minivms.model.dto.persondto.SupplierDropDownDto;
 import springbootapp.minivms.model.dto.workitemdto.timesheet.TimeSheetRowDto;
 import springbootapp.minivms.model.dto.workitemdto.worker.WorkerDetailDto;
@@ -45,5 +46,10 @@ public class AppConfig {
     @Bean
     public CacheManager cacheManager() {
         return new ConcurrentMapCacheManager("buyersList", "approvedTimesheetCounts");
+    }
+
+    @Bean
+    public RestClient.Builder restClientBuilder() {
+        return RestClient.builder();
     }
 }
