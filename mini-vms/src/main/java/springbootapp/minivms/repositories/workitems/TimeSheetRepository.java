@@ -59,5 +59,12 @@ public interface TimeSheetRepository extends JpaRepository<TimeSheet, UUID> {
 """)
     Long countApprovedTimeSheetByBuyer(@Param("buyer") Buyer buyer);
 
+    @Query("""
+    select ts from TimeSheet as ts
+    where ts.workOrder.jobPosting.buyer.uuid = :buyerUuid
+    and ts.status in ('APPROVED','INVOICED')
+    order by ts.weekStartDay
+""")
+    List<TimeSheet> getAllApprovedAndInvoicedTimeSheetsForBuyerByUuid(@Param("buyerUuid") UUID uuid);
 
 }

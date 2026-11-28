@@ -81,10 +81,19 @@ public class TimeSheetController {
 
 
         List<TimeSheetRowDto> buyerPendingApprovalTimeSheets = this.timeSheetService.getAllTimeSheetsRowPendingApprovalForTheBuyer(loggedUser.getUuid());
-
         model.addAttribute("timesheets", buyerPendingApprovalTimeSheets);
 
         return "buyer/timesheets";
+    }
+
+    @GetMapping("buyer/timesheets/history")
+    public String displayApprovedAndInvoicedTimeSheetsForBuyer(@AuthenticationPrincipal LoggedUserDto loggedUserDto, Model model) {
+
+        List<TimeSheetRowDto> buyerApprovedAndInvoicedTimeSheets = this.timeSheetService.getApprovedAndInvoicedTimeSheetsRow(loggedUserDto.getUuid());
+        model.addAttribute("timesheets", buyerApprovedAndInvoicedTimeSheets);
+
+        return "buyer/timesheets-approved-invoiced";
+
     }
 
     @GetMapping("/buyer/timesheets/{id}/edit")

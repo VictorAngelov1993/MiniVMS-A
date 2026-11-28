@@ -221,4 +221,8 @@ public class TimeSheetService {
         return this.timeSheetRepository.countApprovedTimeSheetByBuyer(buyer);
     }
 
+    public List<TimeSheetRowDto> getApprovedAndInvoicedTimeSheetsRow(UUID buyerUuid) {
+        return this.timeSheetMapper.mapListOfTimeSheetsToListOfTimeSheetRowDto(this.timeSheetRepository.getAllApprovedAndInvoicedTimeSheetsForBuyerByUuid(buyerUuid));
+    }
+
 }
