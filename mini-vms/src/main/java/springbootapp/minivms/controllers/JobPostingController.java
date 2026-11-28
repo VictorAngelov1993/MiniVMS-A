@@ -4,6 +4,7 @@ package springbootapp.minivms.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -68,7 +69,7 @@ public class JobPostingController {
         }
 
     }
-
+    @PreAuthorize("@buyerWorkItemSecurity.isOwned(#jobPostingId, authentication.principal.uuid)")
     @GetMapping("/buyer/job-postings/{jobPostingId}")
     public String showBuyerJobPostingDetails(@PathVariable String jobPostingId,
                                              @AuthenticationPrincipal LoggedUserDto loggedUser,
@@ -89,7 +90,6 @@ public class JobPostingController {
 
         return "supplier/job-postings";
     }
-
     @GetMapping("/supplier/job-postings/{jobPostingId}")
     public String showSupplierJobPostingDetails(@PathVariable String jobPostingId,
                                                 @AuthenticationPrincipal LoggedUserDto loggedUser,

@@ -7,6 +7,7 @@ import springbootapp.minivms.model.entities.workitems.JobPosting;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface JobPostingRepository extends JpaRepository<JobPosting, UUID> {
@@ -27,5 +28,7 @@ public interface JobPostingRepository extends JpaRepository<JobPosting, UUID> {
     int countByBuyer(Buyer buyer);
 
     JobPosting getJobPostingByJobPostingId(String jobPostingId);
+
+    Optional<JobPosting> findByJobPostingId(String jobPostingId);
 
 }

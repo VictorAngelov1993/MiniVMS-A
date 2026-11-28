@@ -95,7 +95,7 @@ public class TimeSheetController {
         return "buyer/timesheets-approved-invoiced";
 
     }
-
+    @PreAuthorize("@buyerWorkItemSecurity.isOwned(#id, authentication.principal.uuid)")
     @GetMapping("/buyer/timesheets/{id}/edit")
     public String displayTimeSheetEditPageForBuyer(@PathVariable String id,
                                                    Model model) {
@@ -104,14 +104,14 @@ public class TimeSheetController {
 
         return "buyer/timesheet-edit";
     }
-
+    @PreAuthorize("@buyerWorkItemSecurity.isOwned(#id, authentication.principal.uuid)")
     @PostMapping("buyer/timesheets/{id}/approve")
     public String buyerApproveTimeSheet(@PathVariable String id) {
         this.timeSheetService.approveTimeSheet(id);
 
         return "redirect:/buyer/timesheets";
     }
-
+    @PreAuthorize("@buyerWorkItemSecurity.isOwned(#id, authentication.principal.uuid)")
     @PostMapping("buyer/timesheets/{id}/reject")
     public String buyerRejectTimeSheet(@PathVariable String id) {
         this.timeSheetService.rejectTimeSheet(id);

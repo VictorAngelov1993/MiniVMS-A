@@ -3,14 +3,13 @@ package springbootapp.minivms.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import springbootapp.minivms.model.dto.persondto.LoggedUserDto;
-import springbootapp.minivms.model.dto.workitemdto.jobposting.JobPostingDetailsDto;
-import springbootapp.minivms.model.dto.workitemdto.jobseeker.JobSeekerSubmitDto;
 import springbootapp.minivms.model.dto.workitemdto.workorder.WorkOrderCardDto;
 import springbootapp.minivms.model.dto.workitemdto.workorder.WorkOrderCreateDto;
 import springbootapp.minivms.model.dto.workitemdto.workorder.WorkOrderDetailDto;
@@ -77,7 +76,7 @@ public class WorkOrderController {
             return "/buyer/workorders";
         }
     }
-
+    @PreAuthorize("@buyerWorkItemSecurity.isOwned(#id, authentication.principal.uuid)")
     @GetMapping("buyer/workorders/{id}")
     public String openWorkOrderDetails(@PathVariable("id") String id,
             Model model) {
@@ -88,7 +87,7 @@ public class WorkOrderController {
 
         return "buyer/workorder-details";
     }
-
+    @PreAuthorize("@buyerWorkItemSecurity.isOwned(#id, authentication.principal.uuid)")
     @PostMapping("buyer/workorders/{id}/close")
     public String closeWorkOrder(@PathVariable("id") String workOrderId) {
         this.workOrderService.closeWorkOrderByWorkOrderId(workOrderId);

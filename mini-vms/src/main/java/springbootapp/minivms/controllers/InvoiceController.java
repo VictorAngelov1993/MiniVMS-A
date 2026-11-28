@@ -1,6 +1,7 @@
 package springbootapp.minivms.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -75,6 +76,7 @@ public class InvoiceController {
         return "redirect:/buyer/invoices";
     }
 
+    @PreAuthorize("@buyerWorkItemSecurity.isOwned(#invoiceId, authentication.principal.uuid)")
     @GetMapping("buyer/invoices/{id}")
     public String viewInvoiceDetails(@PathVariable("id") String invoiceId,
                                      @RequestParam(name = "targetCurrency", required = false) String targetCurrency,
@@ -100,6 +102,7 @@ public class InvoiceController {
         return "buyer/invoice-details";
     }
 
+    @PreAuthorize("@buyerWorkItemSecurity.isOwned(#invoiceId, authentication.principal.uuid)")
     @PostMapping("buyer/invoices/{id}/pay")
     public String processPayment(@PathVariable("id") String invoiceId,
                                  @AuthenticationPrincipal LoggedUserDto loggerUser) {
