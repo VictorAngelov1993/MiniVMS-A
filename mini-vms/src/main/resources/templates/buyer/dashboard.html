@@ -4,8 +4,9 @@
   Route: GET /buyer/dashboard
   Model attributes expected:
 - user (fullName, email, roleHomeUrl)
-- stats.jobPostingCount, stats.workOrderCount, stats.activeWorkerCount, stats.pendingTimesheetCount
+- stats.jobPostingCount, stats.workOrderCount, stats.activeWorkerCount, stats.pendingTimesheetCount, stats.invoiceCount (optional)
 - approvedTimesheetsToInvoice (long - count of approved uninvoiced timesheets for logged-in buyer)
+- invoiceCount (optional standalone count if not on stats)
 -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -157,6 +158,13 @@
             <div class="stat-label">Pending Timesheets</div>
             <div class="stat-value" th:text="${stats != null ? stats.pendingTimesheetCount : 0}">0</div>
             <a class="small" href="/buyer/timesheets" th:href="@{/buyer/timesheets}">View all &rarr;</a>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="stat-card">
+            <div class="stat-label">Invoices</div>
+            <div class="stat-value" th:text="${stats != null ? stats.invoiceCount : 0}">0</div>
+            <a class="small" href="/buyer/invoices" th:href="@{/buyer/invoices}">View all &rarr;</a>
           </div>
         </div>
       </div>

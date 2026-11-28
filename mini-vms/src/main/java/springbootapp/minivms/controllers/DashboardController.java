@@ -18,10 +18,7 @@ import springbootapp.minivms.schedulers.ApprovedTimeSheetReminderScheduler;
 import springbootapp.minivms.services.personservices.BuyerService;
 import springbootapp.minivms.services.personservices.SupplierService;
 import springbootapp.minivms.services.personservices.WorkerService;
-import springbootapp.minivms.services.workitemsservices.JobPostingService;
-import springbootapp.minivms.services.workitemsservices.JobSeekerService;
-import springbootapp.minivms.services.workitemsservices.TimeSheetService;
-import springbootapp.minivms.services.workitemsservices.WorkOrderService;
+import springbootapp.minivms.services.workitemsservices.*;
 
 import java.security.Principal;
 import java.util.Optional;
@@ -37,6 +34,7 @@ public class DashboardController {
     private final WorkerService workerService;
     private final TimeSheetService timeSheetService;
     private final ApprovedTimeSheetReminderScheduler approvedTimeSheetReminderScheduler;
+    private final InvoiceService invoiceService;
 
     @Autowired
     public DashboardController(JobPostingService jobPostingService,
@@ -46,7 +44,8 @@ public class DashboardController {
                                WorkOrderService workOrderService,
                                WorkerService workerService,
                                TimeSheetService timeSheetService,
-                               ApprovedTimeSheetReminderScheduler approvedTimeSheetReminderScheduler) {
+                               ApprovedTimeSheetReminderScheduler approvedTimeSheetReminderScheduler,
+                               InvoiceService invoiceService) {
         this.jobPostingService = jobPostingService;
         this.buyerService = buyerService;
         this.supplierService = supplierService;
@@ -55,6 +54,7 @@ public class DashboardController {
         this.workerService = workerService;
         this.timeSheetService = timeSheetService;
         this.approvedTimeSheetReminderScheduler = approvedTimeSheetReminderScheduler;
+        this.invoiceService = invoiceService;
     }
 
 
@@ -84,6 +84,9 @@ public class DashboardController {
 
         long countPendingTimeSheets = this.timeSheetService.countPendingTimeSheetForBuyerByBuyerUuid(buyer);
         stats.setPendingTimesheetCount(countPendingTimeSheets);
+
+        long countInvoices = this.invoiceService.countBuyerInvoices(buyer);
+        stats.setInvoiceCount(countInvoices);
 
         Long approvedTimeSheetToInvoice = this.approvedTimeSheetReminderScheduler.getUninvoicedApprovedCountForUser(buyer.getUuid());
         model.addAttribute("approvedTimesheetsToInvoice", approvedTimeSheetToInvoice);

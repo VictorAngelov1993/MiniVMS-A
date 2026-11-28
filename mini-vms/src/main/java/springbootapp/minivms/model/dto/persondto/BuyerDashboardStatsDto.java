@@ -5,6 +5,7 @@ public class BuyerDashboardStatsDto {
     private int workOrderCount;
     private long activeWorkerCount;
     private long pendingTimesheetCount;
+    private long invoiceCount;
 
 
     public BuyerDashboardStatsDto() {
@@ -41,5 +42,13 @@ public class BuyerDashboardStatsDto {
 
     public void setPendingTimesheetCount(long pendingTimesheetCount) {
         this.pendingTimesheetCount = pendingTimesheetCount;
+    }
+
+    public long getInvoiceCount() {
+        return invoiceCount;
+    }
+
+    public void setInvoiceCount(long invoiceCount) {
+        this.invoiceCount = invoiceCount;
     }
 }

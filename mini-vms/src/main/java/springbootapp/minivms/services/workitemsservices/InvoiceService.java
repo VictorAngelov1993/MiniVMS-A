@@ -16,6 +16,7 @@ import springbootapp.minivms.model.dto.workitemdto.invoice.InvoicePreviewDTO;
 import springbootapp.minivms.model.dto.workitemdto.timesheet.TimeSheetDataForInvoiceDTO;
 import springbootapp.minivms.model.entities.enums.InvoiceStatus;
 import springbootapp.minivms.model.entities.enums.PaymentStatus;
+import springbootapp.minivms.model.entities.persons.Buyer;
 import springbootapp.minivms.model.entities.workitems.Invoice;
 import springbootapp.minivms.model.entities.workitems.timesheets.TimeSheet;
 import springbootapp.minivms.repositories.workitems.InvoiceRepository;
@@ -135,6 +136,10 @@ public class InvoiceService {
         List<TimeSheetDataForInvoiceDTO> timeSheetDetails = this.timeSheetService.getTimeSheetDetailsForInvoiceDetails(invoice.getTimeSheets());
         invoiceDetails.setTimeSheets(timeSheetDetails);
          return invoiceDetails;
+    }
+
+    public long countBuyerInvoices(Buyer buyer)  {
+        return this.invoiceRepository.countAllByBuyer(buyer);
     }
 
 }

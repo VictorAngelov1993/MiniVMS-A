@@ -2,6 +2,7 @@ package springbootapp.minivms.repositories.workitems;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import springbootapp.minivms.model.entities.persons.Buyer;
 import springbootapp.minivms.model.entities.workitems.Invoice;
 
 import java.math.BigDecimal;
@@ -20,4 +21,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, UUID> {
     String getSupplierNameByInvoiceId(String invoiceId);
 
     Optional<Invoice> findByInvoiceId(String invoiceId);
+
+
+    long countAllByBuyer(Buyer buyer);
 }
