@@ -74,6 +74,12 @@ public class SupplierService {
 
     }
 
+    public List<SupplierDropDownDto> getAllSuppliersThatHaveWorkOrderWithTheBuyer(UUID buyerUuid) {
+        return this.supplierRepository.findDistinctByWorkOrderBuyerUuid(buyerUuid).stream()
+                .map(supplier -> modelMapper.map(supplier, SupplierDropDownDto.class))
+                .toList();
+    }
+
     public String getSupplierFullNameForUuid(UUID uuid) {
         Optional<Supplier> supplier = this.supplierRepository.getSupplierByUuid(uuid);
 

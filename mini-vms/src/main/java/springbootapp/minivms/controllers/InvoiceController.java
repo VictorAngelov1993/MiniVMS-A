@@ -47,6 +47,7 @@ public class InvoiceController {
 
     @GetMapping("buyer/invoices/create")
     public String loadTheCreateInvoicePage(
+            @AuthenticationPrincipal LoggedUserDto loggedUserDto,
             @RequestParam(required = false) String invoiceId,
             @RequestParam(required = false) UUID supplierId,
             Model model) {
@@ -58,7 +59,7 @@ public class InvoiceController {
 
 
         model.addAttribute("invoiceId", currentInvoiceId);
-        model.addAttribute("suppliers", supplierService.findAllSuppliersForDropDown());
+        model.addAttribute("suppliers", supplierService.getAllSuppliersThatHaveWorkOrderWithTheBuyer(loggedUserDto.getUuid()));
         model.addAttribute("selectedSupplierId", supplierId);
 
         if (supplierId != null) {
